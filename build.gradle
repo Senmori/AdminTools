@@ -43,7 +43,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                custommobs {
                     source sourceSets.main
                 }
             }
@@ -59,7 +59,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                custommobs {
                     source sourceSets.main
                 }
             }
@@ -82,15 +82,6 @@ minecraft {
                 }
             }
         }
-    }
-}
-
-repositories {
-    maven { // McJtyLib
-        url "http://maven.k-4u.nl"
-    }
-    maven { // OpenComputers
-        url "http://maven.cil.li"
     }
 }
 
@@ -123,8 +114,13 @@ dependencies {
 
 }
 
-task compileMavenProject(type: Exec) {
-    workingDir
+
+import org.apache.tools.ant.filters.ReplaceTokens
+processResources {
+    with copySpec {
+        from 'src/main/resources/'
+        filter(ReplaceTokens, tokens: [version: project.version as String], beginToken: "\${", endToken: "}")
+    }
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

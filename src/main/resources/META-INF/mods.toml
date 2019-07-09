@@ -6,7 +6,7 @@ loaderVersion="[27,)" #mandatory (26 is current forge version)
 [[mods]] #mandatory
 # The modid of the mod
 modId="custommobs" #mandatory
-version="${project.version}" #mandatory
+version="${version}" #mandatory
 displayName="Custom Mobs" #mandatory
 #updateJSONURL="https://www.google.com" #optional
 #displayURL="" #optional
