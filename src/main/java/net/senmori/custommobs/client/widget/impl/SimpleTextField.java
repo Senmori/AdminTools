@@ -77,14 +77,14 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param position the {@link AbstractLabel.Position} of the label
      * @return the new {@link AbstractLabel}
      */
-    public AbstractLabel addLabel(String text, AbstractLabel.Position position) {
-        AbstractLabel label = new Label(this.x, this.y);
+    public <T extends AbstractLabel> T addLabel(String text, T.Position position) {
+        Label label = new Label(this.x, this.y);
         label.setText( text );
         label.setPosition( position );
         label.setParent( this );
         label.calculateLayout();
         this.label = label;
-        return label;
+        return (T) label;
     }
 
     /**
@@ -93,7 +93,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param label the label to add
      * @return the {@link AbstractLabel}.
      */
-    public AbstractLabel addLabel(AbstractLabel label) {
+    public <T extends AbstractLabel> T addLabel(T label) {
         label.setParent( this );
         label.calculateLayout();
         this.label = label;

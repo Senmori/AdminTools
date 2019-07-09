@@ -7,6 +7,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.senmori.custommobs.client.gui.IUpdatable;
 import net.senmori.custommobs.client.widget.AbstractLabel;
+import net.senmori.custommobs.client.widget.impl.Label;
 import net.senmori.custommobs.client.widget.impl.SimpleTextField;
 import org.lwjgl.glfw.GLFW;
 
