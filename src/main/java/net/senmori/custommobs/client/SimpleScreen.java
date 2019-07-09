@@ -5,6 +5,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.IUpdatable;
 import net.senmori.custommobs.client.widget.AbstractLabel;
 import net.senmori.custommobs.client.widget.impl.Label;
@@ -14,6 +16,7 @@ import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nonnull;
 import java.awt.Color;
 
+@OnlyIn( Dist.CLIENT )
 public class SimpleScreen extends Screen {
 
     public SimpleScreen() {
