@@ -25,7 +25,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: project.mcp_channel, version: project.mcp_mappings
+    mappings channel: project.mcp_channel, version: "${project.mcp_mappings}-${project.mcp_mc_version}"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
@@ -119,6 +119,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 processResources {
     with copySpec {
         from 'src/main/resources/'
+        exclude("*.cfg") // ignore all access transformer files
         filter(ReplaceTokens, tokens: [version: project.version as String], beginToken: "\${", endToken: "}")
     }
 }
