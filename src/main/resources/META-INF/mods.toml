@@ -1,0 +1,18 @@
+modLoader="javafml" #mandatory
+loaderVersion="[27,)" #mandatory (26 is current forge version)
+#issueTrackerURL="http://my.issue.tracker/" #optional
+#logoFile="examplemod.png" #optional
+
+[[mods]] #mandatory
+# The modid of the mod
+modId="custommobs" #mandatory
+version="${project.version}" #mandatory
+displayName="Custom Mobs" #mandatory
+#updateJSONURL="https://www.google.com" #optional
+#displayURL="" #optional
+
+#credits="" #
+authors="Senmori"
+description='''
+A mod to allow the creation of custom entities in-game via GUIs.
+'''
