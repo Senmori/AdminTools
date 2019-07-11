@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
@@ -22,6 +23,7 @@ import net.senmori.custommobs.lib.properties.defaults.DefaultFloatProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
 import net.senmori.custommobs.lib.properties.predicate.DefaultPredicateProperty;
+import net.senmori.custommobs.lib.properties.simple.BooleanProperty;
 import net.senmori.custommobs.lib.sound.CustomSound;
 import net.senmori.custommobs.lib.util.Keyboard;
 import net.senmori.custommobs.lib.sound.SoundUtil;
@@ -40,19 +42,28 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     protected Screen screen;
     protected Widget parent;
 
-    private final DefaultStringProperty narrationProperty = new DefaultStringProperty( this, "narration message", "" );
-    private final DefaultObjectProperty<CustomSound> soundProperty = new DefaultObjectProperty<>( this, "sound", new CustomSound(SoundEvents.UI_BUTTON_CLICK) );
-    private final DefaultBiConsumerProperty<Widget, KeyInput> keyPressProperty = new DefaultBiConsumerProperty<>( this, "key press consumer", (w, k) -> {} );
-    private final DefaultBiConsumerProperty<Widget, Boolean> focusProperty = new DefaultBiConsumerProperty<>( this, "focus consumer", (w, f) -> {} );
-    private final DefaultBiConsumerProperty<Widget, MouseInput> clickConsumerProperty = new DefaultBiConsumerProperty<>( this, "click consumer", (w, f) -> {} );
-    private final DefaultBiConsumerProperty<Widget, MouseInput> releaseConsumerProperty = new DefaultBiConsumerProperty<>( this, "release consumer", (w, f) -> {} );
-    private final DefaultBiConsumerProperty<Widget, MouseInput> dragConsumerProperty = new DefaultBiConsumerProperty<>( this, "drag consumer", (w, f) -> {} );
-    private final DefaultPredicateProperty<MouseInput> validMouseButtonProperty = new DefaultPredicateProperty<>( this, "mouse  button predicate", s -> s.getButtonType() == MouseInput.Button.LEFT );
+    protected final BooleanProperty enabledProperty = new BooleanProperty( this, "enabled", this.active );
+    protected final BooleanProperty visibleProperty = new BooleanProperty( this, "enabled", this.visible );
+    protected final BooleanProperty focusedProperty = new BooleanProperty( this, "enabled", this.focused );
+    protected final DefaultObjectProperty<FontRenderer> fontRendererProperty = new DefaultObjectProperty<>( this, "font renderer", Minecraft.getInstance().fontRenderer );
+
+
+    protected final DefaultStringProperty narrationProperty = new DefaultStringProperty( this, "narration message", "" );
+    protected final DefaultObjectProperty<CustomSound> soundProperty = new DefaultObjectProperty<>( this, "sound", new CustomSound(SoundEvents.UI_BUTTON_CLICK) );
+    protected final DefaultBiConsumerProperty<Widget, KeyInput> keyPressProperty = new DefaultBiConsumerProperty<>( this, "key press consumer", (w, k) -> {} );
+    protected final DefaultBiConsumerProperty<Widget, Boolean> focusProperty = new DefaultBiConsumerProperty<>( this, "focus consumer", (w, f) -> {} );
+    protected final DefaultBiConsumerProperty<Widget, MouseInput> clickConsumerProperty = new DefaultBiConsumerProperty<>( this, "click consumer", (w, f) -> {} );
+    protected final DefaultBiConsumerProperty<Widget, MouseInput> releaseConsumerProperty = new DefaultBiConsumerProperty<>( this, "release consumer", (w, f) -> {} );
+    protected final DefaultBiConsumerProperty<Widget, MouseInput> dragConsumerProperty = new DefaultBiConsumerProperty<>( this, "drag consumer", (w, f) -> {} );
+    protected final DefaultPredicateProperty<MouseInput> validMouseButtonProperty = new DefaultPredicateProperty<>( this, "mouse  button predicate", s -> s.getButtonType() == MouseInput.Button.LEFT );
 
     public AbstractWidget(int xIn, int yIn) {
         super( xIn, yIn, "" );
         this.width = DEFAULT_WIDTH;
         this.height = DEFAULT_HEIGHT;
+        enabledProperty.addListener( (listener) -> this.active = ( boolean ) listener.getValue() );
+        visibleProperty.addListener( (listener) -> this.visible = (boolean) listener.getValue() );
+        focusedProperty.addListener( (listener) -> this.focused = (boolean) listener.getValue() );
     }
 
     public void setScreen(Screen screen) {
@@ -114,6 +125,11 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     public T setNarrationMessage(String message) {
         this.narrationProperty.set( message );
         return ( T ) this;
+    }
+
+    @Override
+    public String getNarrationMessage() {
+        return narrationProperty.get().isEmpty() ? "" : ForgeI18n.parseMessage( "gui.narrate.button", this.narrationProperty.get() );
     }
 
     /**
@@ -215,14 +231,17 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         this.soundProperty.get().setPitch( pitch );
         return ( T ) this;
     }
+    public CustomSound getSound() {
+        return this.soundProperty.get();
+    }
 
-    public T setOnClickVolume(float volume) {
-        getSound().setVolume( volume );
+    public T setFontRenderer(FontRenderer fontRenderer) {
+        this.fontRendererProperty.set( fontRenderer );
         return (T) this;
     }
 
-    public CustomSound getSound() {
-        return this.soundProperty.get();
+    public FontRenderer getFontRenderer() {
+        return this.fontRendererProperty.get();
     }
 
     /**
@@ -263,11 +282,6 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     protected void onFocusChange(boolean currentFocus, boolean newFocus) {
         getFocusConsumer().accept( this, newFocus );
-    }
-
-    @Override
-    public String getNarrationMessage() {
-        return narrationProperty.get().isEmpty() ? "" : ForgeI18n.parseMessage( "gui.narrate.button", this.narrationProperty.get() );
     }
 
     @Override
@@ -362,22 +376,22 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
      * @return true if the widget is currently visible
      */
     public boolean isVisible() {
-        return visible;
+        return this.visibleProperty.get();
     }
 
     public void setVisible(boolean visible) {
-        this.visible = visible;
+        this.visibleProperty.set( visible );
     }
 
     /**
      * @return true if the widget is enabled and accepting input
      */
     public boolean isEnabled() {
-        return active;
+        return this.enabledProperty.get();
     }
 
     public void setEnabled(boolean enabled) {
-        this.active = enabled;
+        this.enabledProperty.set( enabled );
     }
 
     protected void fill(int startX, int startY, int endX, int endY, Color color) {

@@ -43,10 +43,9 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     protected boolean canLoseFocus = true;
     private int lineScrollOffset;
 
-    // Visible (either through setters or directly)
     protected final DefaultColorProperty defaultTextBoxBackgroundColor = new DefaultColorProperty( this, "text box background", new Color( 160, 160, 160 ) );
     protected final DefaultColorProperty defaultTextBoxForegroundColor = new DefaultColorProperty( this, "text box foreground", new Color( 0, 0, 0 ) );
-    protected final BooleanProperty enabledProperty = new BooleanProperty( this, "enabled", this.active );
+
     protected final BooleanProperty clearSuggestionTextOnFocusProperty = new BooleanProperty( this, "remove suggestion text on focus", true );
     protected final BooleanProperty restoreSuggestionTextOnFocusLostProperty = new BooleanProperty( this, "restore suggestion text", true );
     protected final BooleanProperty enableBackgroundDrawingProperty = new BooleanProperty( this, "enable background drawing", true );
@@ -58,7 +57,6 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     protected final DefaultColorProperty cursorColorProperty = new DefaultColorProperty( this, "cursor color", new Color( 208, 208, 208 ) );
     protected final DefaultStringProperty textProperty = new DefaultStringProperty( this, "text", "" );
     protected final DefaultPredicateProperty<String> textValidatorProperty = new DefaultPredicateProperty<>( this, "text validator", s -> true );
-    protected final DefaultObjectProperty<FontRenderer> fontRendererProperty = new DefaultObjectProperty<>( this, "font renderer", Minecraft.getInstance().fontRenderer );
     protected final DefaultPredicateProperty<KeyInput> keyInputProperty = new DefaultPredicateProperty<>( this, "key input property", input -> true );
     protected final DefaultObjectProperty<BiFunction<String, Integer, String>> textFormatterProperty = new DefaultObjectProperty<>( this, "text formatter", (str, num) -> str );
     protected final DefaultObjectProperty<BiFunction<String, Integer, String>> suggestionTextFormatProperty = new DefaultObjectProperty<>( this, "suggestion text formatter", (str, num) -> str );
@@ -78,10 +76,6 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
             }
         } );
         enabledProperty.addListener( (listener) -> this.active = ( boolean ) listener.getValue() );
-    }
-
-    public FontRenderer getFontRenderer() {
-        return this.fontRendererProperty.get();
     }
 
     public Consumer<String> getOnTextChangeConsumer() {
@@ -254,7 +248,7 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         if ( !this.isFocused() & newFocus && doRemoveSuggestionOnFocus() ) {
             setSuggestionText( "" );
         } else if ( this.isFocused() && !newFocus && doRestoreSuggestionOnFocus() ) {
-            setSuggestionText( this.suggestionTextProperty.getDefaultValue(), true );
+            setSuggestionText( this.suggestionTextProperty.getDefaultValue() );
         }
     }
 
@@ -297,7 +291,7 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         } else {
             KeyInput input = KeyInput.key( KeyInput.Action.PRESS, keyCode, scanCode, modifiers );
             if ( !this.onKeyPress( input ) ) return false;
-            this.hasShiftDown = Screen.hasShiftDown();
+            this.hasShiftDown = input.getInputModifier().isShiftPressed();
             if ( Screen.isSelectAll( keyCode ) ) {
                 this.setCursorPositionEnd();
                 this.setSelectionPos( 0 );
@@ -636,16 +630,6 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         tessellator.draw();
         GlStateManager.disableColorLogicOp();
         GlStateManager.enableTexture();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return this.enabledProperty.get();
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabledProperty.set( enabled );
     }
 
     @Override

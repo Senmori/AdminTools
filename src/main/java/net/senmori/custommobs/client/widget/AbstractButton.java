@@ -6,6 +6,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.ForgeI18n;
 import net.senmori.custommobs.client.AbstractWidget;
 import net.senmori.custommobs.lib.input.KeyInput;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
@@ -38,6 +39,14 @@ public abstract class AbstractButton extends AbstractWidget {
     }
 
     @Override
+    public String getNarrationMessage() {
+        if (narrationProperty.get().isEmpty() && !getText().isEmpty()) {
+            return ForgeI18n.parseMessage( "gui.narrate.button", getText() );
+        }
+        return this.narrationProperty.get().isEmpty() ? "" : ForgeI18n.parseMessage( "gui.narrate.button", narrationProperty.get() );
+    }
+
+    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if ( this.isEnabled() && this.isVisible() ) {
             if ( keyCode != GLFW.GLFW_KEY_ENTER /* 257 */
@@ -57,7 +66,7 @@ public abstract class AbstractButton extends AbstractWidget {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.fontRenderer;
+        FontRenderer fontrenderer = getFontRenderer();
         minecraft.getTextureManager().bindTexture(getTexture());
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.alpha);
         int i = this.getYImage(this.isHovered());

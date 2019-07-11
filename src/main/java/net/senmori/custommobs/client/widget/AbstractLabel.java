@@ -27,7 +27,6 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> {
     private final DefaultStringProperty labelTextProperty = new DefaultStringProperty( this, "label text", "" );
     private final DefaultIntegerProperty labelSpacingProperty = new DefaultIntegerProperty( this, "label spacing", 0 );
     private final DefaultObjectProperty<Position> labelPositionProperty = new DefaultObjectProperty<>( this, "label position", Position.SELF );
-    private final DefaultObjectProperty<FontRenderer> fontRendererProperty = new DefaultObjectProperty<>( this, "font renderer", Minecraft.getInstance().fontRenderer );
 
     private boolean dirty = false;
 
@@ -90,10 +89,6 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> {
 
     public void calculateLayout() {
         this.getPosition().calculate( getParent(), this, getSpacing() );
-    }
-
-    protected FontRenderer getFontRenderer() {
-        return this.fontRendererProperty.get();
     }
 
     protected void markDirty() {
