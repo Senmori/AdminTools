@@ -23,4 +23,9 @@ public class BiConsumerProperty<T, U> extends ObjectProperty<BiConsumer<T, U>> {
         invalidated();
         fireEvent( new ChangeEvent<>( this, old, this.value ) );
     }
+
+    @Override
+    public BiConsumer<T, U> get() {
+        return (BiConsumer<T, U>) this.value;
+    }
 }

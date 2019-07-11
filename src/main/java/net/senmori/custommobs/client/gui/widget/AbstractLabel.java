@@ -1,12 +1,12 @@
-package net.senmori.custommobs.client.widget;
+package net.senmori.custommobs.client.gui.widget;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
-import net.senmori.custommobs.client.AbstractWidget;
+import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.config.ClientConfig;
-import net.senmori.custommobs.client.widget.impl.Label;
+import net.senmori.custommobs.client.gui.widget.impl.Label;
 import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultIntegerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;

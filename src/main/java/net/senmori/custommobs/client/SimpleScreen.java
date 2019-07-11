@@ -8,11 +8,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.IUpdatable;
-import net.senmori.custommobs.client.widget.impl.SimpleButton;
+import net.senmori.custommobs.client.gui.widget.impl.SimpleButton;
+import net.senmori.custommobs.lib.input.MouseInput;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
+import java.util.function.BiConsumer;
 
 @OnlyIn( Dist.CLIENT )
 public class SimpleScreen extends Screen {
@@ -31,6 +34,8 @@ public class SimpleScreen extends Screen {
         button.setText( "Text" );
         int width = Minecraft.getInstance().fontRenderer.getStringWidth( button.getText() );
         button.setDimensions( width * 3, height );
+        button.onHover( mouseInput -> {
+        });
         addButton( button );
 
         for (IGuiEventListener widget : children()) {
@@ -43,7 +48,7 @@ public class SimpleScreen extends Screen {
     @Override
     @Nonnull
     protected <T extends Widget> T addButton(@Nonnull T widget) {
-        if (widget instanceof AbstractWidget) {
+        if (widget instanceof AbstractWidget ) {
             ((AbstractWidget)widget).setScreen( this );
         }
         return super.addButton( widget );

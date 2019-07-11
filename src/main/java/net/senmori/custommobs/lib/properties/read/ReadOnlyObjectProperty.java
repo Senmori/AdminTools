@@ -9,7 +9,6 @@ public class ReadOnlyObjectProperty<T> extends ReadOnlyProperty<T> {
         super(bean, name, value);
     }
 
-
     public T get() {
         return value;
     }

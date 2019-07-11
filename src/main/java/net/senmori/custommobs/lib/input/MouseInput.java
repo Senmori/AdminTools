@@ -1,5 +1,6 @@
 package net.senmori.custommobs.lib.input;
 
+import net.senmori.custommobs.lib.util.Keyboard;
 import org.lwjgl.glfw.GLFW;
 
 public final class MouseInput {
@@ -12,6 +13,10 @@ public final class MouseInput {
     private Type actionType = Type.UNKNOWN;
     private Action mouseInputAction = Action.UNKNOWN;
     private InputModifier inputModifier;
+
+    public static MouseInput hover(double mouseX, double mouseY) {
+        return MouseInput.mouseInput( Action.MOVE, mouseX, mouseY, -1, Type.UNKNOWN.getRawAction(), Keyboard.buildCurrentModifiers() );
+    }
 
     /** Normal left/right/middle click constructor */
     private MouseInput(Action mouseInputActionn, double mouseX, double mouseY, int button, int action, int modifiers) {

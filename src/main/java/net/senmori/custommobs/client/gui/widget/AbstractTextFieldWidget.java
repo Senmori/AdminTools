@@ -1,9 +1,8 @@
-package net.senmori.custommobs.client.widget;
+package net.senmori.custommobs.client.gui.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -15,8 +14,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.ForgeI18n;
-import net.senmori.custommobs.client.AbstractWidget;
+import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.IUpdatable;
 import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
 import net.senmori.custommobs.lib.input.KeyInput;

@@ -1,4 +1,4 @@
-package net.senmori.custommobs.client.widget;
+package net.senmori.custommobs.client.gui.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -7,8 +7,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.ForgeI18n;
-import net.senmori.custommobs.client.AbstractWidget;
+import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.lib.input.KeyInput;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;

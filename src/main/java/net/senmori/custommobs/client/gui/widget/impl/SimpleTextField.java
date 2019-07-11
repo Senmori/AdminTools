@@ -1,11 +1,11 @@
-package net.senmori.custommobs.client.widget.impl;
+package net.senmori.custommobs.client.gui.widget.impl;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.senmori.custommobs.client.widget.AbstractLabel;
-import net.senmori.custommobs.client.widget.AbstractTextFieldWidget;
+import net.senmori.custommobs.client.gui.widget.AbstractLabel;
+import net.senmori.custommobs.client.gui.widget.AbstractTextFieldWidget;
 import net.senmori.custommobs.lib.input.KeyInput;
 
 import javax.annotation.Nullable;

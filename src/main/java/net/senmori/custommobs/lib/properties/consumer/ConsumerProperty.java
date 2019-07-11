@@ -29,4 +29,9 @@ public class ConsumerProperty<T> extends ObjectProperty<Consumer<T>> {
         invalidated();
         fireEvent( new ChangeEvent<>( this, old, this.value ) );
     }
+
+    @Override
+    public Consumer<T> get() {
+        return (Consumer<T>) this.value;
+    }
 }
