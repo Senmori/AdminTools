@@ -19,6 +19,7 @@ import net.senmori.custommobs.client.AbstractWidget;
 import net.senmori.custommobs.client.gui.IUpdatable;
 import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
 import net.senmori.custommobs.lib.input.KeyInput;
+import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultIntegerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
@@ -61,8 +62,8 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     protected final DefaultPredicateProperty<KeyInput> keyInputProperty = new DefaultPredicateProperty<>( this, "key input property", input -> true );
     protected final DefaultObjectProperty<BiFunction<String, Integer, String>> textFormatterProperty = new DefaultObjectProperty<>( this, "text formatter", (str, num) -> str );
     protected final DefaultObjectProperty<BiFunction<String, Integer, String>> suggestionTextFormatProperty = new DefaultObjectProperty<>( this, "suggestion text formatter", (str, num) -> str );
-    protected final DefaultObjectProperty<Consumer<String>> onTextChangeProperty = new DefaultObjectProperty<>( this, "text change consumer", str -> {} );
-    protected final DefaultObjectProperty<Consumer<Widget>> onTickConsumerProperty = new DefaultObjectProperty<>( this, "tick consumer", widget -> {} );
+    protected final DefaultConsumerProperty<String> onTextChangeProperty = new DefaultConsumerProperty<>( this, "text change consumer" );
+    protected final DefaultConsumerProperty<Widget> onTickConsumerProperty = new DefaultConsumerProperty<>( this, "tick consumer" );
 
     // Non-final variables (so players can change the default suggestion text)
     protected DefaultStringProperty suggestionTextProperty = new DefaultStringProperty( this, "suggestion text", null );
@@ -149,8 +150,7 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
 
     @Override
     public String getNarrationMessage() {
-        String msg = super.getMessage();
-        return msg.isEmpty() ? "" : I18n.format( "gui.narrate.editBox", msg, this.getText() );
+        return getNarrationMessage().isEmpty() ? "" : I18n.format( "gui.narrate.editBox", getNarrationMessage(), getText() );
     }
 
     /**

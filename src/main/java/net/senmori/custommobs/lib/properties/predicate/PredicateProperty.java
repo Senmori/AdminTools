@@ -2,10 +2,11 @@ package net.senmori.custommobs.lib.properties.predicate;
 
 import net.senmori.custommobs.lib.properties.event.ChangeEvent;
 import net.senmori.custommobs.lib.properties.read.ReadOnlyObjectProperty;
+import net.senmori.custommobs.lib.properties.simple.ObjectProperty;
 
 import java.util.function.Predicate;
 
-public class PredicateProperty<T> extends ReadOnlyObjectProperty<Predicate<T>> {
+public class PredicateProperty<T> extends ObjectProperty<Predicate<T>> {
 
     public PredicateProperty() {
         this(s -> true);
@@ -24,9 +25,5 @@ public class PredicateProperty<T> extends ReadOnlyObjectProperty<Predicate<T>> {
         this.value = value;
         invalidated();
         fireEvent( new ChangeEvent<>( this, old, this.value ) );
-    }
-
-    public void set(final Predicate<T> value) {
-        setValue( value );
     }
 }

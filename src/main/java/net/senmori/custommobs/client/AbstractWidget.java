@@ -6,16 +6,21 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.ForgeI18n;
 import net.senmori.custommobs.CustomMobs;
 import net.senmori.custommobs.client.config.ClientConfig;
+import net.senmori.custommobs.lib.input.KeyInput;
 import net.senmori.custommobs.lib.input.MouseInput;
+import net.senmori.custommobs.lib.properties.consumer.DefaultBiConsumerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultFloatProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
+import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
 import net.senmori.custommobs.lib.properties.predicate.DefaultPredicateProperty;
 import net.senmori.custommobs.lib.sound.CustomSound;
 import net.senmori.custommobs.lib.util.Keyboard;
@@ -31,22 +36,18 @@ import java.util.function.Predicate;
 public abstract class AbstractWidget<T extends Widget> extends Widget {
     public static final int DEFAULT_WIDTH = 200;
     public static final int DEFAULT_HEIGHT = 20;
-    protected String narrationMessage = "";
 
     protected Screen screen;
     protected Widget parent;
 
+    private final DefaultStringProperty narrationProperty = new DefaultStringProperty( this, "narration message", "" );
     private final DefaultObjectProperty<CustomSound> soundProperty = new DefaultObjectProperty<>( this, "sound", new CustomSound(SoundEvents.UI_BUTTON_CLICK) );
-    private final DefaultObjectProperty<BiConsumer<Widget, Boolean>> focusProperty = new DefaultObjectProperty<>( this, "focus consumer", (w, f) -> {} );
-    private final DefaultObjectProperty<BiConsumer<Widget, MouseInput>> clickConsumerProperty = new DefaultObjectProperty<>( this, "click consumer", (w, f) -> {} );
-    private final DefaultObjectProperty<BiConsumer<Widget, MouseInput>> releaseConsumerProperty = new DefaultObjectProperty<>( this, "release consumer", (w, f) -> {} );
-    private final DefaultObjectProperty<BiConsumer<Widget, MouseInput>> dragConsumerProperty = new DefaultObjectProperty<>( this, "drag consumer", (w, f) -> {} );
-    private final DefaultFloatProperty soundPitchProperty = new DefaultFloatProperty( this, "sound pitch", 1.0F );
+    private final DefaultBiConsumerProperty<Widget, KeyInput> keyPressProperty = new DefaultBiConsumerProperty<>( this, "key press consumer", (w, k) -> {} );
+    private final DefaultBiConsumerProperty<Widget, Boolean> focusProperty = new DefaultBiConsumerProperty<>( this, "focus consumer", (w, f) -> {} );
+    private final DefaultBiConsumerProperty<Widget, MouseInput> clickConsumerProperty = new DefaultBiConsumerProperty<>( this, "click consumer", (w, f) -> {} );
+    private final DefaultBiConsumerProperty<Widget, MouseInput> releaseConsumerProperty = new DefaultBiConsumerProperty<>( this, "release consumer", (w, f) -> {} );
+    private final DefaultBiConsumerProperty<Widget, MouseInput> dragConsumerProperty = new DefaultBiConsumerProperty<>( this, "drag consumer", (w, f) -> {} );
     private final DefaultPredicateProperty<MouseInput> validMouseButtonProperty = new DefaultPredicateProperty<>( this, "mouse  button predicate", s -> s.getButtonType() == MouseInput.Button.LEFT );
-
-    private BiConsumer<Widget, MouseInput> clickConsumer, releaseConsumer, dragConsumer;
-    private BiConsumer<Widget, Boolean> focusConsumer;
-    private Predicate<MouseInput> validMouseButtonPredicate;
 
     public AbstractWidget(int xIn, int yIn) {
         super( xIn, yIn, "" );
@@ -111,7 +112,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
      * @return the widget
      */
     public T setNarrationMessage(String message) {
-        this.narrationMessage = message;
+        this.narrationProperty.set( message );
         return ( T ) this;
     }
 
@@ -125,6 +126,19 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     public T setMouseClickValidator(Predicate<MouseInput> predicate) {
         this.validMouseButtonProperty.set( predicate );
         return ( T ) this;
+    }
+
+    public Predicate<MouseInput> getMouseInputValidator() {
+        return this.validMouseButtonProperty.get();
+    }
+
+    public T setKeyPressConsumer(BiConsumer<Widget, KeyInput> consumer) {
+        this.keyPressProperty.set( consumer );
+        return (T) this;
+    }
+
+    public BiConsumer<Widget, KeyInput> getKeyPressConsumer() {
+        return this.keyPressProperty.get();
     }
 
     /**
@@ -151,7 +165,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
      * @return this widget
      */
     public T setOnReleaseConsumer(BiConsumer<Widget, MouseInput> releaseConsumer) {
-        this.releaseConsumer = releaseConsumer;
+        this.releaseConsumerProperty.set( releaseConsumer );
         return ( T ) this;
     }
 
@@ -202,6 +216,11 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         return ( T ) this;
     }
 
+    public T setOnClickVolume(float volume) {
+        getSound().setVolume( volume );
+        return (T) this;
+    }
+
     public CustomSound getSound() {
         return this.soundProperty.get();
     }
@@ -248,7 +267,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     @Override
     public String getNarrationMessage() {
-        return narrationMessage == null || narrationMessage.isEmpty() ? super.getNarrationMessage() : narrationMessage;
+        return narrationProperty.get().isEmpty() ? "" : ForgeI18n.parseMessage( "gui.narrate.button", this.narrationProperty.get() );
     }
 
     @Override
@@ -259,7 +278,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     public boolean validateMouseClick(double mouseX, double mouseY, int button) {
         int modifiers = Keyboard.buildCurrentModifiers();
         MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.PRESS.getRawAction(), modifiers );
-        return validMouseButtonProperty.get().test( input );
+        return getMouseInputValidator().test( input );
     }
 
     @Override
@@ -293,11 +312,9 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
         if ( isValidClickButton( mouseButton ) ) {
-            if ( this.dragConsumer != null ) {
-                int mods = Keyboard.buildCurrentModifiers();
-                MouseInput input = MouseInput.drag( mouseX, mouseY, mouseButton, dragX, dragY, mods );
-                getDragConsumer().accept(this, input);
-            }
+            int mods = Keyboard.buildCurrentModifiers();
+            MouseInput input = MouseInput.drag( mouseX, mouseY, mouseButton, dragX, dragY, mods );
+            getDragConsumer().accept(this, input);
             this.onDrag( mouseX, mouseY, dragX, dragY );
             return true;
         }
