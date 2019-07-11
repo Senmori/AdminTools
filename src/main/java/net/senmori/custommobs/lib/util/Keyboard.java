@@ -1,4 +1,4 @@
-package net.senmori.custommobs.util;
+package net.senmori.custommobs.lib.util;
 
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;

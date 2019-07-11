@@ -1,4 +1,4 @@
-package net.senmori.custommobs.util;
+package net.senmori.custommobs.lib.util;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;

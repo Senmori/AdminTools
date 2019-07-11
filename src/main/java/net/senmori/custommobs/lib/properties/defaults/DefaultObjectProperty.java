@@ -29,6 +29,9 @@ public class DefaultObjectProperty<T> extends ObjectProperty<T> {
 
     @Override
     protected void setValue(T value) {
+        if (value == null) {
+            value = getDefaultValue();
+        }
         final T old = this.value;
         this.value = value;
         invalidated();

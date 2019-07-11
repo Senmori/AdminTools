@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 public abstract class AbstractDefaultProperty<T> extends ReadOnlyProperty<T> {
 
     private final T defaultValue;
-    private Predicate<T> valuePredicate = Objects::nonNull;
 
     public AbstractDefaultProperty(final T value) {
         this(null, null, value, value);
@@ -23,22 +22,7 @@ public abstract class AbstractDefaultProperty<T> extends ReadOnlyProperty<T> {
         this.defaultValue = defaultValue;
     }
 
-    public AbstractDefaultProperty<T> validator(Predicate<T> valuePredicate) {
-        setValuePredicate( valuePredicate );
-        return this;
-    }
-
     public T getDefaultValue() {
         return defaultValue;
-    }
-
-    public Predicate<T> getValuePredicate() {
-        return valuePredicate;
-    }
-
-    public void setValuePredicate(Predicate<T> valuePredicate) {
-        if (valuePredicate != null) {
-            this.valuePredicate = valuePredicate;
-        }
     }
 }

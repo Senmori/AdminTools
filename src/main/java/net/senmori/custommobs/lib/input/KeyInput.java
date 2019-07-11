@@ -1,6 +1,6 @@
 package net.senmori.custommobs.lib.input;
 
-import net.senmori.custommobs.util.Keyboard;
+import net.senmori.custommobs.lib.util.Keyboard;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;

@@ -29,6 +29,9 @@ public class DefaultStringProperty extends StringProperty {
     }
     @Override
     protected void setValue(String value) {
+        if (value == null) {
+            value = getDefaultValue();
+        }
         final String old = this.value;
         this.value = value;
         invalidated();

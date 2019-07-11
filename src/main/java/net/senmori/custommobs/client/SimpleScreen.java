@@ -1,8 +1,10 @@
 package net.senmori.custommobs.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -10,6 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.IUpdatable;
 import net.senmori.custommobs.client.widget.AbstractLabel;
 import net.senmori.custommobs.client.widget.impl.Label;
+import net.senmori.custommobs.client.widget.impl.SimpleButton;
 import net.senmori.custommobs.client.widget.impl.SimpleTextField;
 import org.lwjgl.glfw.GLFW;
 
@@ -28,22 +31,12 @@ public class SimpleScreen extends Screen {
         super.init();
         int height = getMinecraft().fontRenderer.FONT_HEIGHT + 3;
 
-        SimpleTextField textField = new SimpleTextField( 83, 80 );
-        textField.setDimensions( 150, height );
-        textField.setSuggestionText( "Set a custom entity name", true);
-        //textField.setSuggestionTextColor( new Color( 127, 219, 255 ) );
-        textField.setTextColorValidator( str -> {
-            if (str.length() < 10) {
-                textField.setTextColor( new Color( 220, 20, 0) );
-            } else {
-                textField.setTextColor( null );
-            }
-            return true;
-        } );
-        textField.setCharacterInputValidator( key -> !Character.isDigit( key ) );
-        Label label = textField.addLabel( "Custom Name ", AbstractLabel.Position.LEFT );
-        label.setSpacing( 2 );
-        addButton( textField );
+        SimpleButton button = new SimpleButton(80, 80);
+        button.setText( "Text" );
+        button.setDimensions( Minecraft.getInstance().fontRenderer.getStringWidth( button.getText() ) + 5, 20 );
+        int width = Minecraft.getInstance().fontRenderer.getStringWidth( button.getText() );
+        button.setDimensions( width * 3, Minecraft.getInstance().fontRenderer.FONT_HEIGHT + 3 );
+        addButton( button );
 
         for (IGuiEventListener widget : children()) {
             if (widget instanceof AbstractWidget) {

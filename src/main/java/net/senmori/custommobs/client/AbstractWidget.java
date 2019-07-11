@@ -6,13 +6,20 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.CustomMobs;
 import net.senmori.custommobs.client.config.ClientConfig;
 import net.senmori.custommobs.lib.input.MouseInput;
-import net.senmori.custommobs.util.Keyboard;
+import net.senmori.custommobs.lib.properties.defaults.DefaultFloatProperty;
+import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
+import net.senmori.custommobs.lib.properties.predicate.DefaultPredicateProperty;
+import net.senmori.custommobs.lib.sound.CustomSound;
+import net.senmori.custommobs.lib.util.Keyboard;
+import net.senmori.custommobs.lib.sound.SoundUtil;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -29,11 +36,17 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     protected Screen screen;
     protected Widget parent;
 
+    private final DefaultObjectProperty<CustomSound> soundProperty = new DefaultObjectProperty<>( this, "sound", new CustomSound(SoundEvents.UI_BUTTON_CLICK) );
+    private final DefaultObjectProperty<BiConsumer<Widget, Boolean>> focusProperty = new DefaultObjectProperty<>( this, "focus consumer", (w, f) -> {} );
+    private final DefaultObjectProperty<BiConsumer<Widget, MouseInput>> clickConsumerProperty = new DefaultObjectProperty<>( this, "click consumer", (w, f) -> {} );
+    private final DefaultObjectProperty<BiConsumer<Widget, MouseInput>> releaseConsumerProperty = new DefaultObjectProperty<>( this, "release consumer", (w, f) -> {} );
+    private final DefaultObjectProperty<BiConsumer<Widget, MouseInput>> dragConsumerProperty = new DefaultObjectProperty<>( this, "drag consumer", (w, f) -> {} );
+    private final DefaultFloatProperty soundPitchProperty = new DefaultFloatProperty( this, "sound pitch", 1.0F );
+    private final DefaultPredicateProperty<MouseInput> validMouseButtonProperty = new DefaultPredicateProperty<>( this, "mouse  button predicate", s -> s.getButtonType() == MouseInput.Button.LEFT );
+
     private BiConsumer<Widget, MouseInput> clickConsumer, releaseConsumer, dragConsumer;
     private BiConsumer<Widget, Boolean> focusConsumer;
     private Predicate<MouseInput> validMouseButtonPredicate;
-    private SoundEvent onClickSound;
-    private float soundPitch = 1.0F;
 
     public AbstractWidget(int xIn, int yIn) {
         super( xIn, yIn, "" );
@@ -66,11 +79,12 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         return screen;
     }
 
-    public void setParentWidget(Widget widget) {
+    public void setParent(Widget widget) {
         this.parent = widget;
     }
 
-    public Widget getParentWidet() {
+    @Nullable
+    public Widget getParent() {
         return this.parent;
     }
 
@@ -109,7 +123,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
      * @return this widget
      */
     public T setMouseClickValidator(Predicate<MouseInput> predicate) {
-        this.validMouseButtonPredicate = predicate;
+        this.validMouseButtonProperty.set( predicate );
         return ( T ) this;
     }
 
@@ -121,8 +135,12 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
      * @return this widget
      */
     public T setOnClickConsumer(BiConsumer<Widget, MouseInput> mouseClickConsumer) {
-        this.clickConsumer = mouseClickConsumer;
+        this.clickConsumerProperty.set( mouseClickConsumer );
         return ( T ) this;
+    }
+
+    public BiConsumer<Widget, MouseInput> getClickConsumer() {
+        return this.clickConsumerProperty.get();
     }
 
     /**
@@ -137,6 +155,10 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         return ( T ) this;
     }
 
+    public BiConsumer<Widget, MouseInput> getReleaseConsumer() {
+        return this.releaseConsumerProperty.get();
+    }
+
     /**
      * The consumer that will be called when a mouse drag is found within the bounds
      * of this widget.
@@ -145,8 +167,12 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
      * @return this widget
      */
     public T setOnDragConsumer(BiConsumer<Widget, MouseInput> dragConsumer) {
-        this.dragConsumer = dragConsumer;
+        this.dragConsumerProperty.set( dragConsumer );
         return ( T ) this;
+    }
+
+    public BiConsumer<Widget, MouseInput> getDragConsumer() {
+        return this.dragConsumerProperty.get();
     }
 
     /**
@@ -171,9 +197,27 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
      * @see SimpleSound#master(SoundEvent, float)
      */
     public T setOnClickSound(SoundEvent sound, float pitch) {
-        this.onClickSound = sound;
-        this.soundPitch = pitch;
+        this.soundProperty.set( SoundUtil.get().createSound( sound ) );
+        this.soundProperty.get().setPitch( pitch );
         return ( T ) this;
+    }
+
+    public CustomSound getSound() {
+        return this.soundProperty.get();
+    }
+
+    /**
+     * Set the focus consumer that will be called when the focus changes on this widget.
+     * The focus consumer's boolean parameter refers to the widget's new focus state, not it's current one.
+     *
+     * @param focusConsumer the focus consumer
+     */
+    public void setFocusConsumer(BiConsumer<Widget, Boolean> focusConsumer) {
+        this.focusProperty.set( focusConsumer );
+    }
+
+    public BiConsumer<Widget, Boolean> getFocusConsumer() {
+        return this.focusProperty.get();
     }
 
     /**
@@ -198,20 +242,8 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         return x >= ( double ) this.x && x < ( double ) ( this.x + this.width ) && y >= ( double ) this.y && y <= ( double ) ( this.y + this.height );
     }
 
-    /**
-     * Set the focus consumer that will be called when the focus changes on this widget.
-     * The focus consumer's boolean parameter refers to the widget's new focus state, not it's current one.
-     *
-     * @param focusConsumer the focus consumer
-     */
-    public void setFocusConsumer(BiConsumer<Widget, Boolean> focusConsumer) {
-        this.focusConsumer = focusConsumer;
-    }
-
     protected void onFocusChange(boolean currentFocus, boolean newFocus) {
-        if ( this.focusConsumer != null ) {
-            focusConsumer.accept( this, newFocus );
-        }
+        getFocusConsumer().accept( this, newFocus );
     }
 
     @Override
@@ -225,29 +257,21 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     public boolean validateMouseClick(double mouseX, double mouseY, int button) {
-        if ( this.validMouseButtonPredicate != null ) {
-            int modifiers = Keyboard.buildCurrentModifiers();
-            MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.PRESS.getRawAction(), modifiers );
-            return validMouseButtonPredicate.test( input );
-        }
-        return isValidClickButton( button );
+        int modifiers = Keyboard.buildCurrentModifiers();
+        MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.PRESS.getRawAction(), modifiers );
+        return validMouseButtonProperty.get().test( input );
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if ( this.isEnabled() && this.isVisible() ) {
-            if ( this.validateMouseClick( mouseX, mouseY, button ) ) {
-                boolean success = this.clicked( mouseX, mouseY );
-                if ( success ) {
-                    if ( this.clickConsumer != null ) {
-                        int modifiers = Keyboard.buildCurrentModifiers();
-                        MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.PRESS.getRawAction(), modifiers );
-                        clickConsumer.accept( this, input );
-                    }
+            if ( this.validateMouseClick( mouseX, mouseY, button ) && this.clicked(mouseX, mouseY) ) {
+                    int modifiers = Keyboard.buildCurrentModifiers();
+                    MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.PRESS.getRawAction(), modifiers );
+                    getClickConsumer().accept( this, input );
                     this.playDownSound( Minecraft.getInstance().getSoundHandler() );
                     this.onClick( mouseX, mouseY );
                     return true;
-                }
             }
         }
         return false;
@@ -256,11 +280,9 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if ( validateMouseClick( mouseX, mouseY, button ) ) {
-            if ( this.releaseConsumer != null ) {
-                int modifiers = Keyboard.buildCurrentModifiers();
-                MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.RELEASE.getRawAction(), modifiers );
-                releaseConsumer.accept( this, input );
-            }
+            int modifiers = Keyboard.buildCurrentModifiers();
+            MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.RELEASE.getRawAction(), modifiers );
+            getReleaseConsumer().accept( this, input );
             this.onRelease( mouseX, mouseY );
             return true;
         }
@@ -274,7 +296,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
             if ( this.dragConsumer != null ) {
                 int mods = Keyboard.buildCurrentModifiers();
                 MouseInput input = MouseInput.drag( mouseX, mouseY, mouseButton, dragX, dragY, mods );
-                dragConsumer.accept( this, input );
+                getDragConsumer().accept(this, input);
             }
             this.onDrag( mouseX, mouseY, dragX, dragY );
             return true;
@@ -284,11 +306,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     @Override
     public void playDownSound(SoundHandler soundHandler) {
-        if ( this.onClickSound != null ) {
-            soundHandler.play( SimpleSound.master( onClickSound, soundPitch ) );
-            return;
-        }
-        super.playDownSound( soundHandler );
+        getSound().playSound( soundHandler);
     }
 
     @Override
