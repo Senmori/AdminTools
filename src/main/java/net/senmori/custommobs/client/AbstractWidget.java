@@ -135,7 +135,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
      */
     @Override
     public String getNarrationMessage() {
-        return narrationProperty.get().isEmpty() ? super.getNarrationMessage() : ForgeI18n.parseMessage( "gui.narrate.button", this.narrationProperty.get() );
+        return narrationProperty.get().isEmpty() ? super.getNarrationMessage() : I18n.format( "gui.narrate.button", this.narrationProperty.get() );
     }
 
     /**

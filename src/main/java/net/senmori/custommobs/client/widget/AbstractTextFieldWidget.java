@@ -154,9 +154,9 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     @Override
     public String getNarrationMessage() {
         if (narrationProperty.get().isEmpty() && label != null) {
-            return ForgeI18n.parseMessage( "gui.narrate.editBox", label.getText(), getText() );
+            return I18n.format( "gui.narrate.editBox", label.getText(), getText() );
         }
-        return narrationProperty.get().isEmpty() ? super.getNarrationMessage() : ForgeI18n.parseMessage( "gui.narrate.editBox", narrationProperty.get(), getText() );
+        return narrationProperty.get().isEmpty() ? super.getNarrationMessage() : I18n.format( "gui.narrate.editBox", narrationProperty.get(), getText() );
     }
 
     /**

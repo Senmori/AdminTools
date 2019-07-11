@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.ForgeI18n;
@@ -49,9 +50,9 @@ public abstract class AbstractButton extends AbstractWidget {
     @Override
     public String getNarrationMessage() {
         if (narrationProperty.get().isEmpty() && !getText().isEmpty()) {
-            return ForgeI18n.parseMessage( "gui.narrate.button", getText() ); // better than nothing I suppose
+            return I18n.format( "gui.narrate.button", getText() ); // better than nothing I suppose
         }
-        return this.narrationProperty.get().isEmpty() ? "" : ForgeI18n.parseMessage( "gui.narrate.button", narrationProperty.get() );
+        return this.narrationProperty.get().isEmpty() ? "" : I18n.format( "gui.narrate.button", narrationProperty.get() );
     }
 
     @Override

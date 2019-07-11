@@ -116,16 +116,6 @@ public class SimpleTextField extends AbstractTextFieldWidget {
     }
 
     /**
-     * Set the {@link FontRenderer} the text field should use.
-     * By default, this will be the FontRenderer Minecraft uses.
-     *
-     * @param fontRenderer the new font renderer
-     */
-    public void setFontRenderer(FontRenderer fontRenderer) {
-        this.fontRendererProperty.set( fontRenderer );
-    }
-
-    /**
      * Set the consumer that will be called when the text changes in the text field.
      *
      * @param onTextChangeConsumer the new consumer
