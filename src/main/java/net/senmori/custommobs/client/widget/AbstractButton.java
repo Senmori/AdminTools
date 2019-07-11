@@ -41,7 +41,7 @@ public abstract class AbstractButton extends AbstractWidget {
     @Override
     public String getNarrationMessage() {
         if (narrationProperty.get().isEmpty() && !getText().isEmpty()) {
-            return ForgeI18n.parseMessage( "gui.narrate.button", getText() );
+            return ForgeI18n.parseMessage( "gui.narrate.button", getText() ); // better than nothing I suppose
         }
         return this.narrationProperty.get().isEmpty() ? "" : ForgeI18n.parseMessage( "gui.narrate.button", narrationProperty.get() );
     }
@@ -56,7 +56,7 @@ public abstract class AbstractButton extends AbstractWidget {
             } else {
                 KeyInput input = KeyInput.key( KeyInput.Action.PRESS, keyCode, scanCode, modifiers );
                 this.playDownSound( Minecraft.getInstance().getSoundHandler() );
-                this.getKeyPressConsumer().accept( this, input );
+                getKeyPressConsumer().accept( this, input );
                 return true;
             }
         }
