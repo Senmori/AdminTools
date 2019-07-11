@@ -127,9 +127,15 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         return ( T ) this;
     }
 
+    /**
+     * The narration message is a feature introduced in 1.12. It reads out text in the chat and can be activated
+     * by pressing 'Ctrl + B'.
+     *
+     * @return the message that will be played by the narrator.
+     */
     @Override
     public String getNarrationMessage() {
-        return narrationProperty.get().isEmpty() ? "" : ForgeI18n.parseMessage( "gui.narrate.button", this.narrationProperty.get() );
+        return narrationProperty.get().isEmpty() ? super.getNarrationMessage() : ForgeI18n.parseMessage( "gui.narrate.button", this.narrationProperty.get() );
     }
 
     /**

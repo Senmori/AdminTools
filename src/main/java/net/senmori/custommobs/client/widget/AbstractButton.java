@@ -38,6 +38,14 @@ public abstract class AbstractButton extends AbstractWidget {
         return this.textureProperty.get();
     }
 
+    /**
+     * The narration message for buttons is output at '%s button'.
+     * By default, this will play '{@link #getNarrationMessage()} button'.
+     * If {@link #getNarrationMessage()} is empty, this button will use {@link #getText()} instead.
+     * If both are empty, then no message will be played.
+     *
+     * @return the narration message
+     */
     @Override
     public String getNarrationMessage() {
         if (narrationProperty.get().isEmpty() && !getText().isEmpty()) {

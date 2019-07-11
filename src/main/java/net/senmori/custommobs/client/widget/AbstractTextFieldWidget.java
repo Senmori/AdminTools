@@ -15,6 +15,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.ForgeI18n;
 import net.senmori.custommobs.client.AbstractWidget;
 import net.senmori.custommobs.client.gui.IUpdatable;
 import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
@@ -142,9 +143,20 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         return this.defaultTextBoxForegroundColor.get();
     }
 
+    /**
+     * Text field narration message output is '%s edit box: %s' where the first '%s' is the narration message
+     * and the second '%s' is the contents of the text field.
+     * <br>
+     * If the narration message is empty, but there is a {@link AbstractLabel} attached, the label's text will be used.
+     *
+     * @return the narration message
+     */
     @Override
     public String getNarrationMessage() {
-        return getNarrationMessage().isEmpty() ? "" : I18n.format( "gui.narrate.editBox", getNarrationMessage(), getText() );
+        if (narrationProperty.get().isEmpty() && label != null) {
+            return ForgeI18n.parseMessage( "gui.narrate.editBox", label.getText(), getText() );
+        }
+        return narrationProperty.get().isEmpty() ? super.getNarrationMessage() : ForgeI18n.parseMessage( "gui.narrate.editBox", narrationProperty.get(), getText() );
     }
 
     /**
