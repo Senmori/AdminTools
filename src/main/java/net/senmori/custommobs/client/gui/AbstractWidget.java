@@ -43,8 +43,8 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     protected Widget parent;
 
     protected final BooleanProperty enabledProperty = new BooleanProperty( this, "enabled", this.active );
-    protected final BooleanProperty visibleProperty = new BooleanProperty( this, "enabled", this.visible );
-    protected final BooleanProperty focusedProperty = new BooleanProperty( this, "enabled", this.focused );
+    protected final BooleanProperty visibleProperty = new BooleanProperty( this, "visible", this.visible );
+    protected final BooleanProperty focusedProperty = new BooleanProperty( this, "focused", this.focused );
     protected final DefaultObjectProperty<FontRenderer> fontRendererProperty = new DefaultObjectProperty<>( this, "font renderer", Minecraft.getInstance().fontRenderer );
 
     // Misc.
@@ -52,15 +52,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     protected final DefaultObjectProperty<CustomSound> soundProperty = new DefaultObjectProperty<>( this, "sound", new CustomSound(SoundEvents.UI_BUTTON_CLICK) );
 
     // Consumers
-    protected final DefaultConsumerProperty<MouseInput> hoverProperty = new DefaultConsumerProperty<>( this, "hover consumer");
-    protected final DefaultConsumerProperty<Boolean> focusProperty = new DefaultConsumerProperty<>( this, "focus consumer");
-    protected final DefaultConsumerProperty<KeyInput> keyPressProperty = new DefaultConsumerProperty<>( this, "key press consumer");
-    protected final DefaultConsumerProperty<MouseInput> clickConsumerProperty = new DefaultConsumerProperty<>( this, "click consumer");
-    protected final DefaultConsumerProperty<MouseInput> releaseConsumerProperty = new DefaultConsumerProperty<>( this, "release consumer");
-    protected final DefaultConsumerProperty<MouseInput> dragConsumerProperty = new DefaultConsumerProperty<>( this, "drag consumer");
-
-    // Validators
-    protected final DefaultPredicateProperty<MouseInput> validMouseButtonProperty = new DefaultPredicateProperty<>( this, "mouse  button predicate", s -> s.getButtonType() == MouseInput.Button.LEFT );
+    protected final DefaultConsumerProperty<Boolean> focusConsumerProperty = new DefaultConsumerProperty<>( this, "focus consumer");
 
     public AbstractWidget(int xIn, int yIn) {
         super( xIn, yIn, "" );
@@ -144,87 +136,6 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     /**
-     * This validator can override the default validation for clicking on buttons.
-     * By default, widgets only check that a left click has been performed.
-     *
-     * @param predicate the validator
-     * @return this widget
-     */
-    public T validateMouseClick(Predicate<MouseInput> predicate) {
-        this.validMouseButtonProperty.set( predicate );
-        return ( T ) this;
-    }
-
-    public Predicate<MouseInput> getMouseInputValidator() {
-        return this.validMouseButtonProperty.get();
-    }
-
-    public T onKeyPress(Consumer<KeyInput> consumer) {
-        this.keyPressProperty.set( consumer );
-        return (T) this;
-    }
-
-    public Consumer<KeyInput> getKeyPressConsumer() {
-        return this.keyPressProperty.get();
-    }
-
-    /**
-     * The consumer that will be called when a valid mouse click is done
-     * within the bounds of this widget.
-     *
-     * @param mouseClickConsumer the consumer
-     * @return this widget
-     */
-    public T onMouseClick(Consumer<MouseInput> mouseClickConsumer) {
-        this.clickConsumerProperty.set( mouseClickConsumer );
-        return ( T ) this;
-    }
-
-    public Consumer<MouseInput> getClickConsumer() {
-        return this.clickConsumerProperty.get();
-    }
-
-    /**
-     * The consumer that will be called when a mouse press was release when
-     * done within the bounds of this widget.
-     *
-     * @param releaseConsumer the consumer
-     * @return this widget
-     */
-    public T onMouseRelease(Consumer<MouseInput> releaseConsumer) {
-        this.releaseConsumerProperty.set( releaseConsumer );
-        return ( T ) this;
-    }
-
-    public Consumer<MouseInput> getReleaseConsumer() {
-        return this.releaseConsumerProperty.get();
-    }
-
-    /**
-     * The consumer that will be called when a mouse drag is found within the bounds
-     * of this widget.
-     *
-     * @param dragConsumer the consumer
-     * @return this widget
-     */
-    public T onMouseDrag(Consumer<MouseInput> dragConsumer) {
-        this.dragConsumerProperty.set( dragConsumer );
-        return ( T ) this;
-    }
-
-    public Consumer<MouseInput> getDragConsumer() {
-        return this.dragConsumerProperty.get();
-    }
-
-    public void onHover(Consumer<MouseInput> consumer) {
-        this.hoverProperty.set( consumer );
-    }
-
-    public Consumer<MouseInput> getHoverConsumer() {
-        return hoverProperty.get();
-    }
-
-    /**
      * Set the {@link SoundEvent} that will be played when the widget is pressed (not released!).
      *
      * @param sound the sound
@@ -271,20 +182,6 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     /**
-     * Set the focus consumer that will be called when the focus changes on this widget.
-     * The focus consumer's boolean parameter refers to the widget's new focus state, not it's current one.
-     *
-     * @param focusConsumer the focus consumer
-     */
-    public void onFocus(Consumer<Boolean> focusConsumer) {
-        this.focusProperty.set( focusConsumer );
-    }
-
-    public Consumer<Boolean> getFocusConsumer() {
-        return this.focusProperty.get();
-    }
-
-    /**
      * Check if the given x/y coordinates are within the bounds of this widget.
      *
      * @param x the x coordinate
@@ -306,8 +203,12 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         return x >= ( double ) this.x && x < ( double ) ( this.x + this.width ) && y >= ( double ) this.y && y <= ( double ) ( this.y + this.height );
     }
 
+    public void onFocus(Consumer<Boolean> focusConsumer) {
+        this.focusConsumerProperty.set( focusConsumer );
+    }
+
     protected void onFocusChange(boolean currentFocus, boolean newFocus) {
-        getFocusConsumer().accept( newFocus );
+        this.focusConsumerProperty.get().accept( newFocus );
     }
 
     @Override
@@ -316,18 +217,13 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     public boolean validateMouseClick(double mouseX, double mouseY, int button) {
-        int modifiers = Keyboard.buildCurrentModifiers();
-        MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.PRESS.getRawAction(), modifiers );
-        return getMouseInputValidator().test( input );
+        return isValidClickButton( button );
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if ( this.isEnabled() && this.isVisible() ) {
             if ( this.validateMouseClick( mouseX, mouseY, button ) && this.clicked(mouseX, mouseY) ) {
-                    int modifiers = Keyboard.buildCurrentModifiers();
-                    MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.PRESS.getRawAction(), modifiers );
-                    getClickConsumer().accept( input );
                     this.playDownSound( Minecraft.getInstance().getSoundHandler() );
                     this.onClick( mouseX, mouseY );
                     return true;
@@ -339,9 +235,6 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if ( validateMouseClick( mouseX, mouseY, button ) ) {
-            int modifiers = Keyboard.buildCurrentModifiers();
-            MouseInput input = MouseInput.mouseInput( MouseInput.Action.CLICK, mouseX, mouseY, button, MouseInput.Type.RELEASE.getRawAction(), modifiers );
-            getReleaseConsumer().accept( input );
             this.onRelease( mouseX, mouseY );
             return true;
         }
@@ -352,9 +245,6 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
         if ( isValidClickButton( mouseButton ) ) {
-            int mods = Keyboard.buildCurrentModifiers();
-            MouseInput input = MouseInput.drag( mouseX, mouseY, mouseButton, dragX, dragY, mods );
-            getDragConsumer().accept(input);
             this.onDrag( mouseX, mouseY, dragX, dragY );
             return true;
         }
@@ -364,9 +254,6 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         super.render( mouseX, mouseY, partialTicks );
-        if (this.isHovered()) {
-            getHoverConsumer().accept( MouseInput.hover(mouseX, mouseY) );
-        }
     }
 
     @Override

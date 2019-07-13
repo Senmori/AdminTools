@@ -6,7 +6,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.widget.AbstractLabel;
 import net.senmori.custommobs.client.gui.widget.AbstractTextFieldWidget;
+import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.lib.input.KeyInput;
+import org.apache.logging.log4j.core.config.plugins.PluginValue;
 
 import javax.annotation.Nullable;
 import java.awt.Color;
@@ -149,7 +151,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
 
     /**
      * Set the consumer that will be called when the text field is periodically updated via
-     * {@link net.senmori.custommobs.client.gui.IUpdatable#tick()}.
+     * {@link IUpdatable#tick()}.
      *
      * @param consumer the on tick consumer
      */
@@ -337,7 +339,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param color the new {@link Color}
      */
     public void setTextBoxBorderColor(Color color) {
-        this.defaultTextBoxBackgroundColor.set( color );
+        this.textBoxBorderColorProperty.set( color );
     }
 
     /**
@@ -346,7 +348,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param color the new {@link Color}
      */
     public void setTextBoxBGColor(Color color) {
-        this.defaultTextBoxForegroundColor.set( color );
+        this.textBoxForegroundColorProperty.set( color );
     }
 
     /**
@@ -463,6 +465,11 @@ public class SimpleTextField extends AbstractTextFieldWidget {
     }
 
     @Override
+    public Predicate<Character> getCharacterInputValidator() {
+        return super.getCharacterInputValidator();
+    }
+
+    @Override
     public Color getTextBoxBorderColor() {
         return super.getTextBoxBorderColor();
     }
@@ -470,5 +477,15 @@ public class SimpleTextField extends AbstractTextFieldWidget {
     @Override
     public Color getTextBoxBGColor() {
         return super.getTextBoxBGColor();
+    }
+
+    @Override
+    public Color getTextColor() {
+        return super.getTextColor();
+    }
+
+    @Override
+    public String getSuggestionText() {
+        return super.getSuggestionText();
     }
 }

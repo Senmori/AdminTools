@@ -9,9 +9,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.lib.input.KeyInput;
+import net.senmori.custommobs.lib.input.MouseInput;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.function.Consumer;
 
 public abstract class AbstractButton extends AbstractWidget {
 
@@ -38,6 +41,10 @@ public abstract class AbstractButton extends AbstractWidget {
         return this.textureProperty.get();
     }
 
+    public void onHover(Consumer<MouseInput> consumer) {
+
+    }
+
     /**
      * The narration message for buttons is output at '%s button'.
      * By default, this will play '{@link #getNarrationMessage()} button'.
@@ -62,9 +69,7 @@ public abstract class AbstractButton extends AbstractWidget {
                     && keyCode != GLFW.GLFW_KEY_KP_ENTER /* 335*/ ) {
                 return false;
             } else {
-                KeyInput input = KeyInput.key( KeyInput.Action.PRESS, keyCode, scanCode, modifiers );
                 this.playDownSound( Minecraft.getInstance().getSoundHandler() );
-                getKeyPressConsumer().accept( this, input );
                 return true;
             }
         }

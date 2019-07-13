@@ -15,9 +15,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.AbstractWidget;
-import net.senmori.custommobs.client.gui.IUpdatable;
-import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
+import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.lib.input.KeyInput;
+import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
 import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultIntegerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
@@ -34,7 +34,7 @@ import java.util.function.Predicate;
 
 @OnlyIn( Dist.CLIENT )
 public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTextFieldWidget> implements IUpdatable {
-    // Internal (i.e. the user should set these directly)
+    // Internal
     private int cursorCounter;
     private boolean hasShiftDown;
     private int cursorPosition;
@@ -42,8 +42,8 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     protected boolean canLoseFocus = true;
     private int lineScrollOffset;
 
-    protected final DefaultColorProperty defaultTextBoxBackgroundColor = new DefaultColorProperty( this, "text box background", new Color( 160, 160, 160 ) );
-    protected final DefaultColorProperty defaultTextBoxForegroundColor = new DefaultColorProperty( this, "text box foreground", new Color( 0, 0, 0 ) );
+    protected final DefaultColorProperty textBoxBorderColorProperty = new DefaultColorProperty( this, "text box border", new Color( 160, 160, 160 ) );
+    protected final DefaultColorProperty textBoxForegroundColorProperty = new DefaultColorProperty( this, "text box foreground", new Color( 0, 0, 0 ) );
 
     protected final BooleanProperty clearSuggestionTextOnFocusProperty = new BooleanProperty( this, "remove suggestion text on focus", true );
     protected final BooleanProperty restoreSuggestionTextOnFocusLostProperty = new BooleanProperty( this, "restore suggestion text", true );
@@ -74,7 +74,6 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
                 this.onTextChange( this.getText() );
             }
         } );
-        enabledProperty.addListener( (listener) -> this.active = ( boolean ) listener.getValue() );
     }
 
     public Consumer<String> getOnTextChangeConsumer() {
@@ -134,11 +133,11 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     }
 
     public Color getTextBoxBorderColor() {
-        return this.defaultTextBoxBackgroundColor.get();
+        return this.textBoxBorderColorProperty.get();
     }
 
     public Color getTextBoxBGColor() {
-        return this.defaultTextBoxForegroundColor.get();
+        return this.textBoxForegroundColorProperty.get();
     }
 
     /**
@@ -177,15 +176,15 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         }
     }
 
-    public void setCursorPositionStart() {
+    protected void setCursorPositionStart() {
         this.setCursorPosition( 0 );
     }
 
-    public void setCursorPositionEnd() {
+    protected void setCursorPositionEnd() {
         this.setCursorPosition( this.textProperty.get().length() );
     }
 
-    public void setCursorPosition(int position) {
+    protected void setCursorPosition(int position) {
         cursorPosition( position );
         if ( !this.hasShiftDown ) {
             this.setSelectionPos( this.cursorPosition );
@@ -194,16 +193,16 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         this.onTextChange( this.textProperty.get() );
     }
 
-    public void onTextChange(String text) {
+    protected void onTextChange(String text) {
         getOnTextChangeConsumer().accept( text );
         this.nextNarration = Util.milliTime() + 500L;
     }
 
-    public void cursorPosition(int newPosition) {
+    protected void cursorPosition(int newPosition) {
         this.cursorPosition = MathHelper.clamp( newPosition, 0, this.getText().length() );
     }
 
-    public void setSelectionPos(int position) {
+    protected void setSelectionPos(int position) {
         int i = this.getText().length();
         this.selectionEnd = MathHelper.clamp( position, 0, i );
         if ( this.getFontRenderer() != null ) {
@@ -228,7 +227,7 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         }
     }
 
-    public int getAdjustedWidth() {
+    protected int getAdjustedWidth() {
         return this.doEnableBackgroundDrawing() ? this.getWidth() - 8 : this.width;
     }
 
@@ -262,7 +261,7 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         }
     }
 
-    public boolean doEnableBackgroundDrawing() {
+    protected boolean doEnableBackgroundDrawing() {
         return this.enableBackgroundDrawingProperty.get();
     }
 

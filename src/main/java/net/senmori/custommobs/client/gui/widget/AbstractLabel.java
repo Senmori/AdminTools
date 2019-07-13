@@ -115,7 +115,8 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         debugOutline( this );
-        getFontRenderer().drawStringWithShadow( getText(), getX() + getSpacing(), getY() + 2, getTextColor().getRGB() );
+        int diff = ((getY() + getHeight()) - getY()) / 2;
+        getFontRenderer().drawStringWithShadow( getText(), getX() + getSpacing(), getY() + diff, getTextColor().getRGB() );
     }
 
     @Override
