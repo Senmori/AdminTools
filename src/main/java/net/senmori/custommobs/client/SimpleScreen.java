@@ -1,6 +1,5 @@
 package net.senmori.custommobs.client;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
@@ -9,13 +8,12 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.AbstractWidget;
-import net.senmori.custommobs.client.gui.IUpdatable;
-import net.senmori.custommobs.client.gui.widget.impl.SimpleButton;
-import net.senmori.custommobs.lib.input.MouseInput;
+import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
+import net.senmori.custommobs.client.gui.widget.impl.SimpleTextField;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
-import java.util.function.BiConsumer;
+import java.awt.Color;
 
 @OnlyIn( Dist.CLIENT )
 public class SimpleScreen extends Screen {
@@ -29,14 +27,27 @@ public class SimpleScreen extends Screen {
         super.init();
         int height = getMinecraft().fontRenderer.FONT_HEIGHT + 3;
 
-        SimpleButton button = new SimpleButton(80, 80);
-        button.setNarrationMessage( "Sample" );
-        button.setText( "Text" );
-        int width = Minecraft.getInstance().fontRenderer.getStringWidth( button.getText() );
-        button.setDimensions( width * 3, height );
-        button.onHover( mouseInput -> {
-        });
-        addButton( button );
+        SimpleTextField field = new SimpleTextField( 80, 80 );
+        field.setDimensions( 100, height );
+        field.setSuggestionText( "Suggestion Text", true );
+        field.setSuggestionTextColor( new Color( 100, 100, 100 ) );
+        field.setMaxStringLength( 12 );
+        field.setTextColorValidator( str -> {
+            if (str.contains( " " )) {
+                field.setTextColor( new Color( 255, 0, 0 ) );
+            } else {
+                field.setTextColor(  null );
+            }
+            return true;
+        } );
+        field.onFocus( (bool) -> {
+            if (bool) {
+                field.setCursorColor( new Color(185, 185, 185) );
+            } else {
+                field.setSuggestionTextColor( new Color(85, 85, 85) );
+            }
+        } );
+        addButton( field );
 
         for (IGuiEventListener widget : children()) {
             if (widget instanceof AbstractWidget) {
@@ -74,7 +85,7 @@ public class SimpleScreen extends Screen {
         }
         if (widget != null) {
             if ( keyCode == GLFW.GLFW_KEY_TAB ) {
-                return shiftOnTab( focusedIndex, widget, Screen.hasShiftDown() );
+                return nextTab( focusedIndex, widget, Screen.hasShiftDown() );
             }
         }
         return super.keyPressed( keyCode, scanCode, modifiers );
@@ -88,7 +99,7 @@ public class SimpleScreen extends Screen {
         return null;
     }
 
-    private boolean shiftOnTab(int current, AbstractWidget currentFocus, boolean hasShiftDown) {
+    private boolean nextTab(int current, AbstractWidget currentFocus, boolean hasShiftDown) {
         if (hasShiftDown) {
             // shift + tab goes backwards
             if (current <= 0) {
@@ -104,7 +115,7 @@ public class SimpleScreen extends Screen {
             }
         }
         AbstractWidget<?> next = findWidgetAt( current );
-        if (next != null) {
+        if (next != null && next != currentFocus) {
             currentFocus.setFocused( false );
             currentFocus.setEnabled( false );
             next.setEnabled( true );

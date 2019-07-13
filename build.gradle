@@ -120,6 +120,7 @@ processResources {
     with copySpec {
         from 'src/main/resources/'
         exclude("*.cfg") // ignore all access transformer files
+        setFilteringCharset(getFilteringCharset())
         filter(ReplaceTokens, tokens: [version: project.version as String], beginToken: "\${", endToken: "}")
     }
 }
