@@ -5,13 +5,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.AbstractWidget;
-import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
+import net.senmori.custommobs.lib.properties.simple.ObjectProperty;
 import net.senmori.custommobs.lib.texture.ITexture;
 import net.senmori.custommobs.lib.util.RenderUtil;
 
 @OnlyIn( Dist.CLIENT )
 public class ImageButton extends AbstractWidget<ImageButton> {
-    private final DefaultObjectProperty<ITexture> textureProperty = new DefaultObjectProperty<>( this, "texture", null );
+    private final ObjectProperty<ITexture> textureProperty = new ObjectProperty<>( this, "texture", null );
 
     public ImageButton(int xIn, int yIn) {
         super( xIn, yIn );
@@ -19,7 +19,9 @@ public class ImageButton extends AbstractWidget<ImageButton> {
 
    public void setTexture(ITexture texture) {
         textureProperty.set( texture );
-        texture.getGroup().adjustLayout();
+        if (texture != null) {
+            texture.getGroup().adjustLayout();
+        }
    }
 
     public void renderButton(int mouseX, int mouseY, float partialTicks) {

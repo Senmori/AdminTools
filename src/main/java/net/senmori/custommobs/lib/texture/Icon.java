@@ -2,14 +2,14 @@ package net.senmori.custommobs.lib.texture;
 
 import java.util.Locale;
 
-public enum IconTexture {
+public enum Icon {
     /** Tab list ping textures */
     PING_FULL(TextureGroups.Icons.TAB_PING, 1),
     PING_4(TextureGroups.Icons.TAB_PING, 2),
     PING_3(TextureGroups.Icons.TAB_PING, 3),
     PING_2(TextureGroups.Icons.TAB_PING, 4),
     PING_1(TextureGroups.Icons.TAB_PING, 5),
-    NO_PING(TextureGroups.Icons.TAB_PING, 6),
+    PING_NONE(TextureGroups.Icons.TAB_PING, 6),
     /** Heart textures */
     HEART_OUTLINE_1_BLACK(TextureGroups.Icons.HEARTS, 1),
     HEART_OUTLINE_2_WHITE(TextureGroups.Icons.HEARTS, 2),
@@ -29,6 +29,7 @@ public enum IconTexture {
     HEART_WITHER_HALF_HURT(TextureGroups.Icons.HEARTS, 16),
     HEART_ABSORPTION_FULL(TextureGroups.Icons.HEARTS, 17),
     HEART_ABSORPTION_HALF(TextureGroups.Icons.HEARTS, 18),
+    /** Armor icons */
     ARMOR_EMPTY(TextureGroups.Icons.ARMOR, 1),
     ARMOR_HALF(TextureGroups.Icons.ARMOR, 2),
     ARMOR_FULL(TextureGroups.Icons.ARMOR, 3),
@@ -36,7 +37,7 @@ public enum IconTexture {
     ;
 
     private final TextureGroup group;
-    IconTexture(TextureGroup group, int index) {
+    Icon(TextureGroup group, int index) {
         this.group = group;
         group.addTexture( getName() ).setTextureIndex( index );
     }

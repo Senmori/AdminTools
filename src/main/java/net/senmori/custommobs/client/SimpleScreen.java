@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.client.gui.widget.impl.ImageButton;
-import net.senmori.custommobs.lib.texture.IconTexture;
+import net.senmori.custommobs.lib.texture.Icon;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -28,7 +28,7 @@ public class SimpleScreen extends Screen {
 
 
         ImageButton button = new ImageButton( 80, 80 );
-        button.setTexture( IconTexture.NO_PING.getTexture() );
+        button.setTexture( Icon.PING_NONE.getTexture() );
 
         addButton( button );
 

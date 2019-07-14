@@ -48,14 +48,12 @@ public class TextureGroup {
     public ITexture addTexture(String name) {
         ITexture texture = ITexture.create( name ).group( this ).build();
         textures.add( texture );
-        layout.adjust( texture, this );
         return texture;
     }
 
     public ITexture addTexture(ITexture texture) {
         if (texture.getGroup() == this) {
             textures.add( texture );
-            layout.adjust( texture, this );
             return texture;
         }
         throw new UnsupportedOperationException( "Attempted to add texture with a group of \'" + texture.getGroup().getName() + "\' to \'" + this.getName() + "\'" );
