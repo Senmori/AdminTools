@@ -8,18 +8,21 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.senmori.custommobs.client.gui.AbstractWidget;
+import net.senmori.custommobs.client.gui.widget.api.IPressable;
 import net.senmori.custommobs.lib.input.KeyInput;
 import net.senmori.custommobs.lib.input.MouseInput;
+import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 
-public abstract class AbstractButton extends AbstractWidget {
+public abstract class AbstractButton extends AbstractWidget implements IPressable {
 
     private final DefaultObjectProperty<ResourceLocation> textureProperty = new DefaultObjectProperty<>( this, "texture", Widget.WIDGETS_LOCATION );
     private final DefaultStringProperty messageProperty = new DefaultStringProperty( this, "button text", "" );
+    private final DefaultConsumerProperty<Widget> hoverProperty = new DefaultConsumerProperty<>( this, "hover consumer" );
 
     public AbstractButton(int xIn, int yIn) {
         super( xIn, yIn );
@@ -33,16 +36,16 @@ public abstract class AbstractButton extends AbstractWidget {
         return this.messageProperty.get();
     }
 
-    public void setTexture(ResourceLocation name) {
-        this.textureProperty.set( name );
-    }
-
     public ResourceLocation getTexture() {
         return this.textureProperty.get();
     }
 
-    public void onHover(Consumer<MouseInput> consumer) {
+    public void onPress(Consumer<Widget> consumer) {
+        hoverProperty.set( consumer );
+    }
 
+    public Consumer<Widget> getHoverConsumer()  {
+        return hoverProperty.get();
     }
 
     /**
@@ -61,6 +64,11 @@ public abstract class AbstractButton extends AbstractWidget {
         return this.narrationProperty.get().isEmpty() ? "" : I18n.format( "gui.narrate.button", narrationProperty.get() );
     }
 
+    @Override
+    public void onPress() {
+        getHoverConsumer().accept( this );
+    }
+
     /**
      * This method will not accept any input other than 'Enter', 'Space', or 'Keypad Enter'.
      *
@@ -75,6 +83,7 @@ public abstract class AbstractButton extends AbstractWidget {
                 return false;
             } else {
                 this.playDownSound( Minecraft.getInstance().getSoundHandler() );
+                onPress();
                 return true;
             }
         }

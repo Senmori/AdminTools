@@ -20,6 +20,8 @@ public class Texture implements ITexture {
     public Texture(TextureGroup group, String name) {
         this.group = group;
         this.name = name;
+
+        group.addTexture( this );
     }
 
     @Override
@@ -98,6 +100,7 @@ public class Texture implements ITexture {
         private TextureGroup group;
         private int x,y;
         private int width, height;
+        private int textureIndex = 1;
 
         protected Builder(String name) {
             this.name = name;
@@ -120,8 +123,15 @@ public class Texture implements ITexture {
             return this;
         }
 
+        public Builder textureIndex(int index) {
+            this.textureIndex = index;
+            return this;
+        }
+
         public ITexture build() {
-            return new Texture( group, name );
+            ITexture texture =  new Texture( group, name );
+            texture.setTextureIndex( textureIndex );
+            return texture;
         }
     }
 }

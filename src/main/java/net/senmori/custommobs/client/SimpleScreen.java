@@ -3,6 +3,7 @@ package net.senmori.custommobs.client;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -10,6 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.client.gui.widget.impl.ImageButton;
+import net.senmori.custommobs.client.gui.widget.impl.SimpleButton;
 import net.senmori.custommobs.lib.texture.Icon;
 import org.lwjgl.glfw.GLFW;
 
@@ -28,7 +30,9 @@ public class SimpleScreen extends Screen {
 
 
         ImageButton button = new ImageButton( 80, 80 );
-        button.setTexture( Icon.PING_NONE.getTexture() );
+        button.setDimensions( 80, 20 );
+        button.setTexture( Icon.HEART_ABSORPTION_FULL.getTexture() );
+        button.setOnClickSound( SoundEvents.MUSIC_DISC_WARD );
 
         addButton( button );
 

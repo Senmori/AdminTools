@@ -20,22 +20,6 @@ public class RenderUtil {
         AbstractGui.blit( screenX, screenY, (float)texture.getX(), (float)texture.getY(), texture.getWidth(), texture.getHeight(), 256, 256);
     }
 
-
-    public static void blit(int startX, int startY, float textureX, float textureY, int width, int height) {
-        AbstractGui.blit(startX, startY, textureX, textureY, width, height, 256, 256);
-    }
-
-    public static void innerDraw(int startX, int totalWidth, int startY, int totalHeight, int zLayer, float minTexU, float maxTexU, float texMinV, float texMaxV) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
-        bufferBuilder.begin( 7, DefaultVertexFormats.POSITION_TEX );
-        bufferBuilder.pos((double)startX, (double)totalHeight, (double)zLayer).tex((double)minTexU, (double)texMaxV).endVertex();
-        bufferBuilder.pos((double)totalWidth, (double)totalHeight, (double)zLayer).tex((double)maxTexU, (double)texMaxV).endVertex();
-        bufferBuilder.pos((double)totalWidth, (double)startY, (double)zLayer).tex((double)maxTexU, (double)texMinV).endVertex();
-        bufferBuilder.pos((double)startX, (double)startY, (double)zLayer).tex((double)minTexU, (double)texMinV).endVertex();
-        tessellator.draw();
-    }
-
     public void hLine(int startX, int endX, int length, Color color) {
         if (endX < startX) {
             int i = startX;

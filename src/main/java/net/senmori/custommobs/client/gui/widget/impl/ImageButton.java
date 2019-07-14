@@ -2,16 +2,24 @@ package net.senmori.custommobs.client.gui.widget.impl;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.AbstractWidget;
+import net.senmori.custommobs.client.gui.widget.api.IPressable;
+import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.custommobs.lib.properties.simple.ObjectProperty;
 import net.senmori.custommobs.lib.texture.ITexture;
 import net.senmori.custommobs.lib.util.RenderUtil;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.function.Consumer;
 
 @OnlyIn( Dist.CLIENT )
-public class ImageButton extends AbstractWidget<ImageButton> {
+public class ImageButton extends AbstractWidget<ImageButton> implements IPressable  {
     private final ObjectProperty<ITexture> textureProperty = new ObjectProperty<>( this, "texture", null );
+    private final ObjectProperty<ITexture> onHoverTexture = new ObjectProperty<>( this, "on hover texture", null );
+    private final DefaultConsumerProperty<Widget> hoverConsumer = new DefaultConsumerProperty<>( this, "hover consumer" );
 
     public ImageButton(int xIn, int yIn) {
         super( xIn, yIn );
@@ -21,17 +29,61 @@ public class ImageButton extends AbstractWidget<ImageButton> {
         textureProperty.set( texture );
         if (texture != null) {
             texture.getGroup().adjustLayout();
+            setDimensions( texture.getWidth(), texture.getHeight() );
         }
    }
 
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+   public void setHoverTexture(ITexture texture) {
+        onHoverTexture.set( texture );
+        if (texture != null) {
+            texture.getGroup().adjustLayout();
+        }
+   }
 
-        ITexture texture = textureProperty.get();
+   public ITexture getTexture() {
+        return isHovered() && getHoverTexture() != null ? getHoverTexture() : textureProperty.get();
+   }
+
+   public ITexture getHoverTexture() {
+        return onHoverTexture.get();
+   }
+
+   public void onHover(Consumer<Widget> consumer) {
+        this.hoverConsumer.set( consumer );
+   }
+
+   public Consumer<Widget> getHoverConsumer() {
+        return hoverConsumer.get();
+   }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if ( this.isEnabled() && this.isVisible() ) {
+            if ( keyCode != GLFW.GLFW_KEY_ENTER /* 257 */
+                    && keyCode != GLFW.GLFW_KEY_SPACE /* 32 */
+                    && keyCode != GLFW.GLFW_KEY_KP_ENTER /* 335*/ ) {
+                return false;
+            } else {
+                this.playDownSound( Minecraft.getInstance().getSoundHandler() );
+                onPress();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+   public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        ITexture texture = getTexture();
         if (texture == null || texture.getLocation() == null) return;
-        //CustomMobs.getInstance().getLogger().info( texture.toString() );
         Minecraft.getInstance().getTextureManager().bindTexture( texture.getLocation() );
         GlStateManager.disableDepthTest();
         RenderUtil.drawTexture( this.x, this.y, texture );
         GlStateManager.enableDepthTest();
+   }
+
+    @Override
+    public void onPress() {
+        getHoverConsumer().accept( this );
     }
 }
