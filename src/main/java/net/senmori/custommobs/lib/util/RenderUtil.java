@@ -1,13 +1,11 @@
 package net.senmori.custommobs.lib.util;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
+import net.senmori.custommobs.lib.texture.ITexture;
 
 import java.awt.Color;
 
@@ -17,18 +15,11 @@ import java.awt.Color;
  */
 public class RenderUtil {
 
-    public static void drawTextureSprite(int startX, int startY, int width, int height, ResourceLocation texture) {
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMap().getSprite( texture );
-        drawTextureSprite( startX, startY, width, height, sprite );
+
+    public static void drawTexture(int screenX, int screenY, ITexture texture) {
+        AbstractGui.blit( screenX, screenY, (float)texture.getX(), (float)texture.getY(), texture.getWidth(), texture.getHeight(), 256, 256);
     }
 
-    public static void drawTextureSprite(int startX, int startY, int width, int height, TextureAtlasSprite sprite) {
-        drawTextureSprite( startX, startY, 0, width, height, sprite);
-    }
-
-    public static void drawTextureSprite(int startX, int startY, int zLayer, int width, int height, TextureAtlasSprite sprite) {
-        innerDraw( startX, startX + width, startY, startY + height, zLayer, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV() );
-    }
 
     public static void blit(int startX, int startY, float textureX, float textureY, int width, int height) {
         AbstractGui.blit(startX, startY, textureX, textureY, width, height, 256, 256);
@@ -45,7 +36,7 @@ public class RenderUtil {
         tessellator.draw();
     }
 
-    protected void hLine(int startX, int endX, int length, Color color) {
+    public void hLine(int startX, int endX, int length, Color color) {
         if (endX < startX) {
             int i = startX;
             startX = endX;
@@ -55,7 +46,7 @@ public class RenderUtil {
         fill(startX, length, endX + 1, length + 1, color);
     }
 
-    protected void vLine(int startX, int endY, int length, Color color) {
+    public void vLine(int startX, int endY, int length, Color color) {
         if (length < endY) {
             int i = endY;
             endY = length;

@@ -1,6 +1,5 @@
 package net.senmori.custommobs.lib.texture;
 
-import java.util.List;
 import java.util.Objects;
 
 public interface TextureGroupLayout {
@@ -16,11 +15,15 @@ public interface TextureGroupLayout {
             return false;
         }
         if (group.getTextures().contains( texture )) {
-            int index = group.getNextIndex();
-            int startX = group.isOverrideTextureSettings() ? (index * group.getDefaultWidth()) + group.getDefaultWidth() : (index * texture.getWidth()) + texture.getWidth();
+            int index = texture.getTextureIndex();
+            int startX = group.isOverrideTextureSettings() ? group.getStartX() : texture.getX();
+            int width = group.isOverrideTextureSettings() ? group.getDefaultWidth() : texture.getWidth();
+            for (int i = 1; index > 1 && i < index; i++) {
+                startX += width;
+                startX++;
+            }
             texture.setX( startX );
             texture.setY( group.isOverrideTextureSettings() ? group.getStartY() : texture.getY() );
-            texture.setTextureIndex( index );
             return true;
         }
         return false;
@@ -34,9 +37,13 @@ public interface TextureGroupLayout {
             return false;
         }
         if (group.getTextures().contains( texture )) {
-            int index = group.getNextIndex();
+            int index = texture.getTextureIndex();
+            int startY = group.isOverrideTextureSettings() ? group.getStartY() : texture.getY();
+            int height = group.isOverrideTextureSettings() ? group.getDefaultHeight() : texture.getHeight();
+            for (int i = 1; index > 1 && i < index; i++) {
+                startY += height;
+            }
             texture.setX( group.isOverrideTextureSettings() ? group.getStartX() : texture.getX() );
-            int startY = group.isOverrideTextureSettings() ? (index * group.getDefaultHeight()) + group.getDefaultHeight() : (index * texture.getHeight()) + texture.getHeight();
             texture.setY( startY );
             texture.setTextureIndex( index );
             return true;

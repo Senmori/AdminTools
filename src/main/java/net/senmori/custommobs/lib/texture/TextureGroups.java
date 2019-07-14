@@ -19,6 +19,12 @@ public abstract class TextureGroups {
                 .layout( TextureGroupLayout.HORIZONTAL )
                 .overrideTextureSettings()
                 .build();
+        public static final TextureGroup ARMOR = ITextureGroupFactory.create(ICONS, "Armor")
+                .startAt( 16, 9 )
+                .defaultDimensions( 9, 9 )
+                .layout( TextureGroupLayout.HORIZONTAL )
+                .overrideTextureSettings()
+                .build();
     }
 
 }
