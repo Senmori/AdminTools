@@ -3,13 +3,23 @@ package net.senmori.custommobs.client;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.senmori.custommobs.CustomMobs;
+import net.senmori.custommobs.client.config.ClientConfig;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
+import net.senmori.custommobs.client.gui.widget.impl.ImageButton;
 import net.senmori.custommobs.client.gui.widget.impl.SimpleTextField;
+import net.senmori.custommobs.lib.texture.ITexture;
+import net.senmori.custommobs.lib.texture.ITextureGroupFactory;
+import net.senmori.custommobs.lib.texture.IconTexture;
+import net.senmori.custommobs.lib.texture.TextureGroup;
+import net.senmori.custommobs.lib.texture.TextureGroups;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -25,29 +35,11 @@ public class SimpleScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        int height = getMinecraft().fontRenderer.FONT_HEIGHT + 3;
 
-        SimpleTextField field = new SimpleTextField( 80, 80 );
-        field.setDimensions( 100, height );
-        field.setSuggestionText( "Suggestion Text", true );
-        field.setSuggestionTextColor( new Color( 100, 100, 100 ) );
-        field.setMaxStringLength( 12 );
-        field.setTextColorValidator( str -> {
-            if (str.contains( " " )) {
-                field.setTextColor( new Color( 255, 0, 0 ) );
-            } else {
-                field.setTextColor(  null );
-            }
-            return true;
-        } );
-        field.onFocus( (bool) -> {
-            if (bool) {
-                field.setCursorColor( new Color(185, 185, 185) );
-            } else {
-                field.setSuggestionTextColor( new Color(85, 85, 85) );
-            }
-        } );
-        addButton( field );
+
+        ImageButton button = new ImageButton( 80, 80 );
+
+        addButton( button );
 
         for (IGuiEventListener widget : children()) {
             if (widget instanceof AbstractWidget) {

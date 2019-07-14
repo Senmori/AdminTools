@@ -24,6 +24,7 @@ import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
 import net.senmori.custommobs.lib.properties.predicate.DefaultPredicateProperty;
 import net.senmori.custommobs.lib.properties.simple.BooleanProperty;
+import net.senmori.custommobs.lib.util.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -591,7 +592,7 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
 
             if ( doRenderCursor ) {
                 if ( inTextBox ) {
-                    AbstractGui.fill( k1, yPos - 1, k1 + 1, yPos + 1 + 9, getCursorColor().getRGB() );
+                    RenderUtil.fill( k1, yPos - 1, k1 + 1, yPos + 1 + 9, getCursorColor() );
                 } else {
                     this.getFontRenderer().drawStringWithShadow( "|", ( float ) k1, ( float ) yPos, getCursorColor().getRGB() );
                 }

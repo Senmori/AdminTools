@@ -26,6 +26,7 @@ import net.senmori.custommobs.lib.properties.simple.BooleanProperty;
 import net.senmori.custommobs.lib.sound.CustomSound;
 import net.senmori.custommobs.lib.util.Keyboard;
 import net.senmori.custommobs.lib.sound.SoundUtil;
+import net.senmori.custommobs.lib.util.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -80,6 +81,11 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     public void setY(int y) {
+        this.y = y;
+    }
+
+    void setPosition(int x, int y) {
+        this.x = x;
         this.y = y;
     }
 
@@ -316,7 +322,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     protected void fill(int startX, int startY, int endX, int endY, Color color) {
-        fill( startX, startY, endX, endY, color.getRGB() );
+        RenderUtil.fill( startX, startY, endX, endY, color );
     }
 
     protected void debugOutline(Widget widget) {

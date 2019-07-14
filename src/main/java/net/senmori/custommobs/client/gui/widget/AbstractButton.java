@@ -61,6 +61,11 @@ public abstract class AbstractButton extends AbstractWidget {
         return this.narrationProperty.get().isEmpty() ? "" : I18n.format( "gui.narrate.button", narrationProperty.get() );
     }
 
+    /**
+     * This method will not accept any input other than 'Enter', 'Space', or 'Keypad Enter'.
+     *
+     * @return true if one of the valid inputs are encountered.
+     */
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if ( this.isEnabled() && this.isVisible() ) {
