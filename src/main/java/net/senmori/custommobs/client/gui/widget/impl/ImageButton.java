@@ -20,6 +20,7 @@ public class ImageButton extends AbstractWidget<ImageButton> implements IPressab
     private final ObjectProperty<ITexture> textureProperty = new ObjectProperty<>( this, "texture", null );
     private final ObjectProperty<ITexture> onHoverTexture = new ObjectProperty<>( this, "on hover texture", null );
     private final DefaultConsumerProperty<Widget> hoverConsumer = new DefaultConsumerProperty<>( this, "hover consumer" );
+    private final DefaultConsumerProperty<Widget> pressConsumer = new DefaultConsumerProperty<>( this, "press consumer" );
 
     public ImageButton(int xIn, int yIn) {
         super( xIn, yIn );
@@ -56,6 +57,14 @@ public class ImageButton extends AbstractWidget<ImageButton> implements IPressab
         return hoverConsumer.get();
    }
 
+   public void onClick(Consumer<Widget> consumer) {
+        this.pressConsumer.set( consumer );
+   }
+
+   public Consumer<Widget> getClickConsumer() {
+        return this.pressConsumer.get();
+   }
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if ( this.isEnabled() && this.isVisible() ) {
@@ -84,6 +93,6 @@ public class ImageButton extends AbstractWidget<ImageButton> implements IPressab
 
     @Override
     public void onPress() {
-        getHoverConsumer().accept( this );
+        getClickConsumer().accept( this );
     }
 }

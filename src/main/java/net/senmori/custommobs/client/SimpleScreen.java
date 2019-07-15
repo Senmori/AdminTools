@@ -31,8 +31,8 @@ public class SimpleScreen extends Screen {
 
         ImageButton button = new ImageButton( 80, 80 );
         button.setDimensions( 80, 20 );
-        button.setTexture( Icon.HEART_ABSORPTION_FULL.getTexture() );
-        button.setOnClickSound( SoundEvents.MUSIC_DISC_WARD );
+        button.setTexture( Icon.HEART_NORMAL_FULL.getTexture() );
+        button.getSound().setVolume( 0.0F );
 
         addButton( button );
 
