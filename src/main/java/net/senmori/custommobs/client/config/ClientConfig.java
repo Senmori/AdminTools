@@ -14,9 +14,22 @@ public class ClientConfig {
     public ForgeConfigSpec.ConfigValue<Integer> DEBUG_COLOR_INT;
     public Color DEBUG_COLOR;
 
+    public ForgeConfigSpec.ConfigValue<Integer> MAX_BUTTON_LENGTH;
+
     ClientConfig(ForgeConfigSpec.Builder builder) {
+        builder.comment("UI Settings")
+                .push( "UX" );
+        MAX_BUTTON_LENGTH = builder.comment("The maximum length (in pixels) a button may be. This effects the rendering of the button texture.")
+                .define( "max_button_length", 200 );
+
+
+        builder.pop();
+
+        /*
+         * ALWAYS LAST
+         */
         builder.comment("Client only settings. These should only be modified by experienced users.")
-               .push( "Debug" );
+                .push( "Debug" );
         DEBUG_MODE = builder.comment( "Enable debug mode. Don't enable this." )
                 .define( "debug", false );
         DEBUG_COLOR_INT = builder.comment( "Debug color" )

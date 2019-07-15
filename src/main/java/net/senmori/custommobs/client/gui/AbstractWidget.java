@@ -84,9 +84,9 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         this.y = y;
     }
 
-    void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public void setPosition(int x, int y) {
+        setX( x );
+        setY( y );
     }
 
     @Nullable

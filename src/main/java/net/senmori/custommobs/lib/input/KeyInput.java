@@ -84,7 +84,7 @@ public final class KeyInput {
                 return Character.isDigit( codePoint );
             }
         },
-        MOD {
+        MODIFIER {
             @Override
             public boolean accepts(int codePoint, int modifiers) {
                 // check for each GLFW_MOD key
@@ -114,7 +114,7 @@ public final class KeyInput {
         public static Type find(int codePoint, int modifiers) {
             if ( CHAR.accepts( codePoint, modifiers ) ) return CHAR;
             if ( DIGIT.accepts( codePoint, modifiers ) ) return DIGIT;
-            if ( MOD.accepts( codePoint, modifiers ) ) return MOD;
+            if ( MODIFIER.accepts( codePoint, modifiers ) ) return MODIFIER;
             return UNKNOWN;
         }
     }

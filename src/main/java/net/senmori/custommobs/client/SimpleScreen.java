@@ -29,10 +29,8 @@ public class SimpleScreen extends Screen {
         super.init();
 
 
-        ImageButton button = new ImageButton( 80, 80 );
-        button.setDimensions( 80, 20 );
-        button.setTexture( Icon.HEART_NORMAL_FULL.getTexture() );
-        button.getSound().setVolume( 0.0F );
+        SimpleButton button = new SimpleButton( 80, 80 );
+        button.setText( "Button" );
 
         addButton( button );
 

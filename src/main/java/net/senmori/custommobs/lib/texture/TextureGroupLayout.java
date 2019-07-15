@@ -42,10 +42,10 @@ public interface TextureGroupLayout {
             int height = group.isOverrideTextureSettings() ? group.getDefaultHeight() : texture.getHeight();
             for (int i = 1; index > 1 && i < index; i++) {
                 startY += height;
+                startY++;
             }
-            texture.setX( group.isOverrideTextureSettings() ? group.getStartX() : texture.getX() );
             texture.setY( startY );
-            texture.setTextureIndex( index );
+            texture.setX( group.isOverrideTextureSettings() ? group.getStartX() : texture.getX() );
             return true;
         }
         return false;
