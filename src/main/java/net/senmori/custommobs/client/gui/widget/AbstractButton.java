@@ -5,21 +5,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.config.ClientConfig;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.widget.api.IPressable;
+import net.senmori.custommobs.client.textures.Button;
 import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
 import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
-import net.senmori.custommobs.client.textures.Button;
 import net.senmori.custommobs.lib.texture.ITexture;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
 import java.util.function.Consumer;
 
+@OnlyIn( Dist.CLIENT )
 public abstract class AbstractButton extends AbstractWidget implements IPressable {
 
     private final DefaultObjectProperty<ITexture> normalTextureProperty = new DefaultObjectProperty<>( this, "texture", Button.NORMAL.getTexture() );
@@ -84,16 +86,15 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         renderButtonTexture( getTextureForRender() );
         this.renderBg( minecraft, mouseX, mouseX );
         int x = this.x + this.width / 2;
-        int y = this.y + ( this.height - 8) / 2;
+        int y = this.y + ( this.height - 8 ) / 2;
         Color color = getTextColorForRender();
-        int packedColor = color.getRGB() | MathHelper.ceil(color.getAlpha() * 255.0F) << 24;
         this.drawCenteredString( fontrenderer, this.getText(), x, y, color.getRGB() );
     }
 
     protected Color getTextColorForRender() {
-        if (!isEnabled()) {
+        if ( !isEnabled() ) {
             return disabledColor.get();
-        } else if (isHovered()) {
+        } else if ( isHovered() ) {
             return hoverColor.get();
         }
         return enabledColor.get();
