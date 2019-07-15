@@ -1,7 +1,7 @@
 package net.senmori.custommobs.lib.properties.defaults;
 
 import net.senmori.custommobs.lib.properties.event.ChangeEvent;
-import net.senmori.custommobs.lib.properties.simple.IntegerProperty;
+import net.senmori.custommobs.lib.properties.primitive.IntegerProperty;
 
 public class DefaultIntegerProperty extends IntegerProperty {
 

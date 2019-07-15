@@ -2,7 +2,7 @@ package net.senmori.custommobs.lib.properties.range;
 
 import net.senmori.custommobs.lib.properties.event.ChangeEvent;
 import net.senmori.custommobs.lib.properties.event.NumberOutOfRangeEvent;
-import net.senmori.custommobs.lib.properties.simple.IntegerProperty;
+import net.senmori.custommobs.lib.properties.primitive.IntegerProperty;
 import net.senmori.custommobs.lib.util.ValueRange;
 
 public class IntegerRangeProperty extends IntegerProperty {

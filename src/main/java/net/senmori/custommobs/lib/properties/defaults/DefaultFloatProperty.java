@@ -1,8 +1,7 @@
 package net.senmori.custommobs.lib.properties.defaults;
 
 import net.senmori.custommobs.lib.properties.event.ChangeEvent;
-import net.senmori.custommobs.lib.properties.read.ReadOnlyFloatProperty;
-import net.senmori.custommobs.lib.properties.simple.FloatProperty;
+import net.senmori.custommobs.lib.properties.primitive.FloatProperty;
 
 public class DefaultFloatProperty extends FloatProperty {
 

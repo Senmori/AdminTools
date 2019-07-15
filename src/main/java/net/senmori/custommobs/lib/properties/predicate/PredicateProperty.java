@@ -1,8 +1,7 @@
 package net.senmori.custommobs.lib.properties.predicate;
 
 import net.senmori.custommobs.lib.properties.event.ChangeEvent;
-import net.senmori.custommobs.lib.properties.read.ReadOnlyObjectProperty;
-import net.senmori.custommobs.lib.properties.simple.ObjectProperty;
+import net.senmori.custommobs.lib.properties.primitive.ObjectProperty;
 
 import java.util.function.Predicate;
 

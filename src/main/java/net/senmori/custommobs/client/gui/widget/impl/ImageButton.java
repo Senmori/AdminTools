@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.widget.api.IPressable;
 import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
-import net.senmori.custommobs.lib.properties.simple.ObjectProperty;
+import net.senmori.custommobs.lib.properties.primitive.ObjectProperty;
 import net.senmori.custommobs.lib.texture.ITexture;
 import net.senmori.custommobs.lib.util.RenderUtil;
 import org.lwjgl.glfw.GLFW;

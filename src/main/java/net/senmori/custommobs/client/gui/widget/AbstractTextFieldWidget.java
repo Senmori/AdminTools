@@ -2,7 +2,6 @@ package net.senmori.custommobs.client.gui.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -23,7 +22,7 @@ import net.senmori.custommobs.lib.properties.defaults.DefaultIntegerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
 import net.senmori.custommobs.lib.properties.predicate.DefaultPredicateProperty;
-import net.senmori.custommobs.lib.properties.simple.BooleanProperty;
+import net.senmori.custommobs.lib.properties.primitive.BooleanProperty;
 import net.senmori.custommobs.lib.util.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 

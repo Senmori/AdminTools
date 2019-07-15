@@ -1,4 +1,4 @@
-package net.senmori.custommobs.lib.properties.simple;
+package net.senmori.custommobs.lib.properties.primitive;
 
 import net.senmori.custommobs.lib.properties.event.ChangeEvent;
 import net.senmori.custommobs.lib.properties.read.ReadOnlyIntegerProperty;

@@ -1,7 +1,7 @@
 package net.senmori.custommobs.lib.properties.defaults;
 
 import net.senmori.custommobs.lib.properties.event.ChangeEvent;
-import net.senmori.custommobs.lib.properties.simple.ObjectProperty;
+import net.senmori.custommobs.lib.properties.primitive.ObjectProperty;
 
 public class DefaultObjectProperty<T> extends ObjectProperty<T> {
     

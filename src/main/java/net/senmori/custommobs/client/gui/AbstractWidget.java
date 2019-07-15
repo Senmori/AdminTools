@@ -15,25 +15,18 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.CustomMobs;
 import net.senmori.custommobs.client.config.ClientConfig;
-import net.senmori.custommobs.lib.input.KeyInput;
-import net.senmori.custommobs.lib.input.MouseInput;
-import net.senmori.custommobs.lib.properties.consumer.DefaultBiConsumerProperty;
 import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
-import net.senmori.custommobs.lib.properties.predicate.DefaultPredicateProperty;
-import net.senmori.custommobs.lib.properties.simple.BooleanProperty;
+import net.senmori.custommobs.lib.properties.primitive.BooleanProperty;
 import net.senmori.custommobs.lib.sound.CustomSound;
-import net.senmori.custommobs.lib.util.Keyboard;
 import net.senmori.custommobs.lib.sound.SoundUtil;
 import net.senmori.custommobs.lib.util.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.awt.Color;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 @OnlyIn( Dist.CLIENT )
 public abstract class AbstractWidget<T extends Widget> extends Widget {
