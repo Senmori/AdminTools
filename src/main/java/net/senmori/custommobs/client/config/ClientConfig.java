@@ -26,7 +26,7 @@ public class ClientConfig {
 
     public Color getDebugColor() {
         if (DEBUG_COLOR == null) {
-            DEBUG_COLOR = CustomMobs.getInstance().getDebugColor();
+            DEBUG_COLOR = DEBUG_COLOR_INT != null ? new Color( DEBUG_COLOR_INT.get() ) : CustomMobs.getInstance().getDebugColor();
         }
         return DEBUG_COLOR;
     }
