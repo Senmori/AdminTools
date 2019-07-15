@@ -151,6 +151,10 @@ public class TextureGroup {
         return overrideTextureSettings;
     }
 
+    public void addFromGroup(TextureGroup group) {
+        group.getTextures().forEach( this::addTexture );
+    }
+
     /**
      * This builder helps users create easy TextureGroups for easy organization of textures.
      */

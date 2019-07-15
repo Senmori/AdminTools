@@ -9,13 +9,15 @@ import net.minecraft.util.math.MathHelper;
 import net.senmori.custommobs.client.config.ClientConfig;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.widget.api.IPressable;
+import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
 import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
-import net.senmori.custommobs.lib.texture.Button;
+import net.senmori.custommobs.client.textures.Button;
 import net.senmori.custommobs.lib.texture.ITexture;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.Color;
 import java.util.function.Consumer;
 
 public abstract class AbstractButton extends AbstractWidget implements IPressable {
@@ -25,29 +27,12 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
     private final DefaultObjectProperty<ITexture> hoverTextureProperty = new DefaultObjectProperty<>( this, "texture", Button.HOVER.getTexture() );
     private final DefaultStringProperty messageProperty = new DefaultStringProperty( this, "button text", "" );
     private final DefaultConsumerProperty<Widget> hoverProperty = new DefaultConsumerProperty<>( this, "hover consumer" );
+    private final DefaultColorProperty enabledColor = new DefaultColorProperty( this, "enabled color", new Color( 224, 224, 224 ) );
+    private final DefaultColorProperty disabledColor = new DefaultColorProperty( this, "disabled color", new Color( 160, 160, 160 ) );
+    private final DefaultColorProperty hoverColor = new DefaultColorProperty( this, "hover color", new Color( 255, 255, 160 ) );
 
     public AbstractButton(int xIn, int yIn) {
         super( xIn, yIn );
-    }
-
-    public void setText(String text) {
-        this.messageProperty.set( text );
-    }
-
-    public String getText() {
-        return this.messageProperty.get();
-    }
-
-    public ITexture getNormalTexture() {
-        return this.normalTextureProperty.get();
-    }
-
-    public void onPress(Consumer<Widget> consumer) {
-        hoverProperty.set( consumer );
-    }
-
-    public Consumer<Widget> getHoverConsumer()  {
-        return hoverProperty.get();
     }
 
     /**
@@ -60,7 +45,7 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
      */
     @Override
     public String getNarrationMessage() {
-        if (narrationProperty.get().isEmpty() && !getText().isEmpty()) {
+        if ( narrationProperty.get().isEmpty() && !getText().isEmpty() ) {
             return I18n.format( "gui.narrate.button", getText() ); // better than nothing I suppose
         }
         return this.narrationProperty.get().isEmpty() ? "" : I18n.format( "gui.narrate.button", narrationProperty.get() );
@@ -97,16 +82,28 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = getFontRenderer();
         renderButtonTexture( getTextureForRender() );
-        this.renderBg(minecraft, mouseX, mouseX);
-        int j = getFGColor();
-        this.drawCenteredString(fontrenderer, this.getText(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+        this.renderBg( minecraft, mouseX, mouseX );
+        int x = this.x + this.width / 2;
+        int y = this.y + ( this.height - 8) / 2;
+        Color color = getTextColorForRender();
+        int packedColor = color.getRGB() | MathHelper.ceil(color.getAlpha() * 255.0F) << 24;
+        this.drawCenteredString( fontrenderer, this.getText(), x, y, color.getRGB() );
+    }
+
+    protected Color getTextColorForRender() {
+        if (!isEnabled()) {
+            return disabledColor.get();
+        } else if (isHovered()) {
+            return hoverColor.get();
+        }
+        return enabledColor.get();
     }
 
     protected ITexture getTextureForRender() {
         getNormalTexture().getGroup().adjustLayout();
-        if (!isEnabled()) {
+        if ( !isEnabled() ) {
             return disabledTextureProperty.get();
-        } else if (isHovered()) {
+        } else if ( isHovered() ) {
             return hoverTextureProperty.get();
         }
         return normalTextureProperty.get();
@@ -116,16 +113,82 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
      * Buttons are rendered by
      */
     protected void renderButtonTexture(ITexture texture) {
-        Minecraft.getInstance().getTextureManager().bindTexture(texture.getLocation());
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.alpha);
-        int i = this.getYImage(this.isHovered());
+        Minecraft.getInstance().getTextureManager().bindTexture( texture.getLocation() );
+        GlStateManager.color4f( 1.0F, 1.0F, 1.0F, this.alpha );
         GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.blendFuncSeparate( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO );
+        GlStateManager.blendFunc( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA );
         int textureX = texture.getX();
         int textureY = texture.getY();
         int middle = this.width / 2;
-        this.blit(getX(), getY(), textureX, textureY, middle, getHeight()); // left half
-        this.blit(getX() + middle, getY(), ClientConfig.CONFIG.MAX_BUTTON_LENGTH.get() - middle, textureY, middle, getHeight()); // right half
+        this.blit( getX(), getY(), textureX, textureY, middle, getHeight() ); // left half
+        this.blit( getX() + middle, getY(), ClientConfig.CONFIG.MAX_BUTTON_LENGTH.get() - middle, textureY, middle, getHeight() ); // right half
+    }
+
+    public DefaultColorProperty getEnabledColor() {
+        return enabledColor;
+    }
+
+    public void setEnabledTextColor(Color color) {
+        this.enabledColor.set( color );
+    }
+
+    public DefaultColorProperty getDisabledColor() {
+        return disabledColor;
+    }
+
+    public void setDisabledTextColor(Color color) {
+        this.disabledColor.set( color );
+    }
+
+    public DefaultColorProperty getHoverColor() {
+        return hoverColor;
+    }
+
+    public void setHoverTextColor(Color color) {
+        this.hoverColor.set( color );
+    }
+
+    public void setText(String text) {
+        this.messageProperty.set( text );
+    }
+
+    public String getText() {
+        return this.messageProperty.get();
+    }
+
+    public ITexture getNormalTexture() {
+        return this.normalTextureProperty.get();
+    }
+
+    public void setTexture(ITexture texture) {
+        this.normalTextureProperty.set( texture );
+        getNormalTexture().getGroup().adjustLayout();
+    }
+
+    public ITexture getDisabledTexture() {
+        return disabledTextureProperty.get();
+    }
+
+    public void setDisabledTexture(ITexture texture) {
+        this.disabledTextureProperty.set( texture );
+        disabledTextureProperty.get().getGroup().adjustLayout();
+    }
+
+    public ITexture getHoverTexture() {
+        return this.hoverTextureProperty.get();
+    }
+
+    public void setHoverTexture(ITexture texture) {
+        this.hoverTextureProperty.set( texture );
+        hoverTextureProperty.get().getGroup().adjustLayout();
+    }
+
+    public void onPress(Consumer<Widget> consumer) {
+        hoverProperty.set( consumer );
+    }
+
+    public Consumer<Widget> getHoverConsumer() {
+        return hoverProperty.get();
     }
 }

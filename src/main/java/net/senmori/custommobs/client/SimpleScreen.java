@@ -3,19 +3,17 @@ package net.senmori.custommobs.client;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
-import net.senmori.custommobs.client.gui.widget.impl.ImageButton;
 import net.senmori.custommobs.client.gui.widget.impl.SimpleButton;
-import net.senmori.custommobs.lib.texture.Icon;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
+import java.awt.Color;
 
 @OnlyIn( Dist.CLIENT )
 public class SimpleScreen extends Screen {
@@ -31,6 +29,8 @@ public class SimpleScreen extends Screen {
 
         SimpleButton button = new SimpleButton( 80, 80 );
         button.setText( "Button" );
+        button.setHoverTextColor( new Color( 29, 43, 255, 255 ) );
+        button.setEnabled( false );
 
         addButton( button );
 
