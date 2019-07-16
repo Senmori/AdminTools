@@ -6,20 +6,23 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.config.ClientConfig;
+import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.client.gui.widget.impl.Label;
 import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
+import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultIntegerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
 
 import java.awt.Color;
+import java.util.function.Consumer;
 
 /**
  *  A label is a gui element that displays text within some given bounds.
  *
  *  For easy instantiation, use {@link Label}.
  */
-public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> {
+public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implements IUpdatable {
 
     private final DefaultObjectProperty<Widget> parentWidgetProperty = new DefaultObjectProperty<>( this, "parent widget", this );
     private final DefaultColorProperty textColorProperty = new DefaultColorProperty( this, "text color", new Color( 208, 208, 208 ) );
@@ -27,6 +30,7 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> {
     private final DefaultStringProperty labelTextProperty = new DefaultStringProperty( this, "label text", "" );
     private final DefaultIntegerProperty labelSpacingProperty = new DefaultIntegerProperty( this, "label spacing", 0 );
     private final DefaultObjectProperty<Position> labelPositionProperty = new DefaultObjectProperty<>( this, "label position", Position.SELF );
+    private final DefaultConsumerProperty<Widget> tickConsumer = new DefaultConsumerProperty<>( this, "tick consumer" );
 
     private boolean dirty = false;
 
@@ -87,6 +91,14 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> {
         this.textColorProperty.set( color );
     }
 
+    public Consumer<Widget> getTickConsumer() {
+        return tickConsumer.get();
+    }
+
+    public void onTick(Consumer<Widget> consumer) {
+        this.tickConsumer.set( consumer );
+    }
+
     public void calculateLayout() {
         this.getPosition().calculate( getParent(), this, getSpacing() );
     }
@@ -101,6 +113,11 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> {
 
     protected boolean isDirty() {
         return this.dirty;
+    }
+
+    @Override
+    public void tick() {
+        getTickConsumer().accept( this );
     }
 
     @Override

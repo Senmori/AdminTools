@@ -19,7 +19,7 @@ public interface TextureGroupLayout {
             int startX = group.isOverrideTextureSettings() ? group.getStartX() : texture.getX();
             int width = group.isOverrideTextureSettings() ? group.getDefaultWidth() : texture.getWidth();
             for (int i = 1; index > 1 && i < index; i++) {
-                startX += width;
+                startX += width - 1;
                 startX++;
             }
             texture.setX( startX );
@@ -41,7 +41,7 @@ public interface TextureGroupLayout {
             int startY = group.isOverrideTextureSettings() ? group.getStartY() : texture.getY();
             int height = group.isOverrideTextureSettings() ? group.getDefaultHeight() : texture.getHeight();
             for (int i = 1; index > 1 && i < index; i++) {
-                startY += height;
+                startY += height - 1;
                 startY++;
             }
             texture.setY( startY );

@@ -4,17 +4,15 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TextureGroup {
-    public static final TextureGroup ICONS = ITextureGroupFactory.create(new ResourceLocation("textures/gui/icons.png"), "GUI Icons").build();
-
     private final String groupName;
     private final ResourceLocation location;
-    private final LinkedList<ITexture> textures = new LinkedList<>();
-    private final List<TextureGroup> textureGroups = new ArrayList<>();
+    private final Collection<ITexture> textures = new ArrayList<>();
+    private final Collection<TextureGroup> textureGroups = new ArrayList<>();
 
     private final int startX;
     private final int startY;
@@ -168,7 +166,7 @@ public class TextureGroup {
         private int defaultHeight = -1;
         private int maxWidth = -1;
         private int maxHeight = -1;
-        private boolean overrideTextureWidth, overrideTextureHeight;
+        private boolean overrideTextureSettings;
         private TextureGroupLayout layout = TextureGroupLayout.NONE;
 
         protected Builder(ResourceLocation location, String name) {
@@ -227,7 +225,7 @@ public class TextureGroup {
          * @return this builder
          */
         public Builder overrideTextureSettings() {
-            this.overrideTextureWidth = true;
+            this.overrideTextureSettings = true;
             return this;
         }
 
@@ -250,7 +248,7 @@ public class TextureGroup {
             return new TextureGroup(
                     location, name, startX,
                     startY, defaultWidth, defaultHeight,
-                    maxWidth, maxHeight, overrideTextureWidth,
+                    maxWidth, maxHeight, overrideTextureSettings,
                     layout
             );
         }

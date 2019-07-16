@@ -10,6 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.config.ClientConfig;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.gui.widget.api.IPressable;
+import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.client.textures.Button;
 import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
 import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
@@ -22,16 +23,21 @@ import java.awt.Color;
 import java.util.function.Consumer;
 
 @OnlyIn( Dist.CLIENT )
-public abstract class AbstractButton extends AbstractWidget implements IPressable {
-
+public abstract class AbstractButton extends AbstractWidget implements IPressable, IUpdatable {
+    // textures
     private final DefaultObjectProperty<ITexture> normalTextureProperty = new DefaultObjectProperty<>( this, "texture", Button.NORMAL.getTexture() );
     private final DefaultObjectProperty<ITexture> disabledTextureProperty = new DefaultObjectProperty<>( this, "texture", Button.DISABLED.getTexture() );
     private final DefaultObjectProperty<ITexture> hoverTextureProperty = new DefaultObjectProperty<>( this, "texture", Button.HOVER.getTexture() );
-    private final DefaultStringProperty messageProperty = new DefaultStringProperty( this, "button text", "" );
-    private final DefaultConsumerProperty<Widget> hoverProperty = new DefaultConsumerProperty<>( this, "hover consumer" );
+    // button text
+    private final DefaultStringProperty textProperty = new DefaultStringProperty( this, "button text", "" );
+    // colors - taken from Widget#getFGColor - unpacked and converted into a nice RGB format
     private final DefaultColorProperty enabledColor = new DefaultColorProperty( this, "enabled color", new Color( 224, 224, 224 ) );
     private final DefaultColorProperty disabledColor = new DefaultColorProperty( this, "disabled color", new Color( 160, 160, 160 ) );
     private final DefaultColorProperty hoverColor = new DefaultColorProperty( this, "hover color", new Color( 255, 255, 160 ) );
+    // consumers
+    private final DefaultConsumerProperty<Widget> tickConsumer = new DefaultConsumerProperty<>( this, "tick consumer" );
+    private final DefaultConsumerProperty<Widget> hoverProperty = new DefaultConsumerProperty<>( this, "hover consumer" );
+    private final DefaultConsumerProperty<Widget> clickProperty = new DefaultConsumerProperty<>( this, "click consumer" );
 
     public AbstractButton(int xIn, int yIn) {
         super( xIn, yIn );
@@ -55,7 +61,16 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
 
     @Override
     public void onPress() {
-        getHoverConsumer().accept( this );
+        getClickProperty().accept( this );
+    }
+
+
+    @Override
+    public void tick() {
+        getTickConsumer().accept( this );
+        if (isHovered()) {
+            getHoverConsumer().accept( this );
+        }
     }
 
     /**
@@ -126,24 +141,24 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         this.blit( getX() + middle, getY(), ClientConfig.CONFIG.MAX_BUTTON_LENGTH.get() - middle, textureY, middle, getHeight() ); // right half
     }
 
-    public DefaultColorProperty getEnabledColor() {
-        return enabledColor;
+    public Color getEnabledColor() {
+        return enabledColor.get();
     }
 
     public void setEnabledTextColor(Color color) {
         this.enabledColor.set( color );
     }
 
-    public DefaultColorProperty getDisabledColor() {
-        return disabledColor;
+    public Color getDisabledColor() {
+        return disabledColor.get();
     }
 
     public void setDisabledTextColor(Color color) {
         this.disabledColor.set( color );
     }
 
-    public DefaultColorProperty getHoverColor() {
-        return hoverColor;
+    public Color getHoverColor() {
+        return hoverColor.get();
     }
 
     public void setHoverTextColor(Color color) {
@@ -151,11 +166,11 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
     }
 
     public void setText(String text) {
-        this.messageProperty.set( text );
+        this.textProperty.set( text );
     }
 
     public String getText() {
-        return this.messageProperty.get();
+        return this.textProperty.get();
     }
 
     public ITexture getNormalTexture() {
@@ -191,5 +206,21 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
 
     public Consumer<Widget> getHoverConsumer() {
         return hoverProperty.get();
+    }
+
+    public Consumer<Widget> getTickConsumer() {
+        return tickConsumer.get();
+    }
+
+    public void onTick(Consumer<Widget> consumer) {
+        this.tickConsumer.set( consumer );
+    }
+
+    public Consumer<Widget> getClickProperty() {
+        return clickProperty.get();
+    }
+
+    public void onClick(Consumer<Widget> consumer) {
+        this.clickProperty.set( consumer );
     }
 }

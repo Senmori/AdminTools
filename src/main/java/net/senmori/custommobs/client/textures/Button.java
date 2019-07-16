@@ -8,7 +8,9 @@ import java.util.Locale;
 public enum Button {
     DISABLED( TextureGroups.Buttons.BUTTONS, 1),
     NORMAL(TextureGroups.Buttons.BUTTONS, 2),
-    HOVER(TextureGroups.Buttons.BUTTONS, 3)
+    HOVER(TextureGroups.Buttons.BUTTONS, 3),
+    CHECKBOX(TextureGroups.Buttons.CHECKBOX, 1),
+    CHECKBOX_FILLED(TextureGroups.Buttons.CHECKBOX, 2),
     ;
 
 
