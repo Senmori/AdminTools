@@ -9,8 +9,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.CustomMobs;
 import net.senmori.custommobs.client.gui.AbstractWidget;
+import net.senmori.custommobs.client.gui.widget.AbstractLabel;
 import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.client.gui.widget.impl.CheckboxButton;
+import net.senmori.custommobs.client.gui.widget.impl.Label;
 import net.senmori.custommobs.client.gui.widget.impl.SimpleButton;
 import org.lwjgl.glfw.GLFW;
 
@@ -33,6 +35,7 @@ public class SimpleScreen extends Screen {
         super.init();
 
         CheckboxButton button = new CheckboxButton( 80, 80 );
+        Label label = button.addLabel( "Invulnerable : " , AbstractLabel.Position.LEFT);
 
         addButton( button );
 

@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.Widget;
 import net.senmori.custommobs.client.gui.AbstractWidget;
+import net.senmori.custommobs.client.gui.widget.AbstractLabel;
 import net.senmori.custommobs.client.gui.widget.api.IPressable;
 import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.client.textures.Button;
@@ -27,6 +28,8 @@ public class CheckboxButton extends AbstractWidget<CheckboxButton> implements IP
     private final DefaultConsumerProperty<Widget> tickConsumer = new DefaultConsumerProperty<>( this, "tick consumer" );
     private final DefaultConsumerProperty<Widget> hoverProperty = new DefaultConsumerProperty<>( this, "hover consumer" );
     private final DefaultConsumerProperty<Widget> clickConsumer = new DefaultConsumerProperty<>( this, "click consumer" );
+
+    private AbstractLabel label = null;
 
     public CheckboxButton(int xIn, int yIn) {
         super( xIn, yIn );
@@ -98,8 +101,28 @@ public class CheckboxButton extends AbstractWidget<CheckboxButton> implements IP
     }
 
     @Override
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        if (getLabel() != null) {
+            getLabel().calculateLayout();
+            getLabel().render( mouseX, mouseY, partialTicks );
+        }
+        super.render( mouseX, mouseY, partialTicks );
+    }
+
+    @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        if (getLabel() != null) {
+            getLabel().renderButton( mouseX, mouseY, partialTicks );
+        }
         renderCheckbox( getTextureForRender() );
+    }
+
+    @Override
+    public void printDebug() {
+        super.printDebug();
+        if (getLabel() != null) {
+            getLabel().printDebug();
+        }
     }
 
     protected void renderCheckbox(ITexture texture) {
@@ -174,5 +197,39 @@ public class CheckboxButton extends AbstractWidget<CheckboxButton> implements IP
 
     public void onClick(Consumer<Widget> consumer) {
         this.clickConsumer.set( consumer );
+    }
+
+    /**
+     * Add a new label to this text field.
+     *
+     * @param text the text of the label
+     * @param position the {@link AbstractLabel.Position} of the label
+     * @return the new {@link AbstractLabel}
+     */
+    public <T extends AbstractLabel> T addLabel(String text, T.Position position) {
+        Label label = new Label(this.x, this.y);
+        label.setText( text );
+        label.setPosition( position );
+        label.setParent( this );
+        label.calculateLayout();
+        this.label = label;
+        return (T) label;
+    }
+
+    /**
+     * Add a new label to this text field.
+     *
+     * @param label the label to add
+     * @return the {@link AbstractLabel}.
+     */
+    public <T extends AbstractLabel> T addLabel(T label) {
+        label.setParent( this );
+        label.calculateLayout();
+        this.label = label;
+        return label;
+    }
+
+    private AbstractLabel getLabel() {
+        return label;
     }
 }
