@@ -2,6 +2,7 @@ package net.senmori.custommobs.lib.util;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -17,37 +18,41 @@ public class RenderUtil {
 
 
     public static void drawTexture(int screenX, int screenY, ITexture texture) {
-        AbstractGui.blit( screenX, screenY, (float)texture.getX(), (float)texture.getY(), texture.getWidth(), texture.getHeight(), 256, 256);
+        AbstractGui.blit( screenX, screenY, ( float ) texture.getX(), ( float ) texture.getY(), texture.getWidth(), texture.getHeight(), 256, 256 );
     }
 
-    public void hLine(int startX, int endX, int length, Color color) {
-        if (endX < startX) {
-            int i = startX;
-            startX = endX;
-            endX = i;
+    public static void drawOutline(Widget widget, Color color, boolean renderMiddle) {
+        int x = widget.x;
+        int y = widget.y;
+        int width = widget.getWidth();
+        int height = widget.getHeight();
+
+        int lineWidth = 1;
+        // top
+        fill( x, y, ( x + width ), y + lineWidth, color );
+        // bottom
+        fill( x, ( y + height ), ( x + width ), ( y + height ) - lineWidth, color );
+        // left
+        fill( x, y, x + lineWidth, y + height, color );
+        // right
+        fill( ( x + width ), y, ( x + width ) - lineWidth, ( y + height ), color );
+
+        if ( renderMiddle ) {
+            int middleX = x + (width / 2 ) - 1;
+            int middleY = y + (height / 2);
+            fill(middleX, y, middleX + lineWidth, (y + height), color); // vertical divider
+            fill(x, middleY, x + width, middleY + lineWidth, color); // horizontal divider
         }
-
-        fill(startX, length, endX + 1, length + 1, color);
-    }
-
-    public void vLine(int startX, int endY, int length, Color color) {
-        if (length < endY) {
-            int i = endY;
-            endY = length;
-            length = i;
-        }
-
-        fill(startX, endY + 1, startX + 1, length, color);
     }
 
     public static void fill(int startX, int startY, int endX, int endY, Color color) {
-        if (startX < endX) {
+        if ( startX < endX ) {
             int i = startX;
             startX = endX;
             endX = i;
         }
 
-        if (startY < endY) {
+        if ( startY < endY ) {
             int j = startY;
             startY = endY;
             endY = j;
@@ -57,13 +62,13 @@ public class RenderUtil {
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos((double)startX, (double)endY, 0.0D).endVertex();
-        bufferbuilder.pos((double)endX, (double)endY, 0.0D).endVertex();
-        bufferbuilder.pos((double)endX, (double)startY, 0.0D).endVertex();
-        bufferbuilder.pos((double)startX, (double)startY, 0.0D).endVertex();
+        GlStateManager.blendFuncSeparate( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO );
+        GlStateManager.color4f( color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() );
+        bufferbuilder.begin( 7, DefaultVertexFormats.POSITION );
+        bufferbuilder.pos( ( double ) startX, ( double ) endY, 0.0D ).endVertex();
+        bufferbuilder.pos( ( double ) endX, ( double ) endY, 0.0D ).endVertex();
+        bufferbuilder.pos( ( double ) endX, ( double ) startY, 0.0D ).endVertex();
+        bufferbuilder.pos( ( double ) startX, ( double ) startY, 0.0D ).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture();
         GlStateManager.disableBlend();

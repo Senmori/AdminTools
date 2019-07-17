@@ -30,9 +30,6 @@ import java.util.function.Consumer;
 
 @OnlyIn( Dist.CLIENT )
 public abstract class AbstractWidget<T extends Widget> extends Widget {
-    public static final int DEFAULT_WIDTH = 200;
-    public static final int DEFAULT_HEIGHT = 20;
-
     protected Screen screen;
     protected Widget parent;
 
@@ -50,8 +47,8 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     public AbstractWidget(int xIn, int yIn) {
         super( xIn, yIn, "" );
-        this.width = DEFAULT_WIDTH;
-        this.height = DEFAULT_HEIGHT;
+        this.width = ClientConfig.CONFIG.DEFAULT_WIDGET_WIDTH.get();
+        this.height = ClientConfig.CONFIG.DEFAULT_WIDGET_HEIGHT.get();
         enabledProperty.addListener( (listener) -> this.active = ( boolean ) listener.getValue() );
         visibleProperty.addListener( (listener) -> this.visible = (boolean) listener.getValue() );
         focusedProperty.addListener( (listener) -> this.focused = (boolean) listener.getValue() );
@@ -320,7 +317,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     protected void debugOutline(Widget widget) {
         if (ClientConfig.CONFIG.DEBUG_MODE.get()) {
-            fill( widget.x, widget.y, widget.x + widget.getWidth(), widget.y + widget.getHeight(), ClientConfig.CONFIG.getDebugColor() );
+            RenderUtil.drawOutline( widget, ClientConfig.CONFIG.getDebugColor(), false );
         }
     }
 

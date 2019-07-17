@@ -15,12 +15,18 @@ public class ClientConfig {
     public Color DEBUG_COLOR;
 
     public ForgeConfigSpec.ConfigValue<Integer> MAX_BUTTON_LENGTH;
+    public ForgeConfigSpec.ConfigValue<Integer> DEFAULT_WIDGET_WIDTH;
+    public ForgeConfigSpec.ConfigValue<Integer> DEFAULT_WIDGET_HEIGHT;
 
     ClientConfig(ForgeConfigSpec.Builder builder) {
         builder.comment("UI Settings")
                 .push( "UX" );
         MAX_BUTTON_LENGTH = builder.comment("The maximum length (in pixels) a button may be. This effects the rendering of the button texture.")
                 .define( "max_button_length", 200 );
+        DEFAULT_WIDGET_WIDTH = builder.comment( "The default width of widgets." )
+                .define( "default_widget_width", 200 );
+        DEFAULT_WIDGET_HEIGHT = builder.comment( "The default height of widgets." )
+                .define( "default_widget_height", 20 );
 
 
         builder.pop();

@@ -24,13 +24,19 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implements IUpdatable {
 
+    int stringX, stringY;
+
     private final DefaultObjectProperty<Widget> parentWidgetProperty = new DefaultObjectProperty<>( this, "parent widget", this );
     private final DefaultColorProperty textColorProperty = new DefaultColorProperty( this, "text color", new Color( 208, 208, 208 ) );
     private final DefaultIntegerProperty maxTextLengthProperty = new DefaultIntegerProperty( this, "max text length", 32 );
     private final DefaultStringProperty labelTextProperty = new DefaultStringProperty( this, "label text", "" );
-    private final DefaultIntegerProperty labelSpacingProperty = new DefaultIntegerProperty( this, "label spacing", 0 );
+    private final DefaultIntegerProperty labelSpacingProperty = new DefaultIntegerProperty( this, "label spacing", 1 );
     private final DefaultObjectProperty<Position> labelPositionProperty = new DefaultObjectProperty<>( this, "label position", Position.SELF );
     private final DefaultConsumerProperty<Widget> tickConsumer = new DefaultConsumerProperty<>( this, "tick consumer" );
+
+    private final DefaultIntegerProperty textSpacing = new DefaultIntegerProperty( this, "text spacing", 2 );
+    private final DefaultIntegerProperty textPositionX = new DefaultIntegerProperty( this, "text spacing X", getX() + getSpacing() );
+    private final DefaultIntegerProperty textPositionY = new DefaultIntegerProperty( this, "text spacing Y", getY() + (getHeight() / 2));
 
     private boolean dirty = false;
 
@@ -101,6 +107,16 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
 
     public void calculateLayout() {
         this.getPosition().calculate( getParent(), this, getSpacing() );
+
+        int space;
+        int stringX = getX() + (textSpacing.get() / 2); //
+        if (getFontRenderer().getStringWidth( getText() ) == getWidth()) {
+            stringX = getX();
+        }
+        textPositionX.set( stringX );
+        space = getHeight() / 2;
+        int stringY = getY() + (space - (space / 2)) + 1;
+        textPositionY.set( stringY );
     }
 
     protected void markDirty() {
@@ -132,7 +148,7 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         debugOutline( this );
-        getFontRenderer().drawStringWithShadow( getText(), getX() + getSpacing(), getY() + (getHeight() / 2), getTextColor().getRGB() );
+        getFontRenderer().drawStringWithShadow( getText(), textPositionX.get(), textPositionY.get(), getTextColor().getRGB() );
     }
 
     @Override

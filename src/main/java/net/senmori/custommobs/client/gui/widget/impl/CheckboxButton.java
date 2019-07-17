@@ -103,7 +103,6 @@ public class CheckboxButton extends AbstractWidget<CheckboxButton> implements IP
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         if (getLabel() != null) {
-            getLabel().calculateLayout();
             getLabel().render( mouseX, mouseY, partialTicks );
         }
         super.render( mouseX, mouseY, partialTicks );
@@ -119,10 +118,10 @@ public class CheckboxButton extends AbstractWidget<CheckboxButton> implements IP
 
     @Override
     public void printDebug() {
-        super.printDebug();
         if (getLabel() != null) {
             getLabel().printDebug();
         }
+        super.printDebug();
     }
 
     protected void renderCheckbox(ITexture texture) {

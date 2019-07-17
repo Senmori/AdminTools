@@ -35,7 +35,8 @@ public class SimpleScreen extends Screen {
         super.init();
 
         CheckboxButton button = new CheckboxButton( 80, 80 );
-        Label label = button.addLabel( "Invulnerable : " , AbstractLabel.Position.LEFT);
+        Label label = button.addLabel( "Invulnerable" , AbstractLabel.Position.LEFT);
+        label.setSpacing( 1 );
 
         addButton( button );
 
