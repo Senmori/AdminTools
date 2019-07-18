@@ -9,6 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.custommobs.client.config.ClientConfig;
 import net.senmori.custommobs.client.gui.AbstractWidget;
+import net.senmori.custommobs.client.gui.widget.api.IAttachable;
 import net.senmori.custommobs.client.gui.widget.api.IPressable;
 import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.client.textures.Button;
@@ -16,6 +17,7 @@ import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
 import net.senmori.custommobs.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
+import net.senmori.custommobs.lib.properties.primitive.BooleanProperty;
 import net.senmori.custommobs.lib.texture.ITexture;
 import org.lwjgl.glfw.GLFW;
 
@@ -25,9 +27,9 @@ import java.util.function.Consumer;
 @OnlyIn( Dist.CLIENT )
 public abstract class AbstractButton extends AbstractWidget implements IPressable, IUpdatable {
     // textures
-    private final DefaultObjectProperty<ITexture> normalTextureProperty = new DefaultObjectProperty<>( this, "texture", Button.NORMAL.getTexture() );
-    private final DefaultObjectProperty<ITexture> disabledTextureProperty = new DefaultObjectProperty<>( this, "texture", Button.DISABLED.getTexture() );
-    private final DefaultObjectProperty<ITexture> hoverTextureProperty = new DefaultObjectProperty<>( this, "texture", Button.HOVER.getTexture() );
+    private final DefaultObjectProperty<ITexture> defaultTextureProperty = new DefaultObjectProperty<>( this, "default texture", Button.NORMAL.getTexture() );
+    private final DefaultObjectProperty<ITexture> disabledTextureProperty = new DefaultObjectProperty<>( this, " disabled texture", Button.DISABLED.getTexture() );
+    private final DefaultObjectProperty<ITexture> hoverTextureProperty = new DefaultObjectProperty<>( this, "hover texture", Button.HOVER.getTexture() );
     // button text
     private final DefaultStringProperty textProperty = new DefaultStringProperty( this, "button text", "" );
     // colors - taken from Widget#getFGColor - unpacked and converted into a nice RGB format
@@ -39,8 +41,13 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
     private final DefaultConsumerProperty<Widget> hoverProperty = new DefaultConsumerProperty<>( this, "hover consumer" );
     private final DefaultConsumerProperty<Widget> clickProperty = new DefaultConsumerProperty<>( this, "click consumer" );
 
+    // other
+    private final BooleanProperty textureDefinesDimensions = new BooleanProperty( this, "dimension definition", true );
+    private final DefaultObjectProperty<IAttachable> attachedWidget = new DefaultObjectProperty<>( this, "attached widget", null );
+
     public AbstractButton(int xIn, int yIn) {
         super( xIn, yIn );
+
     }
 
     /**
@@ -95,6 +102,12 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
     }
 
     @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        onPress();
+        return super.mouseClicked( mouseX, mouseY, button );
+    }
+
+    @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = getFontRenderer();
@@ -116,17 +129,34 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
     }
 
     protected ITexture getTextureForRender() {
-        getNormalTexture().getGroup().adjustLayout();
+        ITexture texture = getDefaultTexture();
         if ( !isEnabled() ) {
-            return disabledTextureProperty.get();
-        } else if ( isHovered() ) {
-            return hoverTextureProperty.get();
+            texture = getDisabledTexture();
+        } else if (isHovered()) {
+            texture = getHoverTexture();
         }
-        return normalTextureProperty.get();
+        if (texture != null) {
+            updateDimensions( texture );
+        }
+        return texture;
+    }
+
+    protected void updateDimensions(ITexture texture) {
+        if ( doTexturesDefineDimensions() && texture != null) {
+            if ( texture.getWidth() != getWidth() ) {
+                setWidth( texture.getWidth() );
+            }
+            if ( texture.getHeight() != getHeight() ) {
+                setHeight( texture.getHeight() );
+            }
+        }
+        if (texture != null) {
+            texture.getGroup().adjustLayout();
+        }
     }
 
     /**
-     * Buttons are rendered by
+     * Buttons are rendered by this method
      */
     protected void renderButtonTexture(ITexture texture) {
         Minecraft.getInstance().getTextureManager().bindTexture( texture.getLocation() );
@@ -173,13 +203,13 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         return this.textProperty.get();
     }
 
-    public ITexture getNormalTexture() {
-        return this.normalTextureProperty.get();
+    public ITexture getDefaultTexture() {
+        return this.defaultTextureProperty.get();
     }
 
-    public void setTexture(ITexture texture) {
-        this.normalTextureProperty.set( texture );
-        getNormalTexture().getGroup().adjustLayout();
+    public void setDefaultTexture(ITexture texture) {
+        this.defaultTextureProperty.set( texture );
+        getDefaultTexture().getGroup().adjustLayout();
     }
 
     public ITexture getDisabledTexture() {
@@ -222,5 +252,9 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
 
     public void onClick(Consumer<Widget> consumer) {
         this.clickProperty.set( consumer );
+    }
+
+    public boolean doTexturesDefineDimensions() {
+        return textureDefinesDimensions.get();
     }
 }

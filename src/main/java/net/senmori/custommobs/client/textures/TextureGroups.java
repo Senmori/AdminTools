@@ -61,6 +61,18 @@ public final class TextureGroups {
                 .layout( TextureGroupLayout.VERTICAL )
                 .overrideTextureSettings()
                 .build();
+        public static final TextureGroup LOCKED_ICON = ITextureGroupFactory.create( WIDGETS, "Locked Icons" )
+                .startAt( 0, 146 )
+                .defaultDimensions( 20, 20 )
+                .layout( TextureGroupLayout.VERTICAL)
+                .overrideTextureSettings()
+                .build();
+        public static final TextureGroup UNLOCK_ICON = ITextureGroupFactory.create( WIDGETS, "Unlock Icons" )
+                .startAt( 20, 146 )
+                .defaultDimensions( 20, 20 )
+                .layout( TextureGroupLayout.VERTICAL )
+                .overrideTextureSettings()
+                .build();
     }
 
 }

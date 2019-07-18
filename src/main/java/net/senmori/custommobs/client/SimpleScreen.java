@@ -7,21 +7,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.senmori.custommobs.CustomMobs;
 import net.senmori.custommobs.client.gui.AbstractWidget;
-import net.senmori.custommobs.client.gui.widget.AbstractLabel;
 import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
-import net.senmori.custommobs.client.gui.widget.impl.CheckboxButton;
-import net.senmori.custommobs.client.gui.widget.impl.Label;
-import net.senmori.custommobs.client.gui.widget.impl.SimpleButton;
+import net.senmori.custommobs.client.gui.widget.impl.Checkbox;
+import net.senmori.custommobs.client.gui.widget.impl.LockIconButton;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @OnlyIn( Dist.CLIENT )
 public class SimpleScreen extends Screen {
@@ -34,11 +26,11 @@ public class SimpleScreen extends Screen {
     protected void init() {
         super.init();
 
-        CheckboxButton button = new CheckboxButton( 80, 80 );
-        Label label = button.addLabel( "Invulnerable" , AbstractLabel.Position.LEFT);
-        label.setSpacing( 1 );
+        LockIconButton button = new LockIconButton( 80, 80 );
+        Checkbox checkbox = new Checkbox( 120, 120 );
 
         addButton( button );
+        addButton( checkbox );
 
         for (IGuiEventListener widget : children()) {
             if (widget instanceof AbstractWidget) {

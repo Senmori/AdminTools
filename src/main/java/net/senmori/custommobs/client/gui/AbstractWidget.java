@@ -248,11 +248,6 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        super.render( mouseX, mouseY, partialTicks );
-    }
-
-    @Override
     public void playDownSound(SoundHandler soundHandler) {
         getSound().playSound( soundHandler);
     }

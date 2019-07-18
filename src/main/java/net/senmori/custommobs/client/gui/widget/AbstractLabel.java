@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.senmori.custommobs.client.gui.AbstractWidget;
 import net.senmori.custommobs.client.config.ClientConfig;
+import net.senmori.custommobs.client.gui.widget.api.IAttachable;
 import net.senmori.custommobs.client.gui.widget.api.IUpdatable;
 import net.senmori.custommobs.client.gui.widget.impl.Label;
 import net.senmori.custommobs.lib.properties.color.DefaultColorProperty;
@@ -14,6 +15,8 @@ import net.senmori.custommobs.lib.properties.defaults.DefaultIntegerProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.custommobs.lib.properties.defaults.DefaultStringProperty;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.function.Consumer;
 
@@ -22,11 +25,9 @@ import java.util.function.Consumer;
  *
  *  For easy instantiation, use {@link Label}.
  */
-public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implements IUpdatable {
+public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implements IUpdatable, IAttachable {
 
-    int stringX, stringY;
-
-    private final DefaultObjectProperty<Widget> parentWidgetProperty = new DefaultObjectProperty<>( this, "parent widget", this );
+    private final DefaultObjectProperty<Widget> attachedWidgetProperty = new DefaultObjectProperty<>( this, "parent widget", this );
     private final DefaultColorProperty textColorProperty = new DefaultColorProperty( this, "text color", new Color( 208, 208, 208 ) );
     private final DefaultIntegerProperty maxTextLengthProperty = new DefaultIntegerProperty( this, "max text length", 32 );
     private final DefaultStringProperty labelTextProperty = new DefaultStringProperty( this, "label text", "" );
@@ -81,12 +82,12 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
     }
 
     public void setParent(Widget widget) {
-        this.parentWidgetProperty.set( widget );
+        this.attachedWidgetProperty.set( widget );
         markDirty();
     }
 
     public Widget getParent() {
-        return this.parentWidgetProperty.get();
+        return this.attachedWidgetProperty.get();
     }
 
     public Color getTextColor() {
@@ -157,6 +158,23 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
             calculateLayout();
             super.printDebug();
         }
+    }
+
+    @Nullable
+    @Override
+    public Widget getAttachedWidget() {
+        return attachedWidgetProperty.get();
+    }
+
+    @Override
+    public boolean isAttachedTo(Widget widget) {
+        return getAttachedWidget() == widget;
+    }
+
+    @Nonnull
+    @Override
+    public Widget getWidget() {
+        return this;
     }
 
     /**

@@ -1,5 +1,7 @@
 package net.senmori.custommobs.lib.texture;
 
+import net.senmori.custommobs.CustomMobs;
+
 import java.util.Objects;
 
 public interface TextureGroupLayout {
@@ -19,8 +21,7 @@ public interface TextureGroupLayout {
             int startX = group.isOverrideTextureSettings() ? group.getStartX() : texture.getX();
             int width = group.isOverrideTextureSettings() ? group.getDefaultWidth() : texture.getWidth();
             for (int i = 1; index > 1 && i < index; i++) {
-                startX += width - 1;
-                startX++;
+                startX += width;
             }
             texture.setX( startX );
             texture.setY( group.isOverrideTextureSettings() ? group.getStartY() : texture.getY() );
@@ -41,11 +42,11 @@ public interface TextureGroupLayout {
             int startY = group.isOverrideTextureSettings() ? group.getStartY() : texture.getY();
             int height = group.isOverrideTextureSettings() ? group.getDefaultHeight() : texture.getHeight();
             for (int i = 1; index > 1 && i < index; i++) {
-                startY += height - 1;
-                startY++;
+                startY += height;
             }
             texture.setY( startY );
             texture.setX( group.isOverrideTextureSettings() ? group.getStartX() : texture.getX() );
+            //CustomMobs.getInstance().getLogger().info( "LAYOUT: " + texture.toString() );
             return true;
         }
         return false;

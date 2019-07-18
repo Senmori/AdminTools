@@ -91,7 +91,13 @@ public class Texture implements ITexture {
 
     @Override
     public String toString() {
-        return "Texture [" + name + "][" + textureIndex + "] : " + "X/Y[" + getX() + "," + getY() +"] ~ W/H[" + getWidth() + "," + getHeight() + "] from \'" + getGroup().getLocation().toString() + "\'";
+        StringBuilder builder = new StringBuilder();
+        builder.append( "Texture [" ).append( getName() ).append( "] " );
+        builder.append( "[X=" ).append( getX() ).append( ",Y=" ).append( getY() ).append( "], " );
+        builder.append( "[W=" ).append( getWidth() ).append( ",H=" ).append( getHeight() ).append( "], " );
+        builder.append( "[idx=" ).append( getTextureIndex() ).append( "], " );
+        builder.append( "[location=" ).append( getLocation().toString() ).append( "]" );
+        return builder.toString();
     }
 
     public static class Builder {
