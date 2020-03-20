@@ -1,6 +1,7 @@
 package net.senmori.admintools.client.gui.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
@@ -160,10 +161,10 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
      */
     protected void renderButtonTexture(ITexture texture) {
         Minecraft.getInstance().getTextureManager().bindTexture( texture.getLocation() );
-        GlStateManager.color4f( 1.0F, 1.0F, 1.0F, this.alpha );
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO );
-        GlStateManager.blendFunc( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA );
+        RenderSystem.color4f( 1.0F, 1.0F, 1.0F, this.alpha );
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate( GlStateManager.SourceFactor.SRC_ALPHA.param, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA.param, GlStateManager.SourceFactor.ONE.param, GlStateManager.DestFactor.ZERO.param );
+        RenderSystem.blendFunc( GlStateManager.SourceFactor.SRC_ALPHA.param, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA.param );
         int textureX = texture.getX();
         int textureY = texture.getY();
         int middle = this.width / 2;

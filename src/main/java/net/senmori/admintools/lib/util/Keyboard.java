@@ -4,19 +4,20 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
 import java.nio.DoubleBuffer;
+import java.util.function.Supplier;
 
 public class Keyboard {
-    public static final long MC_WINDOW_HANDLE = Minecraft.getInstance().mainWindow.getHandle();
+    public static final Supplier<Long> MC_WINDOW_HANDLE = () -> Minecraft.getInstance().getMainWindow().getHandle();
 
     private static DoubleBuffer MOUSE_X_BUFFER = DoubleBuffer.allocate( 1 );
     private static DoubleBuffer MOUSE_Y_BUFFER = DoubleBuffer.allocate( 1 );
 
     public static boolean isKeyDown(int key) {
-        return GLFW.glfwGetKey( MC_WINDOW_HANDLE, key ) == GLFW.GLFW_PRESS;
+        return GLFW.glfwGetKey( MC_WINDOW_HANDLE.get(), key ) == GLFW.GLFW_PRESS;
     }
 
     public static boolean isKeyReleased(int key) {
-        return GLFW.glfwGetKey( MC_WINDOW_HANDLE, key ) == GLFW.GLFW_RELEASE;
+        return GLFW.glfwGetKey( MC_WINDOW_HANDLE.get(), key ) == GLFW.GLFW_RELEASE;
     }
 
     public static boolean isKeyCode(int keyCode, int GLFWKeycode) {
@@ -71,13 +72,13 @@ public class Keyboard {
 
     public static double getMouseX() {
         allocateMouseBuffers();
-        GLFW.glfwGetCursorPos( MC_WINDOW_HANDLE, MOUSE_X_BUFFER, MOUSE_Y_BUFFER );
+        GLFW.glfwGetCursorPos( MC_WINDOW_HANDLE.get(), MOUSE_X_BUFFER, MOUSE_Y_BUFFER );
         return MOUSE_X_BUFFER.hasArray() ? MOUSE_X_BUFFER.get() : -1.0D;
     }
 
     public static double getMouseY() {
         allocateMouseBuffers();
-        GLFW.glfwGetCursorPos( MC_WINDOW_HANDLE, MOUSE_X_BUFFER, MOUSE_Y_BUFFER );
+        GLFW.glfwGetCursorPos( MC_WINDOW_HANDLE.get(), MOUSE_X_BUFFER, MOUSE_Y_BUFFER );
         return MOUSE_Y_BUFFER.hasArray() ? MOUSE_Y_BUFFER.get() : -1.0D;
     }
 

@@ -1,6 +1,7 @@
 package net.senmori.admintools.client.gui.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
@@ -627,18 +628,18 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        GlStateManager.color4f( 0.0F, 0.0F, 255.0F, 255.0F );
-        GlStateManager.disableTexture();
-        GlStateManager.enableColorLogicOp();
-        GlStateManager.logicOp( GlStateManager.LogicOp.OR_REVERSE );
+        RenderSystem.color4f( 0.0F, 0.0F, 255.0F, 255.0F );
+        RenderSystem.disableTexture();
+        RenderSystem.enableColorLogicOp();
+        RenderSystem.logicOp( GlStateManager.LogicOp.OR_REVERSE );
         bufferbuilder.begin( 7, DefaultVertexFormats.POSITION );
         bufferbuilder.pos( ( double ) startX, ( double ) endY, 0.0D ).endVertex();
         bufferbuilder.pos( ( double ) endX, ( double ) endY, 0.0D ).endVertex();
         bufferbuilder.pos( ( double ) endX, ( double ) startY, 0.0D ).endVertex();
         bufferbuilder.pos( ( double ) startX, ( double ) startY, 0.0D ).endVertex();
         tessellator.draw();
-        GlStateManager.disableColorLogicOp();
-        GlStateManager.enableTexture();
+        RenderSystem.disableColorLogicOp();
+        RenderSystem.enableTexture();
     }
 
     @Override

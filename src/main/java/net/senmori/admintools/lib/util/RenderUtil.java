@@ -1,6 +1,7 @@
 package net.senmori.admintools.lib.util;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -60,17 +61,17 @@ public class RenderUtil {
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture();
-        GlStateManager.blendFuncSeparate( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO );
-        GlStateManager.color4f( color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() );
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.color4f( color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() );
         bufferbuilder.begin( 7, DefaultVertexFormats.POSITION );
         bufferbuilder.pos( ( double ) startX, ( double ) endY, 0.0D ).endVertex();
         bufferbuilder.pos( ( double ) endX, ( double ) endY, 0.0D ).endVertex();
         bufferbuilder.pos( ( double ) endX, ( double ) startY, 0.0D ).endVertex();
         bufferbuilder.pos( ( double ) startX, ( double ) startY, 0.0D ).endVertex();
         tessellator.draw();
-        GlStateManager.enableTexture();
-        GlStateManager.disableBlend();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
     }
 }

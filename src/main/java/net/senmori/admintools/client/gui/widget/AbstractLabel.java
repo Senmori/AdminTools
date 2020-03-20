@@ -243,7 +243,7 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
             Screen screen = parent instanceof AbstractWidget ? ((AbstractWidget)parent).getScreen() : Minecraft.getInstance().currentScreen;
             int screenWidth;
             if (screen == null) {
-                screenWidth = Minecraft.getInstance().mainWindow.getScaledWidth();
+                screenWidth = Minecraft.getInstance().getMainWindow().getScaledWidth();
             } else {
                 screenWidth = screen.width;
             }

@@ -1,6 +1,6 @@
 package net.senmori.admintools.client.gui.widget.impl;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraftforge.api.distmarker.Dist;
@@ -86,9 +86,9 @@ public class ImageButton extends AbstractWidget<ImageButton> implements IPressab
         ITexture texture = getTexture();
         if (texture == null || texture.getLocation() == null) return;
         Minecraft.getInstance().getTextureManager().bindTexture( texture.getLocation() );
-        GlStateManager.disableDepthTest();
+        RenderSystem.disableDepthTest();
         RenderUtil.drawTexture( this.x, this.y, texture );
-        GlStateManager.enableDepthTest();
+        RenderSystem.enableDepthTest();
    }
 
     @Override
