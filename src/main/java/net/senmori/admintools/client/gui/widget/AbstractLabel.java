@@ -5,7 +5,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.senmori.admintools.client.gui.AbstractWidget;
-import net.senmori.admintools.client.config.ClientConfig;
+import net.senmori.admintools.config.ClientConfig;
 import net.senmori.admintools.client.gui.widget.api.IAttachable;
 import net.senmori.admintools.client.gui.widget.api.IUpdatable;
 import net.senmori.admintools.client.gui.widget.impl.Label;

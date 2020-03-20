@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.senmori.admintools.client.SimpleScreen;
-import net.senmori.admintools.client.config.ClientConfig;
+import net.senmori.admintools.config.ClientConfig;
 import net.senmori.admintools.setup.ClientProxy;
 import net.senmori.admintools.setup.IProxy;
 import net.senmori.admintools.setup.ServerProxy;

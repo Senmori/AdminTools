@@ -7,7 +7,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.senmori.admintools.client.config.ClientConfig;
+import net.senmori.admintools.config.ClientConfig;
 import net.senmori.admintools.client.gui.AbstractWidget;
 import net.senmori.admintools.client.gui.widget.api.IAttachable;
 import net.senmori.admintools.client.gui.widget.api.IPressable;

@@ -1,4 +1,4 @@
-package net.senmori.admintools.client.config;
+package net.senmori.admintools.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;

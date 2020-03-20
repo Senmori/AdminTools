@@ -14,7 +14,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.admintools.AdminTools;
-import net.senmori.admintools.client.config.ClientConfig;
+import net.senmori.admintools.config.ClientConfig;
 import net.senmori.admintools.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.admintools.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.admintools.lib.properties.defaults.DefaultStringProperty;
@@ -35,7 +35,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     protected final BooleanProperty enabledProperty = new BooleanProperty( this, "enabled", this.active );
     protected final BooleanProperty visibleProperty = new BooleanProperty( this, "visible", this.visible );
-    protected final BooleanProperty focusedProperty = new BooleanProperty( this, "focused", this.focused );
+    protected final BooleanProperty focusedProperty = new BooleanProperty( this, "focused", this.isFocused() );
     protected final DefaultObjectProperty<FontRenderer> fontRendererProperty = new DefaultObjectProperty<>( this, "font renderer", Minecraft.getInstance().fontRenderer );
 
     // Misc.
@@ -51,7 +51,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         this.height = ClientConfig.CONFIG.DEFAULT_WIDGET_HEIGHT.get();
         enabledProperty.addListener( (listener) -> this.active = ( boolean ) listener.getValue() );
         visibleProperty.addListener( (listener) -> this.visible = (boolean) listener.getValue() );
-        focusedProperty.addListener( (listener) -> this.focused = (boolean) listener.getValue() );
+        focusedProperty.addListener( (listener) -> this.setFocused( (boolean) listener.getValue() ) );
     }
 
     public void setScreen(Screen screen) {
@@ -269,9 +269,9 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     public boolean changeFocus(boolean focus) {
         if ( this.isEnabled() && this.isVisible() ) {
-            if ( this.focused != focus ) {
-                this.onFocusChange( this.focused, focus );
-                this.focused = !focused;
+            if ( this.isFocused() != focus ) {
+                this.onFocusChange( this.isFocused(), focus );
+                this.setFocused( focus );
             }
         }
         return false;
