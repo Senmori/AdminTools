@@ -24,6 +24,7 @@ import net.senmori.admintools.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.admintools.lib.properties.defaults.DefaultStringProperty;
 import net.senmori.admintools.lib.properties.predicate.DefaultPredicateProperty;
 import net.senmori.admintools.lib.properties.primitive.BooleanProperty;
+import net.senmori.admintools.lib.util.Keyboard;
 import net.senmori.admintools.lib.util.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 
@@ -46,30 +47,30 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     protected final DefaultColorProperty textBoxBorderColorProperty = new DefaultColorProperty( this, "text box border", new Color( 160, 160, 160 ) );
     protected final DefaultColorProperty textBoxForegroundColorProperty = new DefaultColorProperty( this, "text box foreground", new Color( 0, 0, 0 ) );
 
-    protected final BooleanProperty clearSuggestionTextOnFocusProperty = new BooleanProperty( this, "remove suggestion text on focus", true );
-    protected final BooleanProperty restoreSuggestionTextOnFocusLostProperty = new BooleanProperty( this, "restore suggestion text", true );
-    protected final BooleanProperty enableBackgroundDrawingProperty = new BooleanProperty( this, "enable background drawing", true );
-    protected final DefaultPredicateProperty<Character> charInputValidationProperty = new DefaultPredicateProperty<>( this, "key input validation", SharedConstants::isAllowedCharacter );
-    protected final DefaultPredicateProperty<String> textColorValidationProperty = new DefaultPredicateProperty<>( this, "text color validation", s -> true );
-    protected final DefaultIntegerProperty maxStringLengthProperty = new DefaultIntegerProperty( this, "max string length", 32 );
-    protected final DefaultColorProperty textColorProperty = new DefaultColorProperty( this, "text color", new Color( 224, 224, 224 ) );
-    protected final DefaultColorProperty suggestionColorProperty = new DefaultColorProperty( this, "suggestion color", new Color( 128, 128, 128 ) );
-    protected final DefaultColorProperty cursorColorProperty = new DefaultColorProperty( this, "cursor color", new Color( 208, 208, 208 ) );
+    protected final BooleanProperty clearSuggestionTextOnFocus = new BooleanProperty( this, "remove suggestion text on focus", true );
+    protected final BooleanProperty restoreSuggestionTextOnFocusLost = new BooleanProperty( this, "restore suggestion text", true );
+    protected final BooleanProperty enableBackgroundDrawing = new BooleanProperty( this, "enable background drawing", true );
+    protected final DefaultPredicateProperty<Character> charInputValidation = new DefaultPredicateProperty<>( this, "key input validation", SharedConstants::isAllowedCharacter );
+    protected final DefaultPredicateProperty<String> textColorValidation = new DefaultPredicateProperty<>( this, "text color validation", s -> true );
+    protected final DefaultIntegerProperty maxStringLength = new DefaultIntegerProperty( this, "max string length", 32 );
+    protected final DefaultColorProperty textColor = new DefaultColorProperty( this, "text color", new Color( 224, 224, 224 ) );
+    protected final DefaultColorProperty suggestionColor = new DefaultColorProperty( this, "suggestion color", new Color( 128, 128, 128 ) );
+    protected final DefaultColorProperty cursorColor = new DefaultColorProperty( this, "cursor color", new Color( 208, 208, 208 ) );
     protected final DefaultStringProperty textProperty = new DefaultStringProperty( this, "text", "" );
-    protected final DefaultPredicateProperty<String> textValidatorProperty = new DefaultPredicateProperty<>( this, "text validator", s -> true );
-    protected final DefaultPredicateProperty<KeyInput> keyInputProperty = new DefaultPredicateProperty<>( this, "key input property", input -> true );
-    protected final DefaultObjectProperty<BiFunction<String, Integer, String>> textFormatterProperty = new DefaultObjectProperty<>( this, "text formatter", (str, num) -> str );
-    protected final DefaultObjectProperty<BiFunction<String, Integer, String>> suggestionTextFormatProperty = new DefaultObjectProperty<>( this, "suggestion text formatter", (str, num) -> str );
-    protected final DefaultConsumerProperty<String> onTextChangeProperty = new DefaultConsumerProperty<>( this, "text change consumer" );
-    protected final DefaultConsumerProperty<Widget> onTickConsumerProperty = new DefaultConsumerProperty<>( this, "tick consumer" );
+    protected final DefaultPredicateProperty<String> textValidator = new DefaultPredicateProperty<>( this, "text validator", s -> true );
+    protected final DefaultPredicateProperty<KeyInput> keyInput = new DefaultPredicateProperty<>( this, "key input property", input -> true );
+    protected final DefaultObjectProperty<BiFunction<String, Integer, String>> textFormatter = new DefaultObjectProperty<>( this, "text formatter", (str, num) -> str );
+    protected final DefaultObjectProperty<BiFunction<String, Integer, String>> suggestionTextFormat = new DefaultObjectProperty<>( this, "suggestion text formatter", (str, num) -> str );
+    protected final DefaultConsumerProperty<String> onTextChange = new DefaultConsumerProperty<>( this, "text change consumer" );
+    protected final DefaultConsumerProperty<Widget> onTickConsumer = new DefaultConsumerProperty<>( this, "tick consumer" );
 
     // Non-final variables (so players can change the default suggestion text)
-    protected DefaultStringProperty suggestionTextProperty = new DefaultStringProperty( this, "suggestion text", null );
+    protected DefaultStringProperty suggestionText = new DefaultStringProperty( this, "suggestion text", null );
     protected AbstractLabel label;
 
     public AbstractTextFieldWidget(int x, int y) {
         super( x, y );
-        maxStringLengthProperty.addListener( (listener) -> {
+        maxStringLength.addListener( (listener) -> {
             if ( this.getText().length() > ( int ) listener.getValue() ) {
                 this.textProperty.set( getText().substring( 0, ( int ) listener.getValue() ) );
                 this.onTextChange( this.getText() );
@@ -78,59 +79,59 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     }
 
     public Consumer<String> getOnTextChangeConsumer() {
-        return onTextChangeProperty.get();
+        return onTextChange.get();
     }
 
     public BiFunction<String, Integer, String> getTextFormatter() {
-        return this.textFormatterProperty.get();
+        return this.textFormatter.get();
     }
 
     public BiFunction<String, Integer, String> getSuggestionTextFormatter() {
-        return this.suggestionTextFormatProperty.get();
+        return this.suggestionTextFormat.get();
     }
 
     public Consumer<Widget> getOnTickConsumer() {
-        return this.onTickConsumerProperty.get();
+        return this.onTickConsumer.get();
     }
 
     public Predicate<String> getTextValidator() {
-        return this.textValidatorProperty.get();
+        return this.textValidator.get();
     }
 
     public boolean doRemoveSuggestionOnFocus() {
-        return this.clearSuggestionTextOnFocusProperty.get();
+        return this.clearSuggestionTextOnFocus.get();
     }
 
     public boolean doRestoreSuggestionOnFocus() {
-        return this.restoreSuggestionTextOnFocusLostProperty.get();
+        return this.restoreSuggestionTextOnFocusLost.get();
     }
 
     public Color getCursorColor() {
-        return this.cursorColorProperty.get();
+        return this.cursorColor.get();
     }
 
     public int getMaxStringLength() {
-        return this.maxStringLengthProperty.get();
+        return this.maxStringLength.get();
     }
 
     public Color getSuggestionTextColor() {
-        return this.suggestionColorProperty.get();
+        return this.suggestionColor.get();
     }
 
     public Color getTextColor() {
-        return this.textColorProperty.get();
+        return this.textColor.get();
     }
 
     public Predicate<String> getTextColorValidator() {
-        return this.textColorValidationProperty.get();
+        return this.textColorValidation.get();
     }
 
     public Predicate<KeyInput> getKeyInputValidator() {
-        return this.keyInputProperty.get();
+        return this.keyInput.get();
     }
 
     public Predicate<Character> getCharacterInputValidator() {
-        return this.charInputValidationProperty.get();
+        return this.charInputValidation.get();
     }
 
     public Color getTextBoxBorderColor() {
@@ -164,7 +165,7 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
      */
     public void setText(String text) {
         if ( this.getTextValidator().test( text ) ) {
-            int maxStringLength = this.maxStringLengthProperty.get();
+            int maxStringLength = this.maxStringLength.get();
             if ( text.length() > maxStringLength ) {
                 this.textProperty.set( text.substring( 0, maxStringLength ) );
             } else {
@@ -240,16 +241,16 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         if ( replaceDefault ) {
             setDefaultSuggestionText( text );
         }
-        this.suggestionTextProperty.set( text );
+        this.suggestionText.set( text );
     }
 
     private void setDefaultSuggestionText(String text) {
-        this.suggestionTextProperty = new DefaultStringProperty( this, "suggestion text", text );
+        this.suggestionText = new DefaultStringProperty( this, "suggestion text", text );
     }
 
     @Nullable
     public String getSuggestionText() {
-        return this.suggestionTextProperty.get();
+        return this.suggestionText.get();
     }
 
     @Override
@@ -258,12 +259,12 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         if ( !this.isFocused() & newFocus && doRemoveSuggestionOnFocus() ) {
             setSuggestionText( "" );
         } else if ( this.isFocused() && !newFocus && doRestoreSuggestionOnFocus() ) {
-            setSuggestionText( this.suggestionTextProperty.getDefaultValue() );
+            setSuggestionText( this.suggestionText.getDefaultValue() );
         }
     }
 
     protected boolean doEnableBackgroundDrawing() {
-        return this.enableBackgroundDrawingProperty.get();
+        return this.enableBackgroundDrawing.get();
     }
 
     @Override
@@ -302,20 +303,20 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
             KeyInput input = KeyInput.key( KeyInput.Action.PRESS, keyCode, scanCode, modifiers );
             if ( !this.onKeyPress( input ) ) return false;
             this.hasShiftDown = input.getInputModifier().isShiftPressed();
-            if ( Screen.isSelectAll( keyCode ) ) {
+            if ( Keyboard.isSelectAll( keyCode ) ) {
                 this.setCursorPositionEnd();
                 this.setSelectionPos( 0 );
                 return true;
-            } else if ( Screen.isCopy( keyCode ) ) {
+            } else if ( Keyboard.isCopy( keyCode ) ) {
                 Minecraft.getInstance().keyboardListener.setClipboardString( this.getSelectedText() );
                 return true;
-            } else if ( Screen.isPaste( keyCode ) ) {
+            } else if ( Keyboard.isPaste( keyCode ) ) {
                 if ( this.isEnabled() ) {
                     this.writeText( Minecraft.getInstance().keyboardListener.getClipboardString() );
                 }
 
                 return true;
-            } else if ( Screen.isCut( keyCode ) ) {
+            } else if ( Keyboard.isCut( keyCode ) ) {
                 Minecraft.getInstance().keyboardListener.setClipboardString( this.getSelectedText() );
                 if ( this.isEnabled() ) {
                     this.writeText( "" );
@@ -405,7 +406,7 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         String filtered = SharedConstants.filterAllowedCharacters( text );
         int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
         int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
-        int k = this.maxStringLengthProperty.get() - this.getText().length() - ( i - j );
+        int k = this.maxStringLength.get() - this.getText().length() - ( i - j );
         if ( !this.getText().isEmpty() ) {
             newMessage = newMessage + this.getText().substring( 0, i );
         }
