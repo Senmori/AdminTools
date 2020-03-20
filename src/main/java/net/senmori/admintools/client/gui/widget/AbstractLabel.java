@@ -184,7 +184,6 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
         /**
          * Represents a position that the gui designer determines.
          */
-        Position CUSTOM = (parent, label, spacing) -> {};
         /**
          * Represents a stand-alone label without any attachments to a widget.
          */

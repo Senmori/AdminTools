@@ -1,6 +1,6 @@
 package net.senmori.admintools.client.textures;
 
-import net.senmori.admintools.lib.texture.ITexture;
+import net.senmori.admintools.lib.texture.Texture;
 import net.senmori.admintools.lib.texture.TextureGroup;
 
 import java.util.Locale;
@@ -49,7 +49,7 @@ public enum Icon {
         return name().toLowerCase( Locale.ENGLISH );
     }
 
-    public ITexture getTexture() {
+    public Texture getTexture() {
         return group.getOrAddTexture( getName() );
     }
 }

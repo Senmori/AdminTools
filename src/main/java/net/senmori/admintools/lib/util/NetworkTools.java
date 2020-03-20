@@ -31,11 +31,7 @@ public class NetworkTools
         CompoundNBT nbt = buf.readCompoundTag();
         ItemStack stack = ItemStack.read(nbt);
         int amount = buf.readInt();
-        if (amount <= 0) {
-            stack.setCount(0);
-        } else {
-            stack.setCount(amount);
-        }
+        stack.setCount( Math.max( amount, 0 ) );
         return stack;
     }
 
@@ -51,8 +47,6 @@ public class NetworkTools
 
     public static void writeItemStackList(ByteBuf buf, @Nonnull List<ItemStack> outputs) {
         buf.writeInt(outputs.size());
-        for (ItemStack output : outputs) {
-            NetworkTools.writeItemStack(buf, output);
-        }
+        outputs.forEach( item -> NetworkTools.writeItemStack( buf, item ) );
     }
 }

@@ -9,7 +9,7 @@ import net.senmori.admintools.client.gui.AbstractWidget;
 import net.senmori.admintools.client.gui.widget.api.IPressable;
 import net.senmori.admintools.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.admintools.lib.properties.primitive.ObjectProperty;
-import net.senmori.admintools.lib.texture.ITexture;
+import net.senmori.admintools.lib.texture.Texture;
 import net.senmori.admintools.lib.util.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 
@@ -17,8 +17,8 @@ import java.util.function.Consumer;
 
 @OnlyIn( Dist.CLIENT )
 public class ImageButton extends AbstractWidget<ImageButton> implements IPressable  {
-    private final ObjectProperty<ITexture> textureProperty = new ObjectProperty<>( this, "texture", null );
-    private final ObjectProperty<ITexture> onHoverTexture = new ObjectProperty<>( this, "on hover texture", null );
+    private final ObjectProperty<Texture> textureProperty = new ObjectProperty<>( this, "texture", null );
+    private final ObjectProperty<Texture> onHoverTexture = new ObjectProperty<>( this, "on hover texture", null );
     private final DefaultConsumerProperty<Widget> hoverConsumer = new DefaultConsumerProperty<>( this, "hover consumer" );
     private final DefaultConsumerProperty<Widget> pressConsumer = new DefaultConsumerProperty<>( this, "press consumer" );
 
@@ -26,7 +26,7 @@ public class ImageButton extends AbstractWidget<ImageButton> implements IPressab
         super( xIn, yIn );
     }
 
-   public void setTexture(ITexture texture) {
+   public void setTexture(Texture texture) {
         textureProperty.set( texture );
         if (texture != null) {
             texture.getGroup().adjustLayout();
@@ -34,18 +34,18 @@ public class ImageButton extends AbstractWidget<ImageButton> implements IPressab
         }
    }
 
-   public void setHoverTexture(ITexture texture) {
+   public void setHoverTexture(Texture texture) {
         onHoverTexture.set( texture );
         if (texture != null) {
             texture.getGroup().adjustLayout();
         }
    }
 
-   public ITexture getTexture() {
+   public Texture getTexture() {
         return isHovered() && getHoverTexture() != null ? getHoverTexture() : textureProperty.get();
    }
 
-   public ITexture getHoverTexture() {
+   public Texture getHoverTexture() {
         return onHoverTexture.get();
    }
 
@@ -83,7 +83,7 @@ public class ImageButton extends AbstractWidget<ImageButton> implements IPressab
 
     @Override
    public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        ITexture texture = getTexture();
+        Texture texture = getTexture();
         if (texture == null || texture.getLocation() == null) return;
         Minecraft.getInstance().getTextureManager().bindTexture( texture.getLocation() );
         RenderSystem.disableDepthTest();

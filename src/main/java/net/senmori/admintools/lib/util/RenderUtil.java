@@ -1,13 +1,12 @@
 package net.senmori.admintools.lib.util;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.senmori.admintools.lib.texture.ITexture;
+import net.senmori.admintools.lib.texture.Texture;
 
 import java.awt.Color;
 
@@ -18,7 +17,7 @@ import java.awt.Color;
 public class RenderUtil {
 
 
-    public static void drawTexture(int screenX, int screenY, ITexture texture) {
+    public static void drawTexture(int screenX, int screenY, Texture texture) {
         AbstractGui.blit( screenX, screenY, ( float ) texture.getX(), ( float ) texture.getY(), texture.getWidth(), texture.getHeight(), 256, 256 );
     }
 

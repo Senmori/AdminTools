@@ -19,7 +19,7 @@ import net.senmori.admintools.lib.properties.consumer.DefaultConsumerProperty;
 import net.senmori.admintools.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.admintools.lib.properties.defaults.DefaultStringProperty;
 import net.senmori.admintools.lib.properties.primitive.BooleanProperty;
-import net.senmori.admintools.lib.texture.ITexture;
+import net.senmori.admintools.lib.texture.Texture;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
@@ -28,9 +28,9 @@ import java.util.function.Consumer;
 @OnlyIn( Dist.CLIENT )
 public abstract class AbstractButton extends AbstractWidget implements IPressable, IUpdatable {
     // textures
-    private final DefaultObjectProperty<ITexture> defaultTextureProperty = new DefaultObjectProperty<>( this, "default texture", Button.NORMAL.getTexture() );
-    private final DefaultObjectProperty<ITexture> disabledTextureProperty = new DefaultObjectProperty<>( this, " disabled texture", Button.DISABLED.getTexture() );
-    private final DefaultObjectProperty<ITexture> hoverTextureProperty = new DefaultObjectProperty<>( this, "hover texture", Button.HOVER.getTexture() );
+    private final DefaultObjectProperty<Texture> defaultTextureProperty = new DefaultObjectProperty<>( this, "default texture", Button.NORMAL.getTexture() );
+    private final DefaultObjectProperty<Texture> disabledTextureProperty = new DefaultObjectProperty<>( this, " disabled texture", Button.DISABLED.getTexture() );
+    private final DefaultObjectProperty<Texture> hoverTextureProperty = new DefaultObjectProperty<>( this, "hover texture", Button.HOVER.getTexture() );
     // button text
     private final DefaultStringProperty textProperty = new DefaultStringProperty( this, "button text", "" );
     // colors - taken from Widget#getFGColor - unpacked and converted into a nice RGB format
@@ -91,7 +91,7 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         if ( this.isEnabled() && this.isVisible() ) {
             if ( keyCode != GLFW.GLFW_KEY_ENTER /* 257 */
                     && keyCode != GLFW.GLFW_KEY_SPACE /* 32 */
-                    && keyCode != GLFW.GLFW_KEY_KP_ENTER /* 335*/ ) {
+                    && keyCode != GLFW.GLFW_KEY_KP_ENTER /* 335 */ ) {
                 return false;
             } else {
                 this.playDownSound( Minecraft.getInstance().getSoundHandler() );
@@ -129,8 +129,8 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         return enabledColor.get();
     }
 
-    protected ITexture getTextureForRender() {
-        ITexture texture = getDefaultTexture();
+    protected Texture getTextureForRender() {
+        Texture texture = getDefaultTexture();
         if ( !isEnabled() ) {
             texture = getDisabledTexture();
         } else if (isHovered()) {
@@ -142,7 +142,7 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         return texture;
     }
 
-    protected void updateDimensions(ITexture texture) {
+    protected void updateDimensions(Texture texture) {
         if ( doTexturesDefineDimensions() && texture != null) {
             if ( texture.getWidth() != getWidth() ) {
                 setWidth( texture.getWidth() );
@@ -159,7 +159,7 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
     /**
      * Buttons are rendered by this method
      */
-    protected void renderButtonTexture(ITexture texture) {
+    protected void renderButtonTexture(Texture texture) {
         Minecraft.getInstance().getTextureManager().bindTexture( texture.getLocation() );
         RenderSystem.color4f( 1.0F, 1.0F, 1.0F, this.alpha );
         RenderSystem.enableBlend();
@@ -204,29 +204,29 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         return this.textProperty.get();
     }
 
-    public ITexture getDefaultTexture() {
+    public Texture getDefaultTexture() {
         return this.defaultTextureProperty.get();
     }
 
-    public void setDefaultTexture(ITexture texture) {
+    public void setDefaultTexture(Texture texture) {
         this.defaultTextureProperty.set( texture );
         getDefaultTexture().getGroup().adjustLayout();
     }
 
-    public ITexture getDisabledTexture() {
+    public Texture getDisabledTexture() {
         return disabledTextureProperty.get();
     }
 
-    public void setDisabledTexture(ITexture texture) {
+    public void setDisabledTexture(Texture texture) {
         this.disabledTextureProperty.set( texture );
         disabledTextureProperty.get().getGroup().adjustLayout();
     }
 
-    public ITexture getHoverTexture() {
+    public Texture getHoverTexture() {
         return this.hoverTextureProperty.get();
     }
 
-    public void setHoverTexture(ITexture texture) {
+    public void setHoverTexture(Texture texture) {
         this.hoverTextureProperty.set( texture );
         hoverTextureProperty.get().getGroup().adjustLayout();
     }

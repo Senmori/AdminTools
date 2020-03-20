@@ -122,7 +122,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param onTextChangeConsumer the new consumer
      */
     public void setOnTextChangeConsumer(Consumer<String> onTextChangeConsumer) {
-        this.onTextChangeProperty.set(onTextChangeConsumer);
+        this.onTextChange.set(onTextChangeConsumer);
     }
 
     /**
@@ -133,7 +133,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param formatter the new text formatter
      */
     public void setTextFormatter(BiFunction<String, Integer, String> formatter) {
-        this.textFormatterProperty.set( formatter );
+        this.textFormatter.set( formatter );
     }
 
     /**
@@ -145,7 +145,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param formatter the new suggestion text formatter
      */
     public void setSuggestionTextFormatter(BiFunction<String, Integer, String> formatter) {
-        this.suggestionTextFormatProperty.set( formatter );
+        this.suggestionTextFormat.set( formatter );
     }
 
     /**
@@ -155,7 +155,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param consumer the on tick consumer
      */
     public void setTickConsumer(Consumer<Widget> consumer) {
-        this.onTickConsumerProperty.set( consumer );
+        this.onTickConsumer.set( consumer );
     }
 
     /**
@@ -167,7 +167,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param validator the new text validator
      */
     public void setTextValidator(Predicate<String> validator) {
-        this.textValidatorProperty.set( validator );
+        this.textValidator.set( validator );
     }
 
     /**
@@ -178,7 +178,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param remove true to remove the suggestion on focus.
      */
     public void removeSuggestionOnFocus(boolean remove) {
-        this.clearSuggestionTextOnFocusProperty.set( remove );
+        this.clearSuggestionTextOnFocus.set( remove );
     }
 
     /**
@@ -188,7 +188,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param restore true to restore the suggestion text on focus
      */
     public void restoreSuggestionOnLostFocus(boolean restore) {
-        this.restoreSuggestionTextOnFocusLostProperty.set( restore );
+        this.restoreSuggestionTextOnFocusLost.set( restore );
     }
 
     /**
@@ -198,7 +198,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param color the new {@link Color}
      */
     public void setCursorColor(Color color) {
-        this.cursorColorProperty.set( color );
+        this.cursorColor.set( color );
     }
 
     /**
@@ -208,7 +208,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param length the maximum length of text
      */
     public void setMaxStringLength(int length) {
-        this.maxStringLengthProperty.set( length );
+        this.maxStringLength.set( length );
     }
 
     /**
@@ -217,7 +217,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param color the new text {@link Color}
      */
     public void setTextColor(Color color) {
-        this.textColorProperty.set( color );
+        this.textColor.set( color );
     }
 
     /**
@@ -228,7 +228,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param textColorValidator the new text color validator
      */
     public void setTextColorValidator(Predicate<String> textColorValidator) {
-        this.textColorValidationProperty.set( textColorValidator );
+        this.textColorValidation.set( textColorValidator );
     }
 
     /**
@@ -243,7 +243,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @see KeyInput
      */
     public void setKeyInputValidator(Predicate<KeyInput> validator) {
-        this.keyInputProperty.set( validator );
+        this.keyInput.set( validator );
     }
 
     /**
@@ -255,7 +255,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param predicate the character input validator
      */
     public void setCharacterInputValidator(Predicate<Character> predicate) {
-        this.charInputValidationProperty.set( predicate );
+        this.charInputValidation.set( predicate );
     }
 
     /**
@@ -329,7 +329,7 @@ public class SimpleTextField extends AbstractTextFieldWidget {
      * @param color the new suggestion text color.
      */
     public void setSuggestionTextColor(Color color) {
-        this.suggestionColorProperty.set( color );
+        this.suggestionColor.set( color );
     }
 
     /**

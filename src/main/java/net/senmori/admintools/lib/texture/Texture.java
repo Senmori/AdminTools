@@ -3,141 +3,83 @@ package net.senmori.admintools.lib.texture;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Texture represents any possible icon that can be displayed in a gui.
- * For example, player hearts are icons.
+ * A texture is a rectangular area of pixels found within a source file.
+ * Multiple types of textures can be within a single source file.
+ * For example, inventory images contain all icons needed to be displayed on screen. This includes
+ * any icons such as the recipe book icon.
  */
-public class Texture implements ITexture {
+public interface Texture {
 
-    private final TextureGroup group;
-    private final String name;
-
-    private int x = -1;
-    private int y = -1;
-    private int width = -1;
-    private int height = -1;
-    private int textureIndex = 1;
-
-    public Texture(TextureGroup group, String name) {
-        this.group = group;
-        this.name = name;
-
-        group.addTexture( this );
+    /**
+     * Create a new {@link GuiTexture.Builder} instance to help create textures.
+     *
+     * @param name
+     * @return
+     */
+    public static GuiTexture.Builder create(String name) {
+        return new GuiTexture.Builder(name);
     }
 
-    @Override
-    public TextureGroup getGroup() {
-        return group;
-    }
+    /**
+     * The {@link ResourceLocation} is the location where the texture can be found.
+     *
+     * @return the {@link ResourceLocation} of the file where this texture is located.
+     */
+    ResourceLocation getLocation();
 
-    @Override
-    public ResourceLocation getLocation() {
-        return group.getLocation();
-    }
+    /**
+     * The name of the texture is a user-friendly way to describe the texture.
+     *
+     * @return the user-friendly description of the texture
+     */
+    String getName();
 
-    @Override
-    public String getName() {
-        return name;
-    }
+    /**
+     * The x-coordinate of the texture on the {@link #getLocation} file.
+     * These coordinates are in pixels.
+     *
+     * @return the x-coordinate of the texture
+     */
+    int getX();
 
-    @Override
-    public int getX() {
-        return x;
-    }
+    /**
+     * The y-coordinate of the texture on the {@link ResourceLocation} file.
+     * These coordinates are in pixels.
+     *
+     * @return the y-coordinate of the texture
+     */
+    int getY();
 
-    @Override
-    public int getY() {
-        return y;
-    }
+    /**
+     * The width of the texture, in pixels.
+     *
+     * @return the width of the texture
+     */
+    int getWidth();
 
-    @Override
-    public int getWidth() {
-        return group.isOverrideTextureSettings() ? group.getDefaultWidth() : (this.width < 0 ? group.getDefaultWidth() : this.width);
-    }
+    /**
+     * The height of the texture, in pixels.
+     *
+     * @return the height of the texture
+     */
+    int getHeight();
 
-    @Override
-    public int getHeight() {
-        return group.isOverrideTextureSettings() ? group.getDefaultHeight() : (this.height < 0 ? group.getDefaultHeight() : this.height);
-    }
+    int getTextureIndex();
 
-    @Override
-    public int getTextureIndex() {
-        return textureIndex;
-    }
+    void setTextureIndex(int index);
 
-    @Override
-    public void setTextureIndex(int index) {
-        this.textureIndex = index;
-    }
+    void setX(int x);
 
-    @Override
-    public void setX(int x) {
-        this.x = x;
-    }
+    void setY(int y);
 
-    @Override
-    public void setY(int y) {
-        this.y = y;
-    }
+    void setWidth(int width);
 
-    @Override
-    public void setWidth(int width) {
-        this.width = width;
-    }
+    void setHeight(int height);
 
-    @Override
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append( "Texture [" ).append( getName() ).append( "] " );
-        builder.append( "[X=" ).append( getX() ).append( ",Y=" ).append( getY() ).append( "], " );
-        builder.append( "[W=" ).append( getWidth() ).append( ",H=" ).append( getHeight() ).append( "], " );
-        builder.append( "[idx=" ).append( getTextureIndex() ).append( "], " );
-        builder.append( "[location=" ).append( getLocation().toString() ).append( "]" );
-        return builder.toString();
-    }
-
-    public static class Builder {
-
-        private final String name;
-        private TextureGroup group;
-        private int x,y;
-        private int width, height;
-        private int textureIndex = 1;
-
-        protected Builder(String name) {
-            this.name = name;
-        }
-
-        public Builder group(TextureGroup group) {
-            this.group = group;
-            return this;
-        }
-
-        public Builder at(int x, int y) {
-            this.x = x;
-            this.y = y;
-            return this;
-        }
-
-        public Builder dimensions(int width, int height) {
-            this.width = width;
-            this.height = height;
-            return this;
-        }
-
-        public Builder textureIndex(int index) {
-            this.textureIndex = index;
-            return this;
-        }
-
-        public ITexture build() {
-            ITexture texture =  new Texture( group, name );
-            texture.setTextureIndex( textureIndex );
-            return texture;
-        }
-    }
+    /**
+     * Get the {@link TextureGroup} this texture belongs to.
+     *
+     * @return the TextureGroup this texture belongs to, or null if it belongs to no group.
+     */
+    TextureGroup getGroup();
 }

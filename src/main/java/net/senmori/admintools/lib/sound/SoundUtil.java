@@ -18,8 +18,7 @@ public final class SoundUtil {
     private Map<ResourceLocation, SoundCategory> soundCache = new HashMap<>();
     private Map<String, SoundCategory> SOUND_CATEGORIES = Arrays.stream( SoundCategory.values() ).collect( Collectors.toMap( SoundCategory::getName, Function.identity() ) );
 
-    private SoundUtil() {
-    }
+    private SoundUtil() {}
 
     public static SoundUtil get() {
         return INSTANCE;

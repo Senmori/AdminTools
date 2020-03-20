@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TextureGroup {
     private final String groupName;
     private final ResourceLocation location;
-    private final Collection<ITexture> textures = new ArrayList<>();
+    private final Collection<Texture> textures = new ArrayList<>();
     private final Collection<TextureGroup> textureGroups = new ArrayList<>();
 
     private final int startX;
@@ -43,13 +43,13 @@ public class TextureGroup {
         textureGroups.forEach( TextureGroup::adjustLayout );
     }
 
-    public ITexture addTexture(String name) {
-        ITexture texture = ITexture.create( name ).group( this ).build();
+    public Texture addTexture(String name) {
+        Texture texture = Texture.create( name ).group( this ).build();
         textures.add( texture );
         return texture;
     }
 
-    public ITexture addTexture(ITexture texture) {
+    public Texture addTexture(Texture texture) {
         if (texture.getGroup() == this) {
             textures.add( texture );
             return texture;
@@ -61,14 +61,14 @@ public class TextureGroup {
         return currentTextureIndex.getAndIncrement();
     }
 
-    public ITexture getOrAddTexture(String name) {
-        ITexture texture = findTextureByName( name );
+    public Texture getOrAddTexture(String name) {
+        Texture texture = findTextureByName( name );
         if (texture != null) return texture;
         return addTexture( name );
     }
 
-    public ITexture findTextureByName(String name) {
-        ITexture texture = textures.stream().filter( tex -> tex.getName().equals( name ) ).findFirst().orElse( null );
+    public Texture findTextureByName(String name) {
+        Texture texture = textures.stream().filter( tex -> tex.getName().equals( name ) ).findFirst().orElse( null );
         if (texture != null) {
             return texture;
         }
@@ -81,8 +81,8 @@ public class TextureGroup {
         return null;
     }
 
-    public ITexture findTextureByCoordinate(int x, int y) {
-        for (ITexture texture : textures) {
+    public Texture findTextureByCoordinate(int x, int y) {
+        for ( Texture texture : textures) {
             int startX = texture.getX();
             int startY = texture.getY();
             int endX = startX + texture.getWidth();
@@ -92,7 +92,7 @@ public class TextureGroup {
             }
         }
         for (TextureGroup group : textureGroups) {
-            ITexture texture = group.findTextureByCoordinate( x, y );
+            Texture texture = group.findTextureByCoordinate( x, y );
             if (texture != null) {
                 return null;
             }
@@ -105,7 +105,7 @@ public class TextureGroup {
     }
 
     public TextureGroup getGroupByCoordinate(int x, int y) {
-        ITexture texture = findTextureByCoordinate( x, y );
+        Texture texture = findTextureByCoordinate( x, y );
         return texture != null ? texture.getGroup() : this;
     }
 
@@ -117,7 +117,7 @@ public class TextureGroup {
         return groupName;
     }
 
-    public List<ITexture> getTextures() {
+    public List<Texture> getTextures() {
         return ImmutableList.copyOf(textures);
     }
 

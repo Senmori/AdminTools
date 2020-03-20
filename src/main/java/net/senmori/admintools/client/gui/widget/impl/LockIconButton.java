@@ -4,21 +4,21 @@ import net.senmori.admintools.client.gui.widget.ToggleableButton;
 import net.senmori.admintools.client.textures.Button;
 import net.senmori.admintools.lib.api.Procedure;
 import net.senmori.admintools.lib.properties.defaults.DefaultObjectProperty;
-import net.senmori.admintools.lib.texture.ITexture;
+import net.senmori.admintools.lib.texture.Texture;
 
 public class LockIconButton extends ToggleableButton {
 
-    private final DefaultObjectProperty<ITexture> unlockedNormal = new DefaultObjectProperty<>( this, "unlocked normal", Button.CB_UNLOCKED_NORMAL.getTexture() );
-    private final DefaultObjectProperty<ITexture> unlockedHover = new DefaultObjectProperty<>( this, "unlocked normal", Button.CB_UNLOCKED_HOVER.getTexture() );
-    private final DefaultObjectProperty<ITexture> unlockedDisabled = new DefaultObjectProperty<>( this, "unlocked normal", Button.CB_UNLOCKED_DISABLED.getTexture() );
+    private final DefaultObjectProperty<Texture> unlockedNormal = new DefaultObjectProperty<>( this, "unlocked normal", Button.CB_UNLOCKED_NORMAL.getTexture() );
+    private final DefaultObjectProperty<Texture> unlockedHover = new DefaultObjectProperty<>( this, "unlocked normal", Button.CB_UNLOCKED_HOVER.getTexture() );
+    private final DefaultObjectProperty<Texture> unlockedDisabled = new DefaultObjectProperty<>( this, "unlocked normal", Button.CB_UNLOCKED_DISABLED.getTexture() );
 
-    private final DefaultObjectProperty<ITexture> lockedNormal = new DefaultObjectProperty<>( this, "locked normal", Button.CB_LOCKED_NORMAL.getTexture() );
-    private final DefaultObjectProperty<ITexture> lockedHover = new DefaultObjectProperty<>( this, "locked normal", Button.CB_LOCKED_HOVER.getTexture() );
-    private final DefaultObjectProperty<ITexture> lockedDisabled = new DefaultObjectProperty<>( this, "locked normal", Button.CB_LOCKED_DISABLED.getTexture() );
+    private final DefaultObjectProperty<Texture> lockedNormal = new DefaultObjectProperty<>( this, "locked normal", Button.CB_LOCKED_NORMAL.getTexture() );
+    private final DefaultObjectProperty<Texture> lockedHover = new DefaultObjectProperty<>( this, "locked normal", Button.CB_LOCKED_HOVER.getTexture() );
+    private final DefaultObjectProperty<Texture> lockedDisabled = new DefaultObjectProperty<>( this, "locked normal", Button.CB_LOCKED_DISABLED.getTexture() );
 
-    private final Procedure<ITexture> normalTextureProcedure = () -> isLocked() ? getLockedTexture() : getUnlockedTexture();
-    private final Procedure<ITexture> disabledTextureProcedure = () -> isLocked() ?  getLockedDisabledTexture() : getUnlockedDisabledTexture();
-    private final Procedure<ITexture> hoverTextureProcedure = () -> isLocked() ? getLockedHoverTexture() : getUnlockedHoverTexture();
+    private final Procedure<Texture> normalTextureProcedure = () -> isLocked() ? getLockedTexture() : getUnlockedTexture();
+    private final Procedure<Texture> disabledTextureProcedure = () -> isLocked() ?  getLockedDisabledTexture() : getUnlockedDisabledTexture();
+    private final Procedure<Texture> hoverTextureProcedure = () -> isLocked() ? getLockedHoverTexture() : getUnlockedHoverTexture();
 
     public LockIconButton(int xIn, int yIn) {
         super( xIn, yIn );
@@ -37,64 +37,64 @@ public class LockIconButton extends ToggleableButton {
     }
 
     @Override
-    protected ITexture getTextureForRender() {
+    protected Texture getTextureForRender() {
         if (!isEnabled()) {
             return disabledTextureProcedure.execute();
         }
         if (isHovered()) {
             return hoverTextureProcedure.execute();
         }
-        ITexture texture = normalTextureProcedure.execute();
+        Texture texture = normalTextureProcedure.execute();
         super.updateDimensions( texture );
         return texture;
     }
 
 
-    public ITexture getUnlockedTexture() {
+    public Texture getUnlockedTexture() {
         return unlockedNormal.get();
     }
 
-    public void setUnlockedTexture(ITexture texture) {
+    public void setUnlockedTexture(Texture texture) {
         unlockedNormal.set( texture );
     }
 
-    public ITexture getUnlockedDisabledTexture() {
+    public Texture getUnlockedDisabledTexture() {
         return this.unlockedDisabled.get();
     }
 
-    public void setUnlockedDisabled(ITexture texture) {
+    public void setUnlockedDisabled(Texture texture) {
         this.unlockedDisabled.set( texture );
     }
 
-    public ITexture getUnlockedHoverTexture() {
+    public Texture getUnlockedHoverTexture() {
         return this.unlockedHover.get();
     }
 
-    public void setUnlockedHover(ITexture texture) {
+    public void setUnlockedHover(Texture texture) {
         this.unlockedHover.set( texture );
     }
 
-    public ITexture getLockedTexture() {
+    public Texture getLockedTexture() {
         return this.lockedNormal.get();
     }
 
-    public void setLockedTexture(ITexture texture) {
+    public void setLockedTexture(Texture texture) {
         this.lockedNormal.set( texture );
     }
 
-    public ITexture getLockedDisabledTexture() {
+    public Texture getLockedDisabledTexture() {
         return lockedDisabled.get();
     }
 
-    public void setLockedDisabledTexture(ITexture texture) {
+    public void setLockedDisabledTexture(Texture texture) {
         this.lockedDisabled.set( texture );
     }
 
-    public ITexture getLockedHoverTexture() {
+    public Texture getLockedHoverTexture() {
         return this.lockedHover.get();
     }
 
-    public void setLockedHoverTexture(ITexture texture) {
+    public void setLockedHoverTexture(Texture texture) {
         this.lockedHover.set( texture );
     }
 }

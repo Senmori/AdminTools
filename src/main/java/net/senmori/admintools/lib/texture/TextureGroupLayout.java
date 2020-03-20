@@ -50,5 +50,5 @@ public interface TextureGroupLayout {
         return false;
     });
 
-    boolean adjust(ITexture texture, TextureGroup group);
+    boolean adjust(Texture texture, TextureGroup group);
 }

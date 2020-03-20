@@ -13,11 +13,15 @@ public class Keyboard {
     private static DoubleBuffer MOUSE_Y_BUFFER = DoubleBuffer.allocate( 1 );
 
     public static boolean isKeyDown(int key) {
-        return GLFW.glfwGetKey( MC_WINDOW_HANDLE.get(), key ) == GLFW.GLFW_PRESS;
+        return doesKeyMatchGLFW( key, GLFW.GLFW_PRESS );
     }
 
     public static boolean isKeyReleased(int key) {
-        return GLFW.glfwGetKey( MC_WINDOW_HANDLE.get(), key ) == GLFW.GLFW_RELEASE;
+        return doesKeyMatchGLFW( key, GLFW.GLFW_RELEASE );
+    }
+
+    private static boolean doesKeyMatchGLFW(int key, int glfwKeyStatus) {
+        return GLFW.glfwGetKey( MC_WINDOW_HANDLE.get(), key ) == glfwKeyStatus;
     }
 
     public static boolean isKeyCode(int keyCode, int GLFWKeycode) {

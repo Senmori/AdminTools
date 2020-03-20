@@ -2,7 +2,7 @@ package net.senmori.admintools.lib.texture;
 
 import net.minecraft.util.ResourceLocation;
 
-public interface ITextureGroupFactory {
+public interface TextureGroupFactory {
     public static TextureGroup.Builder create(ResourceLocation location, String name) {
         return new TextureGroup.Builder( location, name );
     }

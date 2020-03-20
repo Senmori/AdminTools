@@ -3,12 +3,12 @@ package net.senmori.admintools.client.gui.widget;
 import net.senmori.admintools.client.textures.Button;
 import net.senmori.admintools.lib.properties.defaults.DefaultObjectProperty;
 import net.senmori.admintools.lib.properties.primitive.BooleanProperty;
-import net.senmori.admintools.lib.texture.ITexture;
+import net.senmori.admintools.lib.texture.Texture;
 
 public abstract class ToggleableButton extends AbstractButton {
 
     private final BooleanProperty toggledProperty = new BooleanProperty( this, "toggled", false );
-    private final DefaultObjectProperty<ITexture> toggledTexture = new DefaultObjectProperty<>( this, "toggled texture", Button.NORMAL.getTexture() );
+    private final DefaultObjectProperty<Texture> toggledTexture = new DefaultObjectProperty<>( this, "toggled texture", Button.NORMAL.getTexture() );
 
     public ToggleableButton(int xIn, int yIn) {
         super( xIn, yIn );
@@ -22,11 +22,11 @@ public abstract class ToggleableButton extends AbstractButton {
         this.toggledProperty.set( value );
     }
 
-    public void setToggledTexture(ITexture texture) {
+    public void setToggledTexture(Texture texture) {
         this.toggledTexture.set( texture );
     }
 
-    public ITexture getToggledTexture() {
+    public Texture getToggledTexture() {
         return toggledTexture.get();
     }
 
@@ -37,8 +37,8 @@ public abstract class ToggleableButton extends AbstractButton {
     }
 
     @Override
-    protected ITexture getTextureForRender() {
-        ITexture texture = super.getTextureForRender();
+    protected Texture getTextureForRender() {
+        Texture texture = super.getTextureForRender();
         if ( isToggled() ) {
             texture = getToggledTexture();
         }
