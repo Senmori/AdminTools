@@ -25,6 +25,7 @@ import net.senmori.admintools.lib.properties.primitive.StringProperty;
 import net.senmori.admintools.lib.sound.CustomSound;
 import net.senmori.admintools.lib.sound.SoundUtil;
 import net.senmori.admintools.lib.util.RenderUtil;
+import net.senmori.admintools.util.KeyboardUtil;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -74,7 +75,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     protected void addSingleKeyPressAction(int keyCode, BiConsumer<KeyInput, Widget> consumer) {
-        addKeyPressAction(input -> Keyboard.isKeyCode(input, keyCode), consumer);
+        addKeyPressAction(KeyboardUtil.inputMatches(keyCode), consumer);
     }
 
     protected KeyPressAction findActionForKeyPress(KeyInput input) {
@@ -307,7 +308,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
         if ( this.isEnabled() && this.isVisible() ) {
             if ( this.isFocused() != focus ) {
                 this.onFocusChange( this.isFocused(), focus );
-                this.setFocused( focus );
+                this.focusedProperty.set(focus);
             }
         }
         return false;
