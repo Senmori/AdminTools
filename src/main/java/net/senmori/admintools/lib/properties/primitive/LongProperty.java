@@ -1,29 +1,17 @@
 package net.senmori.admintools.lib.properties.primitive;
 
-import net.senmori.admintools.lib.properties.event.ChangeEvent;
-import net.senmori.admintools.lib.properties.read.ReadOnlyLongProperty;
+import net.senmori.admintools.lib.properties.defaults.DefaultProperty;
 
-public class LongProperty extends ReadOnlyLongProperty {
+public class LongProperty extends DefaultProperty<Long> {
     public LongProperty() {
-        super(null, null, 0L);
+        super( null, 0L );
     }
 
     public LongProperty(final long value) {
-        super(null, null, value);
+        super( null, value );
     }
 
-    public LongProperty(final Object bean, final String name, final long value) {
-        super(bean, name, value);
-    }
-
-    protected void setValue(final long value) {
-        final long old = this.value;
-        this.value = value;
-        invalidated();
-        fireEvent( new ChangeEvent<>( this, old, this.value ) );
-    }
-
-    public void set(final long value) {
-        setValue( value );
+    public LongProperty(final String name, final long value) {
+        super( name, value );
     }
 }

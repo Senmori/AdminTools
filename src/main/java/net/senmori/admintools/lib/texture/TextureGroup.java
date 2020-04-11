@@ -166,7 +166,7 @@ public class TextureGroup {
         private int defaultHeight = -1;
         private int maxWidth = -1;
         private int maxHeight = -1;
-        private boolean overrideTextureSettings;
+        private boolean overrideTextureSettings = true;
         private TextureGroupLayout layout = TextureGroupLayout.NONE;
 
         protected Builder(ResourceLocation location, String name) {
@@ -224,8 +224,8 @@ public class TextureGroup {
          *
          * @return this builder
          */
-        public Builder overrideTextureSettings() {
-            this.overrideTextureSettings = true;
+        public Builder respectTextureSettings() {
+            this.overrideTextureSettings = false;
             return this;
         }
 

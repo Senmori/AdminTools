@@ -3,7 +3,6 @@ package net.senmori.admintools.client.gui.widget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -14,28 +13,31 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.senmori.admintools.client.gui.AbstractWidget;
-import net.senmori.admintools.client.gui.widget.api.IUpdatable;
+import net.senmori.admintools.client.gui.util.TextFormatter;
+import net.senmori.admintools.client.gui.widget.api.KeyPressAction;
+import net.senmori.admintools.client.gui.widget.api.Updatable;
 import net.senmori.admintools.lib.input.KeyInput;
-import net.senmori.admintools.lib.properties.color.DefaultColorProperty;
-import net.senmori.admintools.lib.properties.consumer.DefaultConsumerProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultIntegerProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultObjectProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultStringProperty;
-import net.senmori.admintools.lib.properties.predicate.DefaultPredicateProperty;
+import net.senmori.admintools.lib.properties.color.ColorProperty;
+import net.senmori.admintools.lib.properties.consumer.ConsumerProperty;
+import net.senmori.admintools.lib.properties.predicate.PredicateProperty;
 import net.senmori.admintools.lib.properties.primitive.BooleanProperty;
+import net.senmori.admintools.lib.properties.primitive.IntegerProperty;
+import net.senmori.admintools.lib.properties.primitive.ObjectProperty;
+import net.senmori.admintools.lib.properties.primitive.StringProperty;
 import net.senmori.admintools.lib.util.Keyboard;
 import net.senmori.admintools.lib.util.RenderUtil;
+import net.senmori.admintools.util.KeyboardUtil;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.awt.Color;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @OnlyIn( Dist.CLIENT )
-public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTextFieldWidget> implements IUpdatable {
+public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTextFieldWidget> implements Updatable {
     // Internal
     private int cursorCounter;
     private boolean hasShiftDown;
@@ -44,49 +46,85 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     protected boolean canLoseFocus = true;
     private int lineScrollOffset;
 
-    protected final DefaultColorProperty textBoxBorderColorProperty = new DefaultColorProperty( this, "text box border", new Color( 160, 160, 160 ) );
-    protected final DefaultColorProperty textBoxForegroundColorProperty = new DefaultColorProperty( this, "text box foreground", new Color( 0, 0, 0 ) );
+    protected final ColorProperty textBoxBorderColor = ColorProperty.of( "textBoxBorderColor", new Color( 160, 160, 160 ) );
+    protected final ColorProperty textBoxForegroundColor = ColorProperty.of( "text box foreground", new Color( 0, 0, 0 ) );
 
-    protected final BooleanProperty clearSuggestionTextOnFocus = new BooleanProperty( this, "remove suggestion text on focus", true );
-    protected final BooleanProperty restoreSuggestionTextOnFocusLost = new BooleanProperty( this, "restore suggestion text", true );
-    protected final BooleanProperty enableBackgroundDrawing = new BooleanProperty( this, "enable background drawing", true );
-    protected final DefaultPredicateProperty<Character> charInputValidation = new DefaultPredicateProperty<>( this, "key input validation", SharedConstants::isAllowedCharacter );
-    protected final DefaultPredicateProperty<String> textColorValidation = new DefaultPredicateProperty<>( this, "text color validation", s -> true );
-    protected final DefaultIntegerProperty maxStringLength = new DefaultIntegerProperty( this, "max string length", 32 );
-    protected final DefaultColorProperty textColor = new DefaultColorProperty( this, "text color", new Color( 224, 224, 224 ) );
-    protected final DefaultColorProperty suggestionColor = new DefaultColorProperty( this, "suggestion color", new Color( 128, 128, 128 ) );
-    protected final DefaultColorProperty cursorColor = new DefaultColorProperty( this, "cursor color", new Color( 208, 208, 208 ) );
-    protected final DefaultStringProperty textProperty = new DefaultStringProperty( this, "text", "" );
-    protected final DefaultPredicateProperty<String> textValidator = new DefaultPredicateProperty<>( this, "text validator", s -> true );
-    protected final DefaultPredicateProperty<KeyInput> keyInput = new DefaultPredicateProperty<>( this, "key input property", input -> true );
-    protected final DefaultObjectProperty<BiFunction<String, Integer, String>> textFormatter = new DefaultObjectProperty<>( this, "text formatter", (str, num) -> str );
-    protected final DefaultObjectProperty<BiFunction<String, Integer, String>> suggestionTextFormat = new DefaultObjectProperty<>( this, "suggestion text formatter", (str, num) -> str );
-    protected final DefaultConsumerProperty<String> onTextChange = new DefaultConsumerProperty<>( this, "text change consumer" );
-    protected final DefaultConsumerProperty<Widget> onTickConsumer = new DefaultConsumerProperty<>( this, "tick consumer" );
+    protected final BooleanProperty clearSuggestionTextOnFocus = new BooleanProperty( "remove suggestion text on focus", true );
+    protected final BooleanProperty restoreSuggestionTextOnFocusLost = new BooleanProperty( "restore suggestion text", true );
+    protected final BooleanProperty enableBackgroundDrawing = new BooleanProperty( "enable background drawing", true );
+    protected final PredicateProperty<Character> charInputValidation = PredicateProperty.of( "key input validation", SharedConstants::isAllowedCharacter );
+    protected final PredicateProperty<String> textColorValidation = PredicateProperty.of( "text color validation", s -> true );
+    protected final IntegerProperty maxStringLength = new IntegerProperty( "max string length", 32 );
+    protected final ColorProperty textColor = ColorProperty.of( "text color", new Color( 224, 224, 224 ) );
+    protected final ColorProperty suggestionColor = ColorProperty.of( "suggestion color", new Color( 128, 128, 128 ) );
+    protected final ColorProperty cursorColor = ColorProperty.of( "cursor color", new Color( 208, 208, 208 ) );
+    protected final StringProperty textProperty = new StringProperty( "text", "" );
+    protected final PredicateProperty<String> textValidator = PredicateProperty.of( "text validator", s -> true );
+    protected final PredicateProperty<KeyInput> keyInput = PredicateProperty.of( "key input property", input -> true );
+    protected final ObjectProperty<TextFormatter> textFormatter = new ObjectProperty<>(new TextFormatter());
+    protected final ObjectProperty<TextFormatter> suggestionTextFormat = new ObjectProperty<>(new TextFormatter("suggestion text formatter", (str, num) -> str ));
+    protected final ConsumerProperty<String> onTextChange = ConsumerProperty.of( "text change consumer" );
+    protected final ConsumerProperty<Widget> onTickConsumer = ConsumerProperty.of( "tick consumer" );
 
     // Non-final variables (so players can change the default suggestion text)
-    protected DefaultStringProperty suggestionText = new DefaultStringProperty( this, "suggestion text", null );
+    protected StringProperty suggestionText = new StringProperty( "suggestion text", "" );
     protected AbstractLabel label;
 
     public AbstractTextFieldWidget(int x, int y) {
         super( x, y );
         maxStringLength.addListener( (listener) -> {
-            if ( this.getText().length() > ( int ) listener.getValue() ) {
-                this.textProperty.set( getText().substring( 0, ( int ) listener.getValue() ) );
-                this.onTextChange( this.getText() );
-            }
+            adjustTextLength(getText(), (int)listener.getValue());
         } );
+
+        addKeyPressAction(Keyboard::isSelectAll, (i, w) -> this.selectAll());
+        addKeyPressAction(Keyboard::isCopy,(i, w) -> setClipboardString(this.getSelectedText()));
+        addKeyPressAction(input -> Keyboard.isPaste(input) && this.isEnabled(), (i, w) -> this.writeText(getClipboardString()));
+        addKeyPressAction(Keyboard::isCut, (i, w) -> this.cut(this.getSelectedText()));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_BACKSPACE).and(KeyboardUtil.isControlPressed()), (i, w) -> this.deleteWords(-1));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_BACKSPACE).and(KeyboardUtil.isControlPressed().negate()), (i, w) -> this.deleteFromCursor(-1));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_DELETE).and(KeyboardUtil.isControlPressed()), (i, w) -> this.deleteWords(1));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_DELETE).and(KeyboardUtil.isControlPressed().negate()), (i, w) -> this.deleteFromCursor(1));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_RIGHT).and(KeyboardUtil.isControlPressed()), (i, w) -> {
+            this.setCursorPosition(this.getNthWordFromCursor(1));
+        } );
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_RIGHT).and(KeyboardUtil.isControlPressed().negate()), (i, w) -> this.moveCursorBy(1));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_LEFT).and(KeyboardUtil.isControlPressed()), (i, w) -> {
+            this.setCursorPosition(this.getNthWordFromCursor(-1));
+        } );
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_LEFT).and(KeyboardUtil.isControlPressed().negate()), (i, w) -> this.moveCursorBy(-1));
+        addSingleKeyPressAction(GLFW.GLFW_KEY_HOME, (i, w) -> this.setCursorPositionStart());
+        addSingleKeyPressAction(GLFW.GLFW_KEY_END, (i, w) -> this.setCursorPositionEnd());
+    }
+
+    private void selectAll() {
+        this.setCursorPositionEnd();
+        this.setSelectionPos(0);
+    }
+
+    private void setClipboardString(String text) {
+        Minecraft.getInstance().keyboardListener.setClipboardString(text);
+    }
+
+    private String getClipboardString() {
+        return Minecraft.getInstance().keyboardListener.getClipboardString();
+    }
+
+    private void cut(String text) {
+        setClipboardString(text);
+        if (this.isEnabled()) {
+            this.writeText("" );
+        }
     }
 
     public Consumer<String> getOnTextChangeConsumer() {
         return onTextChange.get();
     }
 
-    public BiFunction<String, Integer, String> getTextFormatter() {
+    public TextFormatter getTextFormatter() {
         return this.textFormatter.get();
     }
 
-    public BiFunction<String, Integer, String> getSuggestionTextFormatter() {
+    public TextFormatter getSuggestionTextFormatter() {
         return this.suggestionTextFormat.get();
     }
 
@@ -98,11 +136,11 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         return this.textValidator.get();
     }
 
-    public boolean doRemoveSuggestionOnFocus() {
+    public boolean shouldRemoveSuggestionOnFocus() {
         return this.clearSuggestionTextOnFocus.get();
     }
 
-    public boolean doRestoreSuggestionOnFocus() {
+    public boolean shouldRestoreSuggestionOnFocus() {
         return this.restoreSuggestionTextOnFocusLost.get();
     }
 
@@ -135,11 +173,11 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     }
 
     public Color getTextBoxBorderColor() {
-        return this.textBoxBorderColorProperty.get();
+        return this.textBoxBorderColor.get();
     }
 
     public Color getTextBoxBGColor() {
-        return this.textBoxForegroundColorProperty.get();
+        return this.textBoxForegroundColor.get();
     }
 
     /**
@@ -152,10 +190,16 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
      */
     @Override
     public String getNarrationMessage() {
-        if (narrationProperty.get().isEmpty() && label != null) {
+        if ( narrationProperty.get().isEmpty() && label != null ) {
             return I18n.format( "gui.narrate.editBox", label.getText(), getText() );
         }
         return narrationProperty.get().isEmpty() ? super.getNarrationMessage() : I18n.format( "gui.narrate.editBox", narrationProperty.get(), getText() );
+    }
+
+    private void adjustTextLength(String text, int maxLength) {
+        if (text.length() > maxLength) {
+            this.textProperty.set(text.substring(0, maxLength));
+        }
     }
 
     /**
@@ -167,7 +211,7 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         if ( this.getTextValidator().test( text ) ) {
             int maxStringLength = this.maxStringLength.get();
             if ( text.length() > maxStringLength ) {
-                this.textProperty.set( text.substring( 0, maxStringLength ) );
+                adjustTextLength(text, maxStringLength);
             } else {
                 this.textProperty.set( text );
             }
@@ -234,18 +278,11 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     }
 
     public void setSuggestionText(@Nullable String text) {
-        setSuggestionText( text, false );
+        this.suggestionText.set(text);
     }
 
-    public void setSuggestionText(@Nullable String text, boolean replaceDefault) {
-        if ( replaceDefault ) {
-            setDefaultSuggestionText( text );
-        }
-        this.suggestionText.set( text );
-    }
-
-    private void setDefaultSuggestionText(String text) {
-        this.suggestionText = new DefaultStringProperty( this, "suggestion text", text );
+    public void setDefaultSuggestionText(String text) {
+        this.suggestionText = new StringProperty( "suggestion text", text == null ? "" : text );
     }
 
     @Nullable
@@ -256,10 +293,10 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     @Override
     protected void onFocusChange(boolean currentFocus, boolean newFocus) {
         super.onFocusChange( currentFocus, newFocus );
-        if ( !this.isFocused() & newFocus && doRemoveSuggestionOnFocus() ) {
+        if ( !this.isFocused() & newFocus && shouldRemoveSuggestionOnFocus() ) {
             setSuggestionText( "" );
-        } else if ( this.isFocused() && !newFocus && doRestoreSuggestionOnFocus() ) {
-            setSuggestionText( this.suggestionText.getDefaultValue() );
+        } else if ( this.isFocused() && !newFocus && shouldRestoreSuggestionOnFocus() ) {
+            setSuggestionText( this.suggestionText.getDefault() );
         }
     }
 
@@ -274,11 +311,10 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         }
         boolean clicked = in( mouseX, mouseY );
         if ( this.canLoseFocus ) {
-            // change focus
             this.changeFocus( clicked );
         }
 
-        if ( this.isFocused() && clicked && mouseButton == GLFW.GLFW_MOUSE_BUTTON_LEFT ) { // GLFW_MOUSE_BUTTON_LEFT = 0
+        if ( this.isFocused() && clicked && Keyboard.isKeyCode(mouseButton, GLFW.GLFW_MOUSE_BUTTON_LEFT) ) {
             int i = MathHelper.floor( mouseX ) - this.x;
             if ( this.doEnableBackgroundDrawing() ) {
                 i -= 4;
@@ -294,7 +330,6 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     protected boolean onKeyPress(KeyInput input) {
         return getKeyInputValidator().test( input );
     }
-
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if ( !this.canReceiveInput() ) {
@@ -303,65 +338,10 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
             KeyInput input = KeyInput.key( KeyInput.Action.PRESS, keyCode, scanCode, modifiers );
             if ( !this.onKeyPress( input ) ) return false;
             this.hasShiftDown = input.getInputModifier().isShiftPressed();
-            if ( Keyboard.isSelectAll( keyCode ) ) {
-                this.setCursorPositionEnd();
-                this.setSelectionPos( 0 );
+            KeyPressAction entry = findActionForKeyPress(input);
+            if (entry != null) {
+                entry.accept(input, this);
                 return true;
-            } else if ( Keyboard.isCopy( keyCode ) ) {
-                Minecraft.getInstance().keyboardListener.setClipboardString( this.getSelectedText() );
-                return true;
-            } else if ( Keyboard.isPaste( keyCode ) ) {
-                if ( this.isEnabled() ) {
-                    this.writeText( Minecraft.getInstance().keyboardListener.getClipboardString() );
-                }
-
-                return true;
-            } else if ( Keyboard.isCut( keyCode ) ) {
-                Minecraft.getInstance().keyboardListener.setClipboardString( this.getSelectedText() );
-                if ( this.isEnabled() ) {
-                    this.writeText( "" );
-                }
-                return true;
-            } else {
-                switch ( keyCode ) {
-                    case GLFW.GLFW_KEY_BACKSPACE: // 259
-                        if ( this.isEnabled() ) {
-                            this.delete( -1 );
-                        }
-                        return true;
-                    case GLFW.GLFW_KEY_INSERT: // 260
-                    case GLFW.GLFW_KEY_DOWN: // 264
-                    case GLFW.GLFW_KEY_UP: // 265
-                    case GLFW.GLFW_KEY_PAGE_UP: // 266
-                    case GLFW.GLFW_KEY_PAGE_DOWN: // 267
-                        return false;
-                    case GLFW.GLFW_KEY_DELETE: // 261
-                        if ( this.isEnabled() ) {
-                            this.delete( 1 );
-                        }
-                        return true;
-                    case GLFW.GLFW_KEY_RIGHT: // 262
-                        if ( Screen.hasControlDown() ) {
-                            this.setCursorPosition( this.getNthWordFromCursor( 1 ) );
-                        } else {
-                            this.moveCursorBy( 1 );
-                        }
-
-                        return true;
-                    case GLFW.GLFW_KEY_LEFT: // 263
-                        if ( Screen.hasControlDown() ) {
-                            this.setCursorPosition( this.getNthWordFromCursor( -1 ) );
-                        } else {
-                            this.moveCursorBy( -1 );
-                        }
-                        return true;
-                    case GLFW.GLFW_KEY_HOME: // 268
-                        this.setCursorPositionStart();
-                        return true;
-                    case GLFW.GLFW_KEY_END: // 268
-                        this.setCursorPositionEnd();
-                        return true;
-                }
             }
         }
         return super.keyPressed( keyCode, scanCode, modifiers );
@@ -387,8 +367,8 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     }
 
     public String getSelectedText() {
-        int start = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int end = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+        int start = Math.min(this.cursorPosition, this.selectionEnd);
+        int end = Math.max(this.cursorPosition, this.selectionEnd);
         return this.getText().substring( start, end );
     }
 
@@ -404,36 +384,37 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
     public void writeText(String text) {
         String newMessage = "";
         String filtered = SharedConstants.filterAllowedCharacters( text );
-        int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
-        int k = this.maxStringLength.get() - this.getText().length() - ( i - j );
+        int min = Math.min(this.cursorPosition, this.selectionEnd);
+        int max = Math.max(this.cursorPosition, this.selectionEnd);
+        int len = this.maxStringLength.get() - this.getText().length() - ( min - max );
         if ( !this.getText().isEmpty() ) {
-            newMessage = newMessage + this.getText().substring( 0, i );
+            newMessage += this.getText().substring( 0, min );
         }
 
         int tmp;
-        if ( k < filtered.length() ) {
-            newMessage = newMessage + filtered.substring( 0, k );
-            tmp = k;
+        if ( len < filtered.length() ) {
+            newMessage += filtered.substring( 0, len );
+            tmp = len;
         } else {
-            newMessage = newMessage + filtered;
+            newMessage += filtered;
             tmp = filtered.length();
         }
 
-        if ( !this.getText().isEmpty() && j < this.getText().length() ) {
-            newMessage = newMessage + this.getText().substring( j );
+        if ( !this.getText().isEmpty() && max < this.getText().length() ) {
+            newMessage += this.getText().substring( max );
         }
 
         if ( this.getTextValidator().test( newMessage ) ) {
             this.textProperty.set( newMessage );
-            this.cursorPosition( i + tmp );
+            this.cursorPosition( min + tmp );
             this.setSelectionPos( this.cursorPosition );
             this.onTextChange( getText() );
         }
     }
 
     public void delete(int num) {
-        if ( Screen.hasControlDown() ) {
+        if (!this.isEnabled()) return;
+        if ( Keyboard.hasControlDown() ) {
             this.deleteWords( num );
         } else {
             this.deleteFromCursor( num );

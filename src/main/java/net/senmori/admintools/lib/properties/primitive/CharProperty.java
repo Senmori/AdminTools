@@ -1,29 +1,17 @@
 package net.senmori.admintools.lib.properties.primitive;
 
-import net.senmori.admintools.lib.properties.event.ChangeEvent;
-import net.senmori.admintools.lib.properties.read.ReadOnlyCharProperty;
+import net.senmori.admintools.lib.properties.defaults.DefaultProperty;
 
-public class CharProperty extends ReadOnlyCharProperty {
+public class CharProperty extends DefaultProperty<Character> {
     public CharProperty() {
-        super(null, null, ' ');
+        super( null, ' ' );
     }
 
     public CharProperty(final char value) {
-        super(null, null, value);
+        super( null, value );
     }
 
-    public CharProperty(final Object bean, final String name, final char value) {
-        super(bean, name, value);
-    }
-
-    protected void setValue(final char value) {
-        final char old = this.value;
-        this.value = value;
-        invalidated();
-        fireEvent( new ChangeEvent<>( this, old, this.value ) );
-    }
-
-    public void set(final char value) {
-        setValue( value );
+    public CharProperty(final String name, final char value) {
+        super( name, value );
     }
 }

@@ -3,18 +3,14 @@ package net.senmori.admintools.lib.properties.read;
 public class ReadOnlyShortProperty extends ReadOnlyProperty<Short> {
 
     public ReadOnlyShortProperty() {
-        super(null, null, (short) 0);
+        super( null, ( short ) 0 );
     }
 
     public ReadOnlyShortProperty(final short value) {
-        super(null, null, value);
+        super( null, value );
     }
 
-    public ReadOnlyShortProperty(final Object bean, final String name, final short value) {
-        super(bean, name, value);
-    }
-
-    public short get() {
-        return value;
+    public ReadOnlyShortProperty(final String name, final short value) {
+        super( name, value );
     }
 }

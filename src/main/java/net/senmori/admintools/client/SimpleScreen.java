@@ -8,9 +8,10 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.admintools.client.gui.AbstractWidget;
-import net.senmori.admintools.client.gui.widget.api.IUpdatable;
+import net.senmori.admintools.client.gui.widget.api.Updatable;
 import net.senmori.admintools.client.gui.widget.impl.Checkbox;
 import net.senmori.admintools.client.gui.widget.impl.LockIconButton;
+import net.senmori.admintools.lib.util.Keyboard;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -68,7 +69,7 @@ public class SimpleScreen extends Screen {
         }
         if (widget != null) {
             if ( keyCode == GLFW.GLFW_KEY_TAB ) {
-                return nextTab( focusedIndex, widget, Screen.hasShiftDown() );
+                return nextTab( focusedIndex, widget, Keyboard.hasShiftDown() );
             }
         }
         return super.keyPressed( keyCode, scanCode, modifiers );
@@ -82,7 +83,7 @@ public class SimpleScreen extends Screen {
         return null;
     }
 
-    private boolean nextTab(int current, AbstractWidget currentFocus, boolean hasShiftDown) {
+    private boolean nextTab(int current, AbstractWidget<?> currentFocus, boolean hasShiftDown) {
         if (hasShiftDown) {
             // shift + tab goes backwards
             if (current <= 0) {
@@ -111,6 +112,6 @@ public class SimpleScreen extends Screen {
     @Override
     public void tick() {
         super.tick();
-        children().stream().filter( child -> child instanceof IUpdatable ).forEach( child -> ( ( IUpdatable ) child ).tick() );
+        children().stream().filter( child -> child instanceof Updatable ).forEach( child -> ( ( Updatable ) child ).tick() );
     }
 }

@@ -24,21 +24,18 @@ public final class TextureGroups {
                 .startAt( 0, 16 )
                 .defaultDimensions( 10, 8 )
                 .layout( TextureGroupLayout.VERTICAL )
-                .overrideTextureSettings()
                 .build();
         /** The heart icons which represent the player's health */
         public static final TextureGroup HEARTS = TextureGroupFactory.create( ICONS, "Hearts" )
                 .startAt( 16, 0 )
                 .defaultDimensions( 9, 9 )
                 .layout( TextureGroupLayout.HORIZONTAL )
-                .overrideTextureSettings()
                 .build();
         /** The armor icons that are rendered when a player has armor equipped. */
         public static final TextureGroup ARMOR = TextureGroupFactory.create( ICONS, "Armor" )
                 .startAt( 16, 9 )
                 .defaultDimensions( 9, 9 )
                 .layout( TextureGroupLayout.HORIZONTAL )
-                .overrideTextureSettings()
                 .build();
     }
 
@@ -52,26 +49,22 @@ public final class TextureGroups {
                 .startAt( 0, 46 )
                 .defaultDimensions( 200, 20 )
                 .layout( TextureGroupLayout.VERTICAL )
-                .overrideTextureSettings()
                 .build();
         /** These textures are not contained in the 'textures/gui/widgets.png' but within 'texture/gui/checkbox.png' */
         public static final TextureGroup CHECKBOX = TextureGroupFactory.create( new ResourceLocation("textures/gui/checkbox.png"), "Checkbox" )
                 .startAt( 0, 0 )
                 .defaultDimensions( 20, 20 )
                 .layout( TextureGroupLayout.VERTICAL )
-                .overrideTextureSettings()
                 .build();
         public static final TextureGroup LOCKED_ICON = TextureGroupFactory.create( WIDGETS, "Locked Icons" )
                 .startAt( 0, 146 )
                 .defaultDimensions( 20, 20 )
                 .layout( TextureGroupLayout.VERTICAL)
-                .overrideTextureSettings()
                 .build();
         public static final TextureGroup UNLOCK_ICON = TextureGroupFactory.create( WIDGETS, "Unlock Icons" )
                 .startAt( 20, 146 )
                 .defaultDimensions( 20, 20 )
                 .layout( TextureGroupLayout.VERTICAL )
-                .overrideTextureSettings()
                 .build();
     }
 

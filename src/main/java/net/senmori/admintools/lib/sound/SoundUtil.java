@@ -16,9 +16,11 @@ public final class SoundUtil {
     private static final Pattern DOT_PATTERN = Pattern.compile( "\\." );
 
     private Map<ResourceLocation, SoundCategory> soundCache = new HashMap<>();
-    private Map<String, SoundCategory> SOUND_CATEGORIES = Arrays.stream( SoundCategory.values() ).collect( Collectors.toMap( SoundCategory::getName, Function.identity() ) );
+    private Map<String, SoundCategory> SOUND_CATEGORIES = new HashMap<>();
 
-    private SoundUtil() {}
+    private SoundUtil() {
+        SOUND_CATEGORIES = Arrays.stream( SoundCategory.values() ).collect( Collectors.toMap( SoundCategory::getName, Function.identity() ) );
+    }
 
     public static SoundUtil get() {
         return INSTANCE;

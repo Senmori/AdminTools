@@ -1,6 +1,5 @@
 package net.senmori.admintools.lib.properties.consumer;
 
-import net.senmori.admintools.lib.properties.event.ChangeEvent;
 import net.senmori.admintools.lib.properties.primitive.ObjectProperty;
 
 import java.util.function.Consumer;
@@ -8,30 +7,27 @@ import java.util.function.Consumer;
 public class ConsumerProperty<T> extends ObjectProperty<Consumer<T>> {
 
     public ConsumerProperty() {
-        this(s -> {});
+        this( s -> {
+        } );
     }
 
-    public ConsumerProperty(final Consumer<T> value) {
-        this( null, null, value );
+    private ConsumerProperty(final Consumer<T> value) {
+        super( null, value );
     }
 
-    public ConsumerProperty(final Object bean, final String name) {
-        this(bean, name, s -> {});
+    private ConsumerProperty(final String name, final Consumer<T> value) {
+        super( name, value );
     }
 
-    public ConsumerProperty(final Object bean, final String name, final Consumer<T> value) {
-        super( bean, name, value );
+    public static <T> ConsumerProperty<T> of(String name) {
+        return new ConsumerProperty<>( name, s -> {} );
     }
 
-    protected void setValue(final Consumer<T> value) {
-        final Consumer<T> old = this.value;
-        this.value = value;
-        invalidated();
-        fireEvent( new ChangeEvent<>( this, old, this.value ) );
+    public static <T> ConsumerProperty<T> of(final Consumer<T> value) {
+        return new ConsumerProperty<T>( value );
     }
 
-    @Override
-    public Consumer<T> get() {
-        return (Consumer<T>) this.value;
+    public static <T> ConsumerProperty<T> of(final String name, final Consumer<T> value) {
+        return new ConsumerProperty<T>( name, value );
     }
 }

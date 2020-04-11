@@ -5,15 +5,15 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.senmori.admintools.client.gui.AbstractWidget;
-import net.senmori.admintools.config.ClientConfig;
-import net.senmori.admintools.client.gui.widget.api.IAttachable;
-import net.senmori.admintools.client.gui.widget.api.IUpdatable;
+import net.senmori.admintools.client.gui.widget.api.Attachable;
+import net.senmori.admintools.client.gui.widget.api.Updatable;
 import net.senmori.admintools.client.gui.widget.impl.Label;
-import net.senmori.admintools.lib.properties.color.DefaultColorProperty;
-import net.senmori.admintools.lib.properties.consumer.DefaultConsumerProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultIntegerProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultObjectProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultStringProperty;
+import net.senmori.admintools.tmp.ClientConfig;
+import net.senmori.admintools.lib.properties.color.ColorProperty;
+import net.senmori.admintools.lib.properties.consumer.ConsumerProperty;
+import net.senmori.admintools.lib.properties.primitive.IntegerProperty;
+import net.senmori.admintools.lib.properties.primitive.ObjectProperty;
+import net.senmori.admintools.lib.properties.primitive.StringProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,23 +21,23 @@ import java.awt.Color;
 import java.util.function.Consumer;
 
 /**
- *  A label is a gui element that displays text within some given bounds.
- *
- *  For easy instantiation, use {@link Label}.
+ * A label is a gui element that displays text within some given bounds.
+ * <p>
+ * For easy instantiation, use {@link Label}.
  */
-public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implements IUpdatable, IAttachable {
+public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implements Updatable, Attachable {
 
-    private final DefaultObjectProperty<Widget> attachedWidgetProperty = new DefaultObjectProperty<>( this, "parent widget", this );
-    private final DefaultColorProperty textColorProperty = new DefaultColorProperty( this, "text color", new Color( 208, 208, 208 ) );
-    private final DefaultIntegerProperty maxTextLengthProperty = new DefaultIntegerProperty( this, "max text length", 32 );
-    private final DefaultStringProperty labelTextProperty = new DefaultStringProperty( this, "label text", "" );
-    private final DefaultIntegerProperty labelSpacingProperty = new DefaultIntegerProperty( this, "label spacing", 1 );
-    private final DefaultObjectProperty<Position> labelPositionProperty = new DefaultObjectProperty<>( this, "label position", Position.SELF );
-    private final DefaultConsumerProperty<Widget> tickConsumer = new DefaultConsumerProperty<>( this, "tick consumer" );
+    private final ObjectProperty<Widget> attachedWidgetProperty = new ObjectProperty<>( "parent widget", this );
+    private final ColorProperty textColorProperty = ColorProperty.of( "text color", new Color( 208, 208, 208 ) );
+    private final IntegerProperty maxTextLengthProperty = new IntegerProperty( "max text length", 32 );
+    private final StringProperty labelTextProperty = new StringProperty( "label text", "" );
+    private final IntegerProperty labelSpacingProperty = new IntegerProperty( "label spacing", 1 );
+    private final ObjectProperty<Position> labelPositionProperty = new ObjectProperty<>( "label position", Position.SELF );
+    private final ConsumerProperty<Widget> tickConsumer = ConsumerProperty.of( "tick consumer" );
 
-    private final DefaultIntegerProperty textSpacing = new DefaultIntegerProperty( this, "text spacing", 2 );
-    private final DefaultIntegerProperty textPositionX = new DefaultIntegerProperty( this, "text spacing X", getX() + getSpacing() );
-    private final DefaultIntegerProperty textPositionY = new DefaultIntegerProperty( this, "text spacing Y", getY() + (getHeight() / 2));
+    private final IntegerProperty textSpacing = new IntegerProperty( "text spacing", 2 );
+    private final IntegerProperty textPositionX = new IntegerProperty( "text spacing X", getX() + getSpacing() );
+    private final IntegerProperty textPositionY = new IntegerProperty( "text spacing Y", getY() + ( getHeight() / 2 ) );
 
     private boolean dirty = false;
 
@@ -110,13 +110,13 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
         this.getPosition().calculate( getParent(), this, getSpacing() );
 
         int space;
-        int stringX = getX() + (textSpacing.get() / 2); //
-        if (getFontRenderer().getStringWidth( getText() ) == getWidth()) {
+        int stringX = getX() + ( textSpacing.get() / 2 ); //
+        if ( getFontRenderer().getStringWidth( getText() ) == getWidth() ) {
             stringX = getX();
         }
         textPositionX.set( stringX );
         space = getHeight() / 2;
-        int stringY = getY() + (space - (space / 2)) + 1;
+        int stringY = getY() + ( space - ( space / 2 ) ) + 1;
         textPositionY.set( stringY );
     }
 
@@ -154,7 +154,7 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
 
     @Override
     public void printDebug() {
-        if (ClientConfig.CONFIG.DEBUG_MODE.get()) {
+        if ( ClientConfig.get().DEBUG_MODE.get() ) {
             calculateLayout();
             super.printDebug();
         }
@@ -224,7 +224,7 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
                 label.setMaxTextLength( labelText.length() - over );
                 label.setText( labelText );
 
-                label.setX( parent.x - (textLength + spacing));
+                label.setX( parent.x - ( textLength + spacing ) );
             }
             int parentHeight = parent.y + parent.getHeight();
             label.setWidth( textLength );
@@ -239,9 +239,9 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
          * Therefore, if there is not enough room on screen then the label's text will be cut.
          */
         Position RIGHT = (parent, label, spacing) -> {
-            Screen screen = parent instanceof AbstractWidget ? ((AbstractWidget)parent).getScreen() : Minecraft.getInstance().currentScreen;
+            Screen screen = parent instanceof AbstractWidget ? ( ( AbstractWidget ) parent ).getScreen() : Minecraft.getInstance().currentScreen;
             int screenWidth;
-            if (screen == null) {
+            if ( screen == null ) {
                 screenWidth = Minecraft.getInstance().getMainWindow().getScaledWidth();
             } else {
                 screenWidth = screen.width;
@@ -251,22 +251,22 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
             String labelText = label.getText();
             int textLength = font.getStringWidth( labelText );
 
-            int parentWidth = (parent.x + parent.getWidth());
-            if (parentWidth + (textLength + spacing) <= screenWidth) {
+            int parentWidth = ( parent.x + parent.getWidth() );
+            if ( parentWidth + ( textLength + spacing ) <= screenWidth ) {
                 label.setX( parentWidth + spacing );
             } else {
-                int remove = Math.abs( screenWidth - (parent.x + (textLength + spacing)) );
+                int remove = Math.abs( screenWidth - ( parent.x + ( textLength + spacing ) ) );
                 labelText = font.trimStringToWidth( labelText, textLength - remove );
                 label.setMaxTextLength( labelText.length() - remove );
-                label.setText(labelText);
+                label.setText( labelText );
 
-                label.setX( parentWidth + spacing);
+                label.setX( parentWidth + spacing );
             }
 
             label.setWidth( textLength );
             int parentHeight = parent.y + parent.getHeight();
-            label.setY( parentHeight - ( (parentHeight - parent.y)));
-            label.setHeight( parent.getHeight());
+            label.setY( parentHeight - ( ( parentHeight - parent.y ) ) );
+            label.setHeight( parent.getHeight() );
         };
 
         /**

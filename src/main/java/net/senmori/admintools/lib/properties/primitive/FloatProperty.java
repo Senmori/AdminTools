@@ -1,29 +1,17 @@
 package net.senmori.admintools.lib.properties.primitive;
 
-import net.senmori.admintools.lib.properties.event.ChangeEvent;
-import net.senmori.admintools.lib.properties.read.ReadOnlyFloatProperty;
+import net.senmori.admintools.lib.properties.defaults.DefaultProperty;
 
-public class FloatProperty extends ReadOnlyFloatProperty {
+public class FloatProperty extends DefaultProperty<Float> {
     public FloatProperty() {
-        super(null, null, 0.0F);
+        super( null, 0.0F );
     }
 
     public FloatProperty(final float value) {
-        super(null, null, value);
+        super( null, value );
     }
 
-    public FloatProperty(final Object bean, final String name, final float value) {
-        super(bean, name, value);
-    }
-
-    protected void setValue(final float value) {
-        final float old = this.value;
-        this.value = value;
-        invalidated();
-        fireEvent( new ChangeEvent<>( this, old, this.value ) );
-    }
-
-    public void set(final float value) {
-        setValue( value );
+    public FloatProperty(final String name, final float value) {
+        super( name, value );
     }
 }

@@ -2,18 +2,14 @@ package net.senmori.admintools.lib.properties.read;
 
 public class ReadOnlyCharProperty extends ReadOnlyProperty<Character> {
     public ReadOnlyCharProperty() {
-        super(null, null, ' ');
+        super( null, ' ' );
     }
 
     public ReadOnlyCharProperty(final char value) {
-        super(null, null, value);
+        super( null, value );
     }
 
-    public ReadOnlyCharProperty(final Object bean,final String name, final char value) {
-        super(bean, name, value);
-    }
-
-    public char get() {
-        return value;
+    public ReadOnlyCharProperty(final String name, final char value) {
+        super( name, value );
     }
 }

@@ -11,16 +11,15 @@ public abstract class ReadOnlyProperty<T> {
     protected String name;
     protected T value;
 
-    public ReadOnlyProperty() {
-        this(null, null, null);
+    protected ReadOnlyProperty() {
+        this( null );
     }
 
-    public ReadOnlyProperty(T value) {
-        this(null, null, value);
+    protected ReadOnlyProperty(T value) {
+        this( null, value );
     }
 
-    public ReadOnlyProperty(final Object bean, final String name, final T value) {
-        this.bean = bean;
+    protected ReadOnlyProperty(final String name, final T value) {
         this.name = name;
         this.value = value;
     }
@@ -29,8 +28,8 @@ public abstract class ReadOnlyProperty<T> {
         return value;
     }
 
-    public Object getBean() {
-        return bean;
+    public T get() {
+        return getValue();
     }
 
     public String getName() {
@@ -41,18 +40,18 @@ public abstract class ReadOnlyProperty<T> {
 
     }
 
-    public void setOnPropertyChanged(final ChangeEventListener listener) {
-        addListener(listener);
+    public void setOnPropertyChanged(final ChangeEventListener<?> listener) {
+        addListener( listener );
     }
 
-    public void addListener(final ChangeEventListener listener) {
-        if (!listenerList.contains( listener )) {
+    public void addListener(final ChangeEventListener<?> listener) {
+        if ( !listenerList.contains( listener ) ) {
             listenerList.add( listener );
         }
     }
 
-    public void removeListener(final ChangeEventListener listener) {
-        if (listenerList.contains( listener )) {
+    public void removeListener(final ChangeEventListener<?> listener) {
+        if ( listenerList.contains( listener ) ) {
             listenerList.add( listener );
         }
     }
@@ -61,7 +60,7 @@ public abstract class ReadOnlyProperty<T> {
         listenerList.clear();
     }
 
-    public void fireEvent(final ChangeEvent event) {
+    public void fireEvent(final ChangeEvent<?> event) {
         listenerList.forEach( listener -> listener.onChangeEvent( event ) );
     }
 

@@ -8,17 +8,17 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.senmori.admintools.config.ClientConfig;
 import net.senmori.admintools.client.gui.AbstractWidget;
-import net.senmori.admintools.client.gui.widget.api.IAttachable;
-import net.senmori.admintools.client.gui.widget.api.IPressable;
-import net.senmori.admintools.client.gui.widget.api.IUpdatable;
+import net.senmori.admintools.client.gui.widget.api.Attachable;
+import net.senmori.admintools.client.gui.widget.api.Pressable;
+import net.senmori.admintools.client.gui.widget.api.Updatable;
 import net.senmori.admintools.client.textures.Button;
-import net.senmori.admintools.lib.properties.color.DefaultColorProperty;
-import net.senmori.admintools.lib.properties.consumer.DefaultConsumerProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultObjectProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultStringProperty;
+import net.senmori.admintools.tmp.ClientConfig;
+import net.senmori.admintools.lib.properties.color.ColorProperty;
+import net.senmori.admintools.lib.properties.consumer.ConsumerProperty;
 import net.senmori.admintools.lib.properties.primitive.BooleanProperty;
+import net.senmori.admintools.lib.properties.primitive.ObjectProperty;
+import net.senmori.admintools.lib.properties.primitive.StringProperty;
 import net.senmori.admintools.lib.texture.Texture;
 import org.lwjgl.glfw.GLFW;
 
@@ -26,25 +26,25 @@ import java.awt.Color;
 import java.util.function.Consumer;
 
 @OnlyIn( Dist.CLIENT )
-public abstract class AbstractButton extends AbstractWidget implements IPressable, IUpdatable {
+public abstract class AbstractButton extends AbstractWidget<AbstractButton> implements Pressable, Updatable {
     // textures
-    private final DefaultObjectProperty<Texture> defaultTextureProperty = new DefaultObjectProperty<>( this, "default texture", Button.NORMAL.getTexture() );
-    private final DefaultObjectProperty<Texture> disabledTextureProperty = new DefaultObjectProperty<>( this, " disabled texture", Button.DISABLED.getTexture() );
-    private final DefaultObjectProperty<Texture> hoverTextureProperty = new DefaultObjectProperty<>( this, "hover texture", Button.HOVER.getTexture() );
+    private final ObjectProperty<Texture> defaultTextureProperty = new ObjectProperty<>( "default texture", Button.NORMAL.getTexture() );
+    private final ObjectProperty<Texture> disabledTextureProperty = new ObjectProperty<>( " disabled texture", Button.DISABLED.getTexture() );
+    private final ObjectProperty<Texture> hoverTextureProperty = new ObjectProperty<>( "hover texture", Button.HOVER.getTexture() );
     // button text
-    private final DefaultStringProperty textProperty = new DefaultStringProperty( this, "button text", "" );
+    private final StringProperty textProperty = new StringProperty( "button text", "" );
     // colors - taken from Widget#getFGColor - unpacked and converted into a nice RGB format
-    private final DefaultColorProperty enabledColor = new DefaultColorProperty( this, "enabled color", new Color( 224, 224, 224 ) );
-    private final DefaultColorProperty disabledColor = new DefaultColorProperty( this, "disabled color", new Color( 160, 160, 160 ) );
-    private final DefaultColorProperty hoverColor = new DefaultColorProperty( this, "hover color", new Color( 255, 255, 160 ) );
+    private final ColorProperty enabledColor = ColorProperty.of( "enabled color", new Color( 224, 224, 224 ) );
+    private final ColorProperty disabledColor = ColorProperty.of( "disabled color", new Color( 160, 160, 160 ) );
+    private final ColorProperty hoverColor = ColorProperty.of( "hover color", new Color( 255, 255, 160 ) );
     // consumers
-    private final DefaultConsumerProperty<Widget> tickConsumer = new DefaultConsumerProperty<>( this, "tick consumer" );
-    private final DefaultConsumerProperty<Widget> hoverProperty = new DefaultConsumerProperty<>( this, "hover consumer" );
-    private final DefaultConsumerProperty<Widget> clickProperty = new DefaultConsumerProperty<>( this, "click consumer" );
+    private final ConsumerProperty<Widget> tickConsumer = ConsumerProperty.of( "tick consumer" );
+    private final ConsumerProperty<Widget> hoverProperty = ConsumerProperty.of( "hover consumer" );
+    private final ConsumerProperty<Widget> clickProperty = ConsumerProperty.of( "click consumer" );
 
     // other
-    private final BooleanProperty textureDefinesDimensions = new BooleanProperty( this, "dimension definition", true );
-    private final DefaultObjectProperty<IAttachable> attachedWidget = new DefaultObjectProperty<>( this, "attached widget", null );
+    private final BooleanProperty textureDefinesDimensions = new BooleanProperty( "dimension definition", true );
+    private final ObjectProperty<Attachable> attachedWidget = new ObjectProperty<>( "attached widget", null );
 
     public AbstractButton(int xIn, int yIn) {
         super( xIn, yIn );
@@ -76,7 +76,7 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
     @Override
     public void tick() {
         getTickConsumer().accept( this );
-        if (isHovered()) {
+        if ( isHovered() ) {
             getHoverConsumer().accept( this );
         }
     }
@@ -133,17 +133,17 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         Texture texture = getDefaultTexture();
         if ( !isEnabled() ) {
             texture = getDisabledTexture();
-        } else if (isHovered()) {
+        } else if ( isHovered() ) {
             texture = getHoverTexture();
         }
-        if (texture != null) {
+        if ( texture != null ) {
             updateDimensions( texture );
         }
         return texture;
     }
 
     protected void updateDimensions(Texture texture) {
-        if ( doTexturesDefineDimensions() && texture != null) {
+        if ( doTexturesDefineDimensions() && texture != null ) {
             if ( texture.getWidth() != getWidth() ) {
                 setWidth( texture.getWidth() );
             }
@@ -151,7 +151,7 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
                 setHeight( texture.getHeight() );
             }
         }
-        if (texture != null) {
+        if ( texture != null ) {
             texture.getGroup().adjustLayout();
         }
     }
@@ -169,7 +169,7 @@ public abstract class AbstractButton extends AbstractWidget implements IPressabl
         int textureY = texture.getY();
         int middle = this.width / 2;
         this.blit( getX(), getY(), textureX, textureY, middle, getHeight() ); // left half
-        this.blit( getX() + middle, getY(), ClientConfig.CONFIG.MAX_BUTTON_LENGTH.get() - middle, textureY, middle, getHeight() ); // right half
+        this.blit( getX() + middle, getY(), ClientConfig.get().MAX_BUTTON_LENGTH.get() - middle, textureY, middle, getHeight() ); // right half
     }
 
     public Color getEnabledColor() {

@@ -14,11 +14,14 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.admintools.AdminTools;
-import net.senmori.admintools.config.ClientConfig;
-import net.senmori.admintools.lib.properties.consumer.DefaultConsumerProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultObjectProperty;
-import net.senmori.admintools.lib.properties.defaults.DefaultStringProperty;
+import net.senmori.admintools.client.gui.widget.api.KeyPressAction;
+import net.senmori.admintools.lib.input.KeyInput;
+import net.senmori.admintools.lib.util.Keyboard;
+import net.senmori.admintools.tmp.ClientConfig;
+import net.senmori.admintools.lib.properties.consumer.ConsumerProperty;
 import net.senmori.admintools.lib.properties.primitive.BooleanProperty;
+import net.senmori.admintools.lib.properties.primitive.ObjectProperty;
+import net.senmori.admintools.lib.properties.primitive.StringProperty;
 import net.senmori.admintools.lib.sound.CustomSound;
 import net.senmori.admintools.lib.sound.SoundUtil;
 import net.senmori.admintools.lib.util.RenderUtil;
@@ -26,32 +29,65 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.awt.Color;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @OnlyIn( Dist.CLIENT )
 public abstract class AbstractWidget<T extends Widget> extends Widget {
     protected Screen screen;
     protected Widget parent;
 
-    protected final BooleanProperty enabledProperty = new BooleanProperty( this, "enabled", this.active );
-    protected final BooleanProperty visibleProperty = new BooleanProperty( this, "visible", this.visible );
-    protected final BooleanProperty focusedProperty = new BooleanProperty( this, "focused", this.isFocused() );
-    protected final DefaultObjectProperty<FontRenderer> fontRendererProperty = new DefaultObjectProperty<>( this, "font renderer", Minecraft.getInstance().fontRenderer );
+    protected final BooleanProperty enabledProperty = new BooleanProperty( "enabled", this.active );
+    protected final BooleanProperty visibleProperty = new BooleanProperty( "visible", this.visible );
+    protected final BooleanProperty focusedProperty = new BooleanProperty( "focused", this.isFocused() );
+    protected final ObjectProperty<FontRenderer> fontRendererProperty = new ObjectProperty<>( "font renderer", Minecraft.getInstance().fontRenderer );
 
-    // Misc.
-    protected final DefaultStringProperty narrationProperty = new DefaultStringProperty( this, "narration message", "" );
-    protected final DefaultObjectProperty<CustomSound> soundProperty = new DefaultObjectProperty<>( this, "sound", new CustomSound(SoundEvents.UI_BUTTON_CLICK) );
+    protected final StringProperty narrationProperty = new StringProperty( "narration message", "" );
+    protected final ObjectProperty<CustomSound> soundProperty = new ObjectProperty<>( "sound", new CustomSound( SoundEvents.UI_BUTTON_CLICK ) );
 
-    // Consumers
-    protected final DefaultConsumerProperty<Boolean> focusConsumerProperty = new DefaultConsumerProperty<>( this, "focus consumer");
+    protected final ConsumerProperty<Boolean> focusConsumerProperty = ConsumerProperty.of( "focus consumer" );
+
+    protected final List<KeyPressAction> keyPressActions = new LinkedList<>();
+    protected final Map<KeyInput, KeyPressAction> keyPressActionCache = new HashMap<>();
 
     public AbstractWidget(int xIn, int yIn) {
         super( xIn, yIn, "" );
-        this.width = ClientConfig.CONFIG.DEFAULT_WIDGET_WIDTH.get();
-        this.height = ClientConfig.CONFIG.DEFAULT_WIDGET_HEIGHT.get();
+        this.width = ClientConfig.get().DEFAULT_WIDGET_WIDTH.get();
+        this.height = ClientConfig.get().DEFAULT_WIDGET_HEIGHT.get();
         enabledProperty.addListener( (listener) -> this.active = ( boolean ) listener.getValue() );
-        visibleProperty.addListener( (listener) -> this.visible = (boolean) listener.getValue() );
-        focusedProperty.addListener( (listener) -> this.setFocused( (boolean) listener.getValue() ) );
+        visibleProperty.addListener( (listener) -> this.visible = ( boolean ) listener.getValue() );
+        focusedProperty.addListener( (listener) -> this.setFocused( ( boolean ) listener.getValue() ) );
+    }
+
+    protected void addKeyPressAction(KeyPressAction action) {
+        keyPressActions.add(action);
+    }
+
+    protected void addKeyPressAction(Predicate<KeyInput> predicate, BiConsumer<KeyInput, Widget> consumer) {
+        addKeyPressAction(new KeyPressAction(predicate,consumer));
+    }
+
+    protected void addSingleKeyPressAction(int keyCode, BiConsumer<KeyInput, Widget> consumer) {
+        addKeyPressAction(input -> Keyboard.isKeyCode(input, keyCode), consumer);
+    }
+
+    protected KeyPressAction findActionForKeyPress(KeyInput input) {
+        if (keyPressActionCache.containsKey(input)) {
+            return keyPressActionCache.get(input);
+        }
+        for (KeyPressAction action : keyPressActions) {
+            if (action.test(input)) {
+                keyPressActionCache.putIfAbsent(input, action);
+                return action;
+            }
+        }
+        return null;
     }
 
     public void setScreen(Screen screen) {
@@ -170,7 +206,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     public T setFontRenderer(FontRenderer fontRenderer) {
         this.fontRendererProperty.set( fontRenderer );
-        return (T) this;
+        return ( T ) this;
     }
 
     public FontRenderer getFontRenderer() {
@@ -219,10 +255,10 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if ( this.isEnabled() && this.isVisible() ) {
-            if ( this.validateMouseClick( mouseX, mouseY, button ) && this.clicked(mouseX, mouseY) ) {
-                    this.playDownSound( Minecraft.getInstance().getSoundHandler() );
-                    this.onClick( mouseX, mouseY );
-                    return true;
+            if ( this.validateMouseClick( mouseX, mouseY, button ) && this.clicked( mouseX, mouseY ) ) {
+                this.playDownSound( Minecraft.getInstance().getSoundHandler() );
+                this.onClick( mouseX, mouseY );
+                return true;
             }
         }
         return false;
@@ -249,7 +285,7 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     @Override
     public void playDownSound(SoundHandler soundHandler) {
-        getSound().playSound( soundHandler);
+        getSound().playSound( soundHandler );
     }
 
     @Override
@@ -311,17 +347,17 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     protected void debugOutline(Widget widget) {
-        if (ClientConfig.CONFIG.DEBUG_MODE.get()) {
-            RenderUtil.drawOutline( widget, ClientConfig.CONFIG.getDebugColor(), false );
+        if ( ClientConfig.get().DEBUG_MODE.get() ) {
+            RenderUtil.drawOutline( widget, ClientConfig.get().getDebugColor(), false );
         }
     }
 
     public void printDebug() {
-        if (ClientConfig.CONFIG.DEBUG_MODE.get()) {
+        if ( ClientConfig.get().DEBUG_MODE.get() ) {
             String xy = " [X=" + getX() + ",Y=" + getY() + "]";
             String wh = " + [W=" + getWidth() + ",H=" + getHeight() + "]";
-            String totals = " == [" + (getX() + getWidth()) + ',' + (getY() + getHeight()) + "]";
-            AdminTools.LOGGER.info( getClass().getSimpleName() + xy + wh + totals );
+            String totals = " == [" + ( getX() + getWidth() ) + ',' + ( getY() + getHeight() ) + "]";
+            AdminTools.get().getLogger().info( getClass().getSimpleName() + xy + wh + totals );
         }
     }
 }

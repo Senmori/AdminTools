@@ -5,14 +5,14 @@ loaderVersion="[27,)" #mandatory (26 is current forge version)
 
 [[mods]] #mandatory
 # The modid of the mod
-modId="custommobs" #mandatory
+modId="admintools" #mandatory
 version="${version}" #mandatory
-displayName="Custom Mobs" #mandatory
+displayName="Admin Tools" #mandatory
 #updateJSONURL="https://www.google.com" #optional
 #displayURL="" #optional
 
 #credits="" #
 authors="Senmori"
 description='''
-A mod to allow the creation of custom entities in-game via GUIs.
+A library to make it easier to make guis
 '''

@@ -29,4 +29,10 @@ public final class InputModifier {
     public boolean isAltPressed() {
         return isModifierPresent( GLFW.GLFW_MOD_ALT );
     }
+
+    @Override
+    public String toString()
+    {
+        return "M:[" + modifiers + "]-Shift:" + isShiftPressed() + ",Alt:" + isAltPressed() + ",Ctrl:" + isControlPressed();
+    }
 }

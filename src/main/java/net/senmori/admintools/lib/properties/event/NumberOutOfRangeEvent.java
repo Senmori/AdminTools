@@ -13,7 +13,7 @@ public class NumberOutOfRangeEvent<T extends Comparable<? super T>> extends Chan
      * Unlike other implementations of {@link ChangeEvent} this method returns the current value
      * of the bean.
      *
-     * @return  the current value of the bean
+     * @return the current value of the bean
      */
     @Override
     public T getOldValue() {

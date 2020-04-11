@@ -4,6 +4,8 @@ import net.senmori.admintools.lib.util.Keyboard;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.util.function.BiPredicate;
+import java.util.stream.Stream;
 
 public final class KeyInput {
 
@@ -65,13 +67,30 @@ public final class KeyInput {
         return inputModifier;
     }
 
+    @Override
+    public String toString() {
+        return "KeyInput: " + getName() + " - (S: " + scanCode + ",K: " + keyCode + ", " + inputModifier.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!(obj instanceof KeyInput)) {
+            return false;
+        }
+        KeyInput other = (KeyInput)obj;
+        return keyCode == other.keyCode && scanCode == other.scanCode &&
+                getInputModifier().getModifiers() == other.getInputModifier().getModifiers();
+    }
+
     public enum Action {
         PRESS,
         RELEASE,
         CHAR;
     }
 
-    public enum Type {
+    public enum Type
+    {
         CHAR {
             @Override
             public boolean accepts(int keycode, int modifiers) {
@@ -105,17 +124,16 @@ public final class KeyInput {
         UNKNOWN {
             @Override
             public boolean accepts(int codePoint, int modifiers) {
-                return true;
+                return false;
             }
         };
-
         public abstract boolean accepts(int codePoint, int modifiers);
 
         public static Type find(int codePoint, int modifiers) {
-            if ( CHAR.accepts( codePoint, modifiers ) ) return CHAR;
-            if ( DIGIT.accepts( codePoint, modifiers ) ) return DIGIT;
-            if ( MODIFIER.accepts( codePoint, modifiers ) ) return MODIFIER;
-            return UNKNOWN;
+            return Stream.of(KeyInput.Type.values())
+                    .filter(value -> value.accepts(codePoint,modifiers))
+                    .findFirst()
+                    .orElse(Type.UNKNOWN);
         }
     }
 }

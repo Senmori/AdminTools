@@ -1,6 +1,8 @@
 package net.senmori.admintools.lib.util;
 
 import net.minecraft.client.Minecraft;
+import net.senmori.admintools.lib.input.InputModifier;
+import net.senmori.admintools.lib.input.KeyInput;
 import org.lwjgl.glfw.GLFW;
 
 import java.nio.DoubleBuffer;
@@ -28,6 +30,10 @@ public class Keyboard {
         return keyCode == GLFWKeycode;
     }
 
+    public static boolean isKeyCode(KeyInput input, int GLFWKeycode) {
+        return isKeyCode(input.getKeyCode(), GLFWKeycode);
+    }
+
     public static String getKeyName(int keyCode, int scanCode) {
         return GLFW.glfwGetKeyName( keyCode, scanCode );
     }
@@ -42,20 +48,24 @@ public class Keyboard {
         return Keyboard.isKeyDown( GLFW.GLFW_KEY_LEFT_CONTROL ) || Keyboard.isKeyDown( GLFW.GLFW_KEY_RIGHT_CONTROL );
     }
 
-    public static boolean isCut(int keyCode) {
-        return keyCode == GLFW.GLFW_KEY_X && hasControlDown()&& !hasShiftDown() && !hasAltDown();
+    public static boolean isCut(KeyInput input) {
+        InputModifier mods = input.getInputModifier();
+        return input.getKeyCode() == GLFW.GLFW_KEY_X && mods.isControlPressed() && !mods.isShiftPressed() && !mods.isAltPressed();
     }
 
-    public static boolean isPaste(int keyCode) {
-        return keyCode == GLFW.GLFW_KEY_V && hasControlDown() && !hasShiftDown() && !hasAltDown();
+    public static boolean isPaste(KeyInput input) {
+        InputModifier mods = input.getInputModifier();
+        return input.getKeyCode() == GLFW.GLFW_KEY_V && mods.isControlPressed() && !mods.isShiftPressed() && !mods.isAltPressed();
     }
 
-    public static boolean isCopy(int keyCode) {
-        return keyCode == GLFW.GLFW_KEY_C && hasControlDown() && !hasShiftDown() && !hasAltDown();
+    public static boolean isCopy(KeyInput input) {
+        InputModifier mods = input.getInputModifier();
+        return input.getKeyCode() == GLFW.GLFW_KEY_C && mods.isControlPressed() && !mods.isShiftPressed() && !mods.isAltPressed();
     }
 
-    public static boolean isSelectAll(int keyCode) {
-        return keyCode == GLFW.GLFW_KEY_A && hasControlDown() && !hasShiftDown() && !hasAltDown();
+    public static boolean isSelectAll(KeyInput input) {
+        InputModifier mods = input.getInputModifier();
+        return input.getKeyCode() == GLFW.GLFW_KEY_A && mods.isControlPressed() && !mods.isShiftPressed() && !mods.isAltPressed();
     }
 
     public static int buildCurrentModifiers() {
