@@ -4,6 +4,7 @@ import net.senmori.admintools.lib.util.Keyboard;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
@@ -81,6 +82,12 @@ public final class KeyInput {
         KeyInput other = (KeyInput)obj;
         return keyCode == other.keyCode && scanCode == other.scanCode &&
                 getInputModifier().getModifiers() == other.getInputModifier().getModifiers();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(keyCode, scanCode, inputModifier.getModifiers());
     }
 
     public enum Action {
