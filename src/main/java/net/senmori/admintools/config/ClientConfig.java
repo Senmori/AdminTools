@@ -23,7 +23,7 @@ public class ClientConfig
     private final ConfigSpec spec;
 
     public final BooleanValue DEBUG_MODE;
-    private final ColorValue DEBUG_COLOR;
+    public final ColorValue DEBUG_COLOR;
     public final IntValue MAX_BUTTON_LENGTH;
     public final IntValue DEFAULT_WIDGET_WIDTH;
     public final IntValue DEFAULT_WIDGET_HEIGHT;
