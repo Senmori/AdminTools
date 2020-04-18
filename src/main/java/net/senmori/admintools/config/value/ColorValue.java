@@ -27,20 +27,15 @@ public class ColorValue extends ConfigValue<Color>
     protected Color getRaw(Config config, List<String> path, Supplier<Color> defaultSupplier)
     {
         List<Integer> list = configList.get();
-        int red = getColorValue(list, 0);
-        int green = getColorValue(list, 1);
-        int blue = getColorValue(list, 2);
-        int alpha = getColorValue(list, 3, 255);
+        int red = getColorValue(list, 0, defaultSupplier.get().getRed());
+        int green = getColorValue(list, 1, defaultSupplier.get().getGreen());
+        int blue = getColorValue(list, 2, defaultSupplier.get().getBlue());
+        int alpha = getColorValue(list, 3, defaultSupplier.get().getAlpha());
         return new Color(red, green, blue, alpha);
     }
 
-    private int getColorValue(List<Integer> list, int index)
+    private int getColorValue(List<Integer> list, int index, int defaultValue)
     {
-        return getColorValue(list, index, 0);
-    }
-
-    private int getColorValue(List<Integer> list, int index, int def)
-    {
-        return list.size() >= index + 1 ? list.get(index) : 0;
+        return list.size() >= index + 1 ? list.get(index) : defaultValue;
     }
 }
