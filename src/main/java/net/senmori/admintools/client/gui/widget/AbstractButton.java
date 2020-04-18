@@ -13,7 +13,7 @@ import net.senmori.admintools.client.gui.widget.api.Attachable;
 import net.senmori.admintools.client.gui.widget.api.Pressable;
 import net.senmori.admintools.client.gui.widget.api.Updatable;
 import net.senmori.admintools.client.textures.Button;
-import net.senmori.admintools.tmp.ClientConfig;
+import net.senmori.admintools.config.ClientConfig;
 import net.senmori.admintools.lib.properties.color.ColorProperty;
 import net.senmori.admintools.lib.properties.consumer.ConsumerProperty;
 import net.senmori.admintools.lib.properties.primitive.BooleanProperty;

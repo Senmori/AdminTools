@@ -81,17 +81,17 @@ public abstract class AbstractTextFieldWidget extends AbstractWidget<AbstractTex
         addKeyPressAction(input -> Keyboard.isPaste(input) && this.isEnabled(), (i, w) -> this.writeText(getClipboardString()));
         addKeyPressAction(Keyboard::isCut, (i, w) -> this.cut(this.getSelectedText()));
         addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_BACKSPACE).and(KeyboardUtil.isControlPressed()), (i, w) -> this.deleteWords(-1));
-        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_BACKSPACE).and(KeyboardUtil.isControlPressed().negate()), (i, w) -> this.deleteFromCursor(-1));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_BACKSPACE).and(KeyboardUtil.noInputModifiers()), (i, w) -> this.deleteFromCursor(-1));
         addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_DELETE).and(KeyboardUtil.isControlPressed()), (i, w) -> this.deleteWords(1));
-        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_DELETE).and(KeyboardUtil.isControlPressed().negate()), (i, w) -> this.deleteFromCursor(1));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_DELETE).and(KeyboardUtil.noInputModifiers()), (i, w) -> this.deleteFromCursor(1));
         addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_RIGHT).and(KeyboardUtil.isControlPressed()), (i, w) -> {
             this.setCursorPosition(this.getNthWordFromCursor(1));
         } );
-        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_RIGHT).and(KeyboardUtil.isControlPressed().negate()), (i, w) -> this.moveCursorBy(1));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_RIGHT).and(KeyboardUtil.noInputModifiers()), (i, w) -> this.moveCursorBy(1));
         addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_LEFT).and(KeyboardUtil.isControlPressed()), (i, w) -> {
             this.setCursorPosition(this.getNthWordFromCursor(-1));
         } );
-        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_LEFT).and(KeyboardUtil.isControlPressed().negate()), (i, w) -> this.moveCursorBy(-1));
+        addKeyPressAction(KeyboardUtil.inputMatches(GLFW.GLFW_KEY_LEFT).and(KeyboardUtil.noInputModifiers()), (i, w) -> this.moveCursorBy(-1));
         addSingleKeyPressAction(GLFW.GLFW_KEY_HOME, (i, w) -> this.setCursorPositionStart());
         addSingleKeyPressAction(GLFW.GLFW_KEY_END, (i, w) -> this.setCursorPositionEnd());
     }

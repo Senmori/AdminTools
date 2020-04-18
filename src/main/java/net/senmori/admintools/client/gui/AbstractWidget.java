@@ -16,8 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.admintools.AdminTools;
 import net.senmori.admintools.client.gui.widget.api.KeyPressAction;
 import net.senmori.admintools.lib.input.KeyInput;
-import net.senmori.admintools.lib.util.Keyboard;
-import net.senmori.admintools.tmp.ClientConfig;
+import net.senmori.admintools.config.ClientConfig;
 import net.senmori.admintools.lib.properties.consumer.ConsumerProperty;
 import net.senmori.admintools.lib.properties.primitive.BooleanProperty;
 import net.senmori.admintools.lib.properties.primitive.ObjectProperty;
@@ -30,7 +29,6 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.awt.Color;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

@@ -2,26 +2,18 @@ package net.senmori.admintools;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.Config;
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import net.minecraft.client.Minecraft;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.senmori.admintools.asset.assets.JarFileAsset;
-import net.senmori.admintools.asset.assets.LocalFileAsset;
-import net.senmori.admintools.client.SimpleScreen;
-import net.senmori.admintools.config.builder.ConfigBuilder;
-import net.senmori.admintools.config.spec.ProjectConfigSpec;
+import net.senmori.admintools.events.ForgeEventHandlers;
 import net.senmori.admintools.setup.ClientProxy;
 import net.senmori.admintools.setup.IProxy;
 import net.senmori.admintools.setup.ServerProxy;
-import net.senmori.admintools.tmp.ClientConfig;
 import net.senmori.admintools.util.Directory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 import java.awt.Color;
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 @Mod( AdminTools.MODID )
 public class AdminTools implements Project
@@ -47,17 +38,22 @@ public class AdminTools implements Project
 
     private CommentedConfig config;
 
+    private final ForgeEventHandlers eventHandlers;
+
     public AdminTools()
     {
         AdminTools.INSTANCE = this;
-
-        MinecraftForge.EVENT_BUS.addListener(this::setup);
-        MinecraftForge.EVENT_BUS.addListener(this::onServerStart);
+        eventHandlers = new ForgeEventHandlers();
+        loadSettings();
     }
 
     public static AdminTools get()
     {
         return INSTANCE;
+    }
+
+    public ResourceLocation newResourceLocation(String path) {
+        return new ResourceLocation(MODID, path);
     }
 
     public Color getDebugColor()
@@ -73,19 +69,7 @@ public class AdminTools implements Project
     @SubscribeEvent
     public void setup(final FMLCommonSetupEvent event)
     {
-        PROXY.init();
         loadSettings();
-    }
-
-    @SubscribeEvent
-    public void onServerStart(FMLServerStartingEvent event)
-    {
-        event.getCommandDispatcher().register(Commands.literal("cmgui")
-                .requires(source -> source.getEntity() instanceof PlayerEntity)
-                .executes(context -> {
-                    Minecraft.getInstance().displayGuiScreen(new SimpleScreen());
-                    return 0;
-                }));
     }
 
     @Override
@@ -104,7 +88,7 @@ public class AdminTools implements Project
     public Directory getWorkingDirectory()
     {
         if ( WORKING_DIRECTORY == null ) {
-            String file = getProjectClassLoader().getResource(".").getPath();
+            String file = FMLPaths.MODSDIR.get().toAbsolutePath().toString();
             WORKING_DIRECTORY = new Directory(file, "");
         }
         return WORKING_DIRECTORY;
@@ -124,6 +108,7 @@ public class AdminTools implements Project
     @Override
     public boolean loadSettings()
     {
+        PROXY.init();
         return true;
     }
 

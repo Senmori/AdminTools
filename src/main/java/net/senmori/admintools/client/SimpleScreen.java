@@ -7,44 +7,59 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.senmori.admintools.AdminTools;
 import net.senmori.admintools.client.gui.AbstractWidget;
 import net.senmori.admintools.client.gui.widget.api.Updatable;
-import net.senmori.admintools.client.gui.widget.impl.Checkbox;
+import net.senmori.admintools.client.gui.widget.impl.Button;
 import net.senmori.admintools.client.gui.widget.impl.LockIconButton;
+import net.senmori.admintools.lib.texture.Texture;
 import net.senmori.admintools.lib.util.Keyboard;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
+import java.awt.Color;
 
 @OnlyIn( Dist.CLIENT )
-public class SimpleScreen extends Screen {
+public class SimpleScreen extends Screen
+{
 
-    public SimpleScreen() {
-        super( new StringTextComponent( "Simple Screen" ) );
+
+    public SimpleScreen()
+    {
+        super(new StringTextComponent(""));
     }
 
     @Override
     protected void init() {
-        super.init();
-
-        LockIconButton button = new LockIconButton( 80, 80 );
-        Checkbox checkbox = new Checkbox( 120, 120 );
+        Button button = new Button(120, 120);
+        button.setText("Click Me!");
+        button.setHoverTextColor(Color.CYAN);
+        button.onPress(widget -> {
+            AdminTools.PROXY.getClientPlayer().sendStatusMessage(new StringTextComponent("Hello!"), true);
+        });
+        //Checkbox checkbox = new Checkbox( 120, 120 );
+//        TextField textField = new TextField(150, 150);
+//        textField.setDefaultSuggestionText("Hello user!");
+//        textField.setTextColor(new Color(125.0F, 125.0F, 125.0F, 0.1F));
+//        textField.setCharacterInputValidator(Character::isAlphabetic);
+//        textField.setTextBoxBorderColor(Color.GREEN);
 
         addButton( button );
-        addButton( checkbox );
+        //addButton( checkbox );
+//        addButton(textField);
 
-        for (IGuiEventListener widget : children()) {
-            if (widget instanceof AbstractWidget) {
-                ( ( AbstractWidget ) widget ).printDebug();
-            }
-        }
+//        for (IGuiEventListener widget : children()) {
+//            if (widget instanceof AbstractWidget) {
+//                ( ( AbstractWidget<?> ) widget ).printDebug();
+//            }
+//        }
     }
 
     @Override
     @Nonnull
     protected <T extends Widget> T addButton(@Nonnull T widget) {
         if (widget instanceof AbstractWidget ) {
-            ((AbstractWidget)widget).setScreen( this );
+            ((AbstractWidget<?>)widget).setScreen( this );
         }
         return super.addButton( widget );
     }
@@ -61,8 +76,8 @@ public class SimpleScreen extends Screen {
         int focusedIndex = 0;
         AbstractWidget<?> widget = null;
         for ( IGuiEventListener child : children()) {
-            if (child instanceof AbstractWidget  && ((AbstractWidget)child).isFocused()) {
-                widget = ((AbstractWidget)child);
+            if (child instanceof AbstractWidget  && ((AbstractWidget<?>)child).isFocused()) {
+                widget = ((AbstractWidget<?>)child);
                 focusedIndex = children().indexOf( child );
                 break;
             }
@@ -78,7 +93,7 @@ public class SimpleScreen extends Screen {
     private AbstractWidget<?> findWidgetAt(int index) {
         IGuiEventListener widget = children().get( index );
         if (widget instanceof AbstractWidget) {
-            return ((AbstractWidget)widget);
+            return ((AbstractWidget<?>)widget);
         }
         return null;
     }
@@ -111,7 +126,10 @@ public class SimpleScreen extends Screen {
 
     @Override
     public void tick() {
-        super.tick();
-        children().stream().filter( child -> child instanceof Updatable ).forEach( child -> ( ( Updatable ) child ).tick() );
+        children.stream().filter(this::isUpdatable).map(child -> (Updatable)child).forEach(Updatable::tick);
+    }
+
+    private boolean isUpdatable(IGuiEventListener widget) {
+        return widget instanceof Updatable;
     }
 }

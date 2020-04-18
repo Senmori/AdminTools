@@ -17,7 +17,7 @@ public class LocalFileAsset extends FileAsset {
     }
 
     public static LocalFileAsset of(Directory parent, File child) {
-        return new LocalFileAsset(new File(parent.getFile(), child.getAbsolutePath()));
+        return new LocalFileAsset(new File(parent.getFile(), child.getPath()));
     }
 
     /**

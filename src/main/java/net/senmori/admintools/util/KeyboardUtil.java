@@ -15,6 +15,10 @@ public class KeyboardUtil
         return i -> i.getInputModifier().isControlPressed();
     }
 
+    public static Predicate<KeyInput> noInputModifiers() {
+        return isControlPressed().negate().and(isShiftPressed().negate()).and(isAltPressed().negate());
+    }
+
     public static Predicate<KeyInput> isShiftPressed() {
         return i -> i.getInputModifier().isShiftPressed();
     }
