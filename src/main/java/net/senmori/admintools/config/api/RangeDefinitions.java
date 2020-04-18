@@ -19,27 +19,33 @@ public interface RangeDefinitions
 
     DoubleValue defineInRange(List<String> path, double defaultValue, double min, double max);
 
-    default IntValue defineInRange(String path, int defaultValue, int min, int max) {
+    default IntValue defineInRange(String path, int defaultValue, int min, int max)
+    {
         return defineInRange(split(path), defaultValue, min, max);
     }
 
-    default IntValue define(String path, int value) {
+    default IntValue define(String path, int value)
+    {
         return defineInRange(split(path), value, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
-    default LongValue defineInRange(String path, long defaultValue, long min, long max) {
-        return defineInRange(split(path),defaultValue, min, max);
-    }
-
-    default LongValue define(String path, long value) {
-        return defineInRange(split(path), value, Long.MIN_VALUE, Long.MAX_VALUE);
-    }
-
-    default DoubleValue defineInRange(String path, double defaultValue, double min, double max) {
+    default LongValue defineInRange(String path, long defaultValue, long min, long max)
+    {
         return defineInRange(split(path), defaultValue, min, max);
     }
 
-    default DoubleValue define(String path, double value) {
+    default LongValue define(String path, long value)
+    {
+        return defineInRange(split(path), value, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+
+    default DoubleValue defineInRange(String path, double defaultValue, double min, double max)
+    {
+        return defineInRange(split(path), defaultValue, min, max);
+    }
+
+    default DoubleValue define(String path, double value)
+    {
         return defineInRange(split(path), value, Double.MIN_VALUE, Double.MAX_VALUE);
     }
 }
