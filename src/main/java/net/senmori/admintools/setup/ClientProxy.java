@@ -8,7 +8,7 @@ import net.senmori.admintools.config.ForgeClientConfig;
 public class ClientProxy implements IProxy {
     @Override
     public void init () {
-        ForgeClientConfig.init();
+        //ForgeClientConfig.init();
     }
 
     @Override

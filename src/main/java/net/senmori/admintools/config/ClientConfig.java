@@ -5,8 +5,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.senmori.admintools.AdminTools;
 import net.senmori.admintools.asset.assets.JarFileAsset;
 import net.senmori.admintools.asset.assets.LocalFileAsset;
-import net.senmori.admintools.config.builder.ConfigBuilder;
-import net.senmori.admintools.config.builder.ConfigSpec;
+import net.senmori.admintools.config.spec.ConfigBuilder;
+import net.senmori.admintools.config.spec.ConfigSpec;
 import net.senmori.admintools.config.value.BooleanValue;
 import net.senmori.admintools.config.value.IntValue;
 
@@ -83,7 +83,11 @@ public class ClientConfig
         return config;
     }
 
-    @Nonnull
+    public ConfigSpec getSpec()
+    {
+        return spec;
+    }
+
     public static void init()
     {
         if ( Objects.isNull(INSTANCE) ) {

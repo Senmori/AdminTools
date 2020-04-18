@@ -1,4 +1,4 @@
-package net.senmori.admintools.config.builder;
+package net.senmori.admintools.config.spec;
 
 import com.electronwill.nightconfig.core.Config;
 

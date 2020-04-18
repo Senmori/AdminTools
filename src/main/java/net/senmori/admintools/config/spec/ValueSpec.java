@@ -1,6 +1,5 @@
 package net.senmori.admintools.config.spec;
 
-import net.senmori.admintools.config.builder.BuilderContext;
 import net.senmori.admintools.lib.util.ValueRange;
 
 import javax.annotation.Nonnull;

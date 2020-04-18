@@ -1,4 +1,4 @@
-package net.senmori.admintools.config.builder;
+package net.senmori.admintools.config.spec;
 
 import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.ConfigSpec;
@@ -6,7 +6,6 @@ import com.electronwill.nightconfig.core.EnumGetMethod;
 import com.google.common.collect.Lists;
 import com.google.common.collect.ObjectArrays;
 import net.senmori.admintools.config.api.DefaultConfigDefinitions;
-import net.senmori.admintools.config.spec.ValueSpec;
 import net.senmori.admintools.config.value.BooleanValue;
 import net.senmori.admintools.config.value.ConfigValue;
 import net.senmori.admintools.config.value.DoubleValue;

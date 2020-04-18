@@ -1,4 +1,4 @@
-package net.senmori.admintools.config.builder;
+package net.senmori.admintools.config.spec;
 
 import net.senmori.admintools.lib.util.ValueRange;
 
