@@ -3,6 +3,8 @@ package net.senmori.admintools.config.api;
 import com.electronwill.nightconfig.core.EnumGetMethod;
 import net.senmori.admintools.config.value.EnumValue;
 
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -15,12 +17,17 @@ import static net.senmori.admintools.util.ConfigUtil.split;
  */
 public interface EnumDefinitions
 {
-    <V extends Enum<V>> EnumValue<V> defineEnum(List<String> path, Supplier<V> defaultValue, EnumGetMethod converter, Predicate<Object> validator, Class<V> clazz);
+    <V extends Enum<V>> EnumValue<V> defineEnum(List<String> path, Supplier<V> defaultValue, EnumGetMethod converter, Predicate<Object> validator, Collection<V> allowedValues);
 
 
     default <V extends Enum<V>> EnumValue<V> defineEnum(String path, V defaultValue)
     {
         return defineEnum(path, defaultValue, Objects::nonNull);
+    }
+
+    default <V extends Enum<V>> EnumValue<V> defineEnum(String path, V defaultValue, Collection<V> allowedValues)
+    {
+        return defineEnum(split(path), () -> defaultValue, EnumGetMethod.NAME_IGNORECASE, Objects::nonNull, allowedValues);
     }
 
     default <V extends Enum<V>> EnumValue<V> defineEnum(String path, V defaultValue, Predicate<Object> validator)
@@ -30,6 +37,6 @@ public interface EnumDefinitions
 
     default <V extends Enum<V>> EnumValue<V> defineEnum(String path, V defaultValue, Predicate<Object> validator, EnumGetMethod converter)
     {
-        return defineEnum(split(path),() -> defaultValue, converter, validator, defaultValue.getDeclaringClass());
+        return defineEnum(split(path), () -> defaultValue, converter, validator, EnumSet.allOf(defaultValue.getDeclaringClass()));
     }
 }
