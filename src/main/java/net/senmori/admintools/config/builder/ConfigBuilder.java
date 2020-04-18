@@ -3,6 +3,8 @@ package net.senmori.admintools.config.builder;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfigBuilder;
+import com.electronwill.nightconfig.core.io.ParsingMode;
+import com.electronwill.nightconfig.core.io.WritingMode;
 import com.electronwill.nightconfig.toml.TomlFormat;
 import net.senmori.admintools.AdminTools;
 import net.senmori.admintools.asset.assets.JarFileAsset;
@@ -15,8 +17,6 @@ public class ConfigBuilder
     private LocalFileAsset localFileAsset;
     private JarFileAsset sourceFileAsset;
 
-    private TomlFormat instance = TomlFormat.instance();
-
     CommentedFileConfig config;
     CommentedFileConfigBuilder builder;
 
@@ -24,7 +24,7 @@ public class ConfigBuilder
     {
         this.localFileAsset = asset;
         this.config = CommentedFileConfig.of(asset.getFile());
-        this.builder = CommentedFileConfig.builder(config.getFile(), instance);
+        this.builder = CommentedFileConfig.builder(config.getFile(), TomlFormat.instance());
     }
 
     public static CommentedConfig newConfig(String configName)
@@ -53,6 +53,12 @@ public class ConfigBuilder
 
     public CommentedConfig build()
     {
+        this.builder.autoreload()
+                .autosave()
+                .preserveInsertionOrder()
+                .concurrent()
+                .writingMode(WritingMode.APPEND)
+                .parsingMode(ParsingMode.MERGE);
         this.config = builder.build();
         return this.config;
     }
