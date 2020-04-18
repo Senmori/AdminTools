@@ -8,6 +8,7 @@ import net.senmori.admintools.asset.assets.LocalFileAsset;
 import net.senmori.admintools.config.spec.ConfigBuilder;
 import net.senmori.admintools.config.spec.ConfigSpec;
 import net.senmori.admintools.config.value.BooleanValue;
+import net.senmori.admintools.config.value.ColorValue;
 import net.senmori.admintools.config.value.IntValue;
 
 import javax.annotation.Nonnull;
@@ -21,12 +22,8 @@ public class ClientConfig
     private final CommentedConfig config;
     private final ConfigSpec spec;
 
-    private final Color DEF_DEBUG_COLOR = new Color(0, 210, 0, 40);
-
-    private LazyOptional<Color> DEBUG_COLOR;
-
     public final BooleanValue DEBUG_MODE;
-    private final IntValue DEBUG_COLOR_INT;
+    private final ColorValue DEBUG_COLOR;
     public final IntValue MAX_BUTTON_LENGTH;
     public final IntValue DEFAULT_WIDGET_WIDTH;
     public final IntValue DEFAULT_WIDGET_HEIGHT;
@@ -54,20 +51,9 @@ public class ClientConfig
                 .push("Debug");
         DEBUG_MODE = spec.comment("Enable debug mode. Don't enable this.")
                 .defineObject("debug", false);
-        DEBUG_COLOR_INT = spec.comment("Debug color")
-                .define("color", getDebugColor().getRGB());
+        DEBUG_COLOR = spec.comment("Debug color")
+                .defineColor("color", new Color(0, 210, 0, 40));
         spec.pop();
-        DEBUG_COLOR = LazyOptional.of(this::getDebugColor);
-    }
-
-    @Nonnull
-    public Color getDebugColor()
-    {
-        if ( DEBUG_COLOR == null ) {
-            Integer rgbValue = DEBUG_COLOR_INT != null && DEBUG_COLOR_INT.get() != null ? DEBUG_COLOR_INT.get() : DEF_DEBUG_COLOR.getRGB();
-            DEBUG_COLOR = LazyOptional.of(() -> new Color(rgbValue));
-        }
-        return DEBUG_COLOR.orElse(DEF_DEBUG_COLOR);
     }
 
     public static ClientConfig get()
