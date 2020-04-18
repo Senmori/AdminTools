@@ -8,7 +8,7 @@ import net.senmori.admintools.client.gui.AbstractWidget;
 import net.senmori.admintools.client.gui.widget.api.Attachable;
 import net.senmori.admintools.client.gui.widget.api.Updatable;
 import net.senmori.admintools.client.gui.widget.impl.Label;
-import net.senmori.admintools.config.ClientConfig;
+import net.senmori.admintools.config.ForgeClientConfig;
 import net.senmori.admintools.lib.properties.color.ColorProperty;
 import net.senmori.admintools.lib.properties.consumer.ConsumerProperty;
 import net.senmori.admintools.lib.properties.primitive.IntegerProperty;
@@ -154,7 +154,7 @@ public abstract class AbstractLabel extends AbstractWidget<AbstractLabel> implem
 
     @Override
     public void printDebug() {
-        if ( ClientConfig.get().DEBUG_MODE.get() ) {
+        if ( ForgeClientConfig.get().DEBUG_MODE.get() ) {
             calculateLayout();
             super.printDebug();
         }

@@ -6,11 +6,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.awt.Color;
 
-public class ClientConfig
+public class ForgeClientConfig
 {
     private final Color DEF_DEBUG_COLOR = new Color(0, 210, 0, 40);
 
-    private static ClientConfig INSTANCE;
+    private static ForgeClientConfig INSTANCE;
     private static ForgeConfigSpec spec;
 
 
@@ -22,7 +22,7 @@ public class ClientConfig
     public ForgeConfigSpec.ConfigValue<Integer> DEFAULT_WIDGET_WIDTH;
     public ForgeConfigSpec.ConfigValue<Integer> DEFAULT_WIDGET_HEIGHT;
 
-    ClientConfig(ForgeConfigSpec.Builder spec)
+    ForgeClientConfig(ForgeConfigSpec.Builder spec)
     {
         spec.comment("UI Settings")
                 .push("UX");
@@ -62,12 +62,12 @@ public class ClientConfig
 
     public static void init()
     {
-        final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
+        final Pair<ForgeClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ForgeClientConfig::new);
         spec = specPair.getRight();
         INSTANCE = specPair.getLeft();
     }
 
-    public static ClientConfig get()
+    public static ForgeClientConfig get()
     {
         return INSTANCE;
     }

@@ -15,8 +15,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.senmori.admintools.AdminTools;
 import net.senmori.admintools.client.gui.widget.api.KeyPressAction;
+import net.senmori.admintools.config.ForgeClientConfig;
 import net.senmori.admintools.lib.input.KeyInput;
-import net.senmori.admintools.config.ClientConfig;
 import net.senmori.admintools.lib.properties.consumer.ConsumerProperty;
 import net.senmori.admintools.lib.properties.primitive.BooleanProperty;
 import net.senmori.admintools.lib.properties.primitive.ObjectProperty;
@@ -57,8 +57,8 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
 
     public AbstractWidget(int xIn, int yIn) {
         super( xIn, yIn, "" );
-        this.width = ClientConfig.get().DEFAULT_WIDGET_WIDTH.get();
-        this.height = ClientConfig.get().DEFAULT_WIDGET_HEIGHT.get();
+        this.width = ForgeClientConfig.get().DEFAULT_WIDGET_WIDTH.get();
+        this.height = ForgeClientConfig.get().DEFAULT_WIDGET_HEIGHT.get();
         enabledProperty.addListener( (listener) -> this.active = ( boolean ) listener.getValue() );
         visibleProperty.addListener( (listener) -> this.visible = ( boolean ) listener.getValue() );
         focusedProperty.addListener( (listener) -> this.setFocused( ( boolean ) listener.getValue() ) );
@@ -346,13 +346,13 @@ public abstract class AbstractWidget<T extends Widget> extends Widget {
     }
 
     protected void debugOutline(Widget widget) {
-        if ( ClientConfig.get().DEBUG_MODE.get() ) {
-            RenderUtil.drawOutline( widget, ClientConfig.get().getDebugColor(), false );
+        if ( ForgeClientConfig.get().DEBUG_MODE.get() ) {
+            RenderUtil.drawOutline( widget, ForgeClientConfig.get().getDebugColor(), false );
         }
     }
 
     public void printDebug() {
-        if ( ClientConfig.get().DEBUG_MODE.get() ) {
+        if ( ForgeClientConfig.get().DEBUG_MODE.get() ) {
             String xy = " [X=" + getX() + ",Y=" + getY() + "]";
             String wh = " + [W=" + getWidth() + ",H=" + getHeight() + "]";
             String totals = " == [" + ( getX() + getWidth() ) + ',' + ( getY() + getHeight() ) + "]";
