@@ -18,9 +18,7 @@ import net.senmori.admintools.util.ConfigUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -111,13 +109,15 @@ public abstract class DefaultConfigSpec implements DefaultConfigDefinitions
     @Override
     public <T> ConfigValue<T> defineInList(List<String> path, Supplier<T> defaultValue, Collection<? extends T> acceptableValues)
     {
-        return define(path, defaultValue, acceptableValues::contains);
+        ValueSpec spec = new ValueSpec(defaultValue, acceptableValues::contains, context);
+        return _define(path, spec, defaultValue);
     }
 
     @Override
     public <T> ConfigValue<T> define(List<String> path, Supplier<T> defaultSupplier, Predicate<Object> validator)
     {
-        return _define(path, new ValueSpec(defaultSupplier, validator, context), defaultSupplier);
+        ValueSpec spec = new ValueSpec(defaultSupplier, validator, context);
+        return _define(path, spec, defaultSupplier);
     }
 
     @Override

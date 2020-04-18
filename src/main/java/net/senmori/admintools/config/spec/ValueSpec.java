@@ -3,6 +3,7 @@ package net.senmori.admintools.config.spec;
 import net.senmori.admintools.config.builder.BuilderContext;
 import net.senmori.admintools.lib.util.ValueRange;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -18,7 +19,7 @@ public class ValueSpec
     private final Predicate<Object> validator;
     private Object _default = null;
 
-    public ValueSpec(Supplier<?> supplier, Predicate<Object> validator, BuilderContext context)
+    public ValueSpec(@Nonnull Supplier<?> supplier, @Nonnull Predicate<Object> validator, @Nonnull BuilderContext context)
     {
         Objects.requireNonNull(supplier, "Default supplier can not be null");
         Objects.requireNonNull(validator, "Validator can not be null");
