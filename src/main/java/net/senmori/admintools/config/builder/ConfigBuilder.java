@@ -7,7 +7,6 @@ import com.electronwill.nightconfig.toml.TomlFormat;
 import net.senmori.admintools.AdminTools;
 import net.senmori.admintools.asset.assets.JarFileAsset;
 import net.senmori.admintools.asset.assets.LocalFileAsset;
-import net.senmori.admintools.config.value.ConfigValue;
 
 import java.io.File;
 
@@ -24,7 +23,6 @@ public class ConfigBuilder
     private ConfigBuilder(LocalFileAsset asset)
     {
         this.localFileAsset = asset;
-        instance.supportsType(ConfigValue.class);
         this.config = CommentedFileConfig.of(asset.getFile());
         this.builder = CommentedFileConfig.builder(config.getFile(), instance);
     }
