@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -61,10 +62,10 @@ public abstract class DefaultConfigSpec implements DefaultConfigDefinitions
     }
 
     @Override
-    public <V extends Enum<V>> EnumValue<V> defineEnum(List<String> path, Supplier<V> defaultValue, EnumGetMethod converter, Predicate<Object> validator, Class<V> clazz)
+    public <V extends Enum<V>> EnumValue<V> defineEnum(List<String> path, Supplier<V> defaultValue, EnumGetMethod converter, Predicate<Object> validator, Collection<V> allowedValues)
     {
+        Class<V> clazz = defaultValue.get().getDeclaringClass();
         context.setClazz(clazz);
-        EnumSet<V> allowedValues = EnumSet.allOf(clazz);
         Predicate<Object> validObject = obj -> {
             if ( obj instanceof Enum ) {
                 return allowedValues.contains(obj);

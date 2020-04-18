@@ -6,6 +6,6 @@ import net.senmori.admintools.Project;
 public class ProjectConfigSpec extends ConfigSpec {
 
     private ProjectConfigSpec(Project project) {
-        isCorrect( project.getConfig() );
+        //isCorrect( project.getConfig() );
     }
 }

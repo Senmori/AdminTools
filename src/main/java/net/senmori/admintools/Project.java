@@ -1,5 +1,6 @@
 package net.senmori.admintools;
 
+import com.electronwill.nightconfig.core.Config;
 import net.senmori.admintools.util.Directory;
 
 /**
@@ -37,4 +38,8 @@ public interface Project
      * @return true if the configs were loaded successfully
      */
     boolean loadSettings();
+
+    default Config getConfig() {
+        return null;
+    }
 }

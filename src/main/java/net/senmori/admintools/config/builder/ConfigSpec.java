@@ -49,7 +49,7 @@ public class ConfigSpec extends DefaultConfigSpec
         if ( context.hasComment() ) {
 
             levelComments.put(new ArrayList<>(currentPath), context.buildComment());
-            context.setComment(); // Set to empty
+            context.setComment();
         }
         context.ensureEmpty();
         return this;
