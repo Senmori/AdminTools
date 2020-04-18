@@ -23,15 +23,15 @@ public interface ListDefinitions
                                 Predicate<Object> elementValidator,
                                 Function<Object, T> elementConverter);
 
-    <T> ConfigValue<T> defineInList(List<String> path, Supplier<T> defaultValue, Collection<? extends T> acceptableValues);
+    <T> ConfigValue<T> defineRestrictedList(List<String> path, Supplier<T> defaultValue, Collection<? extends T> acceptableValues);
 
     default <T> ListValue<T> defineList(String path, List<T> defaultValue, Function<Object, T> elementConverter)
     {
         return defineList(split(path), () -> defaultValue, Objects::nonNull, elementConverter);
     }
 
-    default <T> ConfigValue<T> defineInList(String path, T defaultValue, Collection<? extends T> acceptableValues)
+    default <T> ConfigValue<T> defineRestrictedList(String path, T defaultValue, Collection<? extends T> acceptableValues)
     {
-        return defineInList(split(path), () -> defaultValue, acceptableValues);
+        return defineRestrictedList(split(path), () -> defaultValue, acceptableValues);
     }
 }

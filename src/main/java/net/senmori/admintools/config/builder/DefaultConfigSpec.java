@@ -1,6 +1,7 @@
 package net.senmori.admintools.config.builder;
 
 import com.electronwill.nightconfig.core.Config;
+import com.electronwill.nightconfig.core.ConfigSpec;
 import com.electronwill.nightconfig.core.EnumGetMethod;
 import com.google.common.collect.Lists;
 import com.google.common.collect.ObjectArrays;
@@ -26,7 +27,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public abstract class DefaultConfigSpec implements DefaultConfigDefinitions
+public abstract class DefaultConfigSpec extends ConfigSpec implements DefaultConfigDefinitions
 {
     protected BuilderContext context = new BuilderContext();
     protected Map<List<String>, String> levelComments = new HashMap<>();
@@ -107,21 +108,21 @@ public abstract class DefaultConfigSpec implements DefaultConfigDefinitions
     }
 
     @Override
-    public <T> ConfigValue<T> defineInList(List<String> path, Supplier<T> defaultValue, Collection<? extends T> acceptableValues)
+    public <T> ConfigValue<T> defineRestrictedList(List<String> path, Supplier<T> defaultValue, Collection<? extends T> acceptableValues)
     {
         ValueSpec spec = new ValueSpec(defaultValue, acceptableValues::contains, context);
         return _define(path, spec, defaultValue);
     }
 
     @Override
-    public <T> ConfigValue<T> define(List<String> path, Supplier<T> defaultSupplier, Predicate<Object> validator)
+    public <T> ConfigValue<T> defineObject(List<String> path, Supplier<T> defaultSupplier, Predicate<Object> validator)
     {
         ValueSpec spec = new ValueSpec(defaultSupplier, validator, context);
         return _define(path, spec, defaultSupplier);
     }
 
     @Override
-    public BooleanValue define(List<String> path, Supplier<Boolean> defaultValue)
+    public BooleanValue defineObject(List<String> path, Supplier<Boolean> defaultValue)
     {
         ValueSpec spec = new ValueSpec(defaultValue, ConfigUtil::isBoolean, context);
         _define(path, spec, defaultValue);

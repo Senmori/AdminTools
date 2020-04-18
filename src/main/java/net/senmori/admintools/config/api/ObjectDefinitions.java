@@ -23,7 +23,7 @@ public interface ObjectDefinitions
      * @param validator       the validator to ensure proper storage and retrieval.
      * @return a new {@link ConfigValue}
      */
-    <T> ConfigValue<T> define(List<String> path, Supplier<T> defaultSupplier, Predicate<Object> validator);
+    <T> ConfigValue<T> defineObject(List<String> path, Supplier<T> defaultSupplier, Predicate<Object> validator);
 
     /**
      * Define a new boolean value
@@ -32,39 +32,39 @@ public interface ObjectDefinitions
      * @param defaultValue the default value
      * @return a new {@link BooleanValue}
      */
-    BooleanValue define(List<String> path, Supplier<Boolean> defaultValue);
+    BooleanValue defineObject(List<String> path, Supplier<Boolean> defaultValue);
 
     /**
-     * @see #define(List, Supplier, Predicate)
+     * @see #defineObject(List, Supplier, Predicate)
      */
-    default <T> ConfigValue<T> define(String path, T defaultValue)
+    default <T> ConfigValue<T> defineObject(String path, T defaultValue)
     {
         Objects.requireNonNull(defaultValue, "Default value can not be null");
-        return define(split(path), () -> defaultValue, o -> defaultValue.getClass().isInstance(o.getClass()));
+        return defineObject(split(path), () -> defaultValue, o -> defaultValue.getClass().isInstance(o.getClass()));
     }
 
     /**
-     * @see #define(List, Supplier, Predicate)
+     * @see #defineObject(List, Supplier, Predicate)
      */
-    default <T> ConfigValue<T> define(String path, Supplier<T> defaultSupplier, Predicate<Object> validator)
+    default <T> ConfigValue<T> defineObject(String path, Supplier<T> defaultSupplier, Predicate<Object> validator)
     {
-        return define(split(path), defaultSupplier, validator);
+        return defineObject(split(path), defaultSupplier, validator);
     }
 
     /**
-     * @see #define(List, Supplier)
+     * @see #defineObject(List, Supplier)
      */
-    default BooleanValue define(String path, boolean defaultValue)
+    default BooleanValue defineObject(String path, boolean defaultValue)
     {
-        return define(split(path), () -> defaultValue);
+        return defineObject(split(path), () -> defaultValue);
     }
 
     /**
-     * @see #define(List, Supplier)
+     * @see #defineObject(List, Supplier)
      */
-    default BooleanValue define(String path, Supplier<Boolean> supplier)
+    default BooleanValue defineObject(String path, Supplier<Boolean> supplier)
     {
-        return define(split(path), supplier);
+        return defineObject(split(path), supplier);
     }
 
 

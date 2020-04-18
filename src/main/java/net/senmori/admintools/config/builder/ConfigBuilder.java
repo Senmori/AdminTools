@@ -9,8 +9,10 @@ import com.electronwill.nightconfig.toml.TomlFormat;
 import net.senmori.admintools.AdminTools;
 import net.senmori.admintools.asset.assets.JarFileAsset;
 import net.senmori.admintools.asset.assets.LocalFileAsset;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
+import java.util.function.Function;
 
 public class ConfigBuilder
 {

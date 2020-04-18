@@ -10,6 +10,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.senmori.admintools.config.ClientConfig;
 import net.senmori.admintools.events.ForgeEventHandlers;
 import net.senmori.admintools.setup.ClientProxy;
 import net.senmori.admintools.setup.IProxy;
@@ -94,7 +95,14 @@ public class AdminTools implements Project
     @Override
     public boolean loadSettings()
     {
+        ClientConfig.init();
         PROXY.init();
         return true;
+    }
+
+    @Override
+    public CommentedConfig getConfig()
+    {
+        return ClientConfig.get().getConfig();
     }
 }
