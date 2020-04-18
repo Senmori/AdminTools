@@ -1,6 +1,5 @@
 package net.senmori.admintools;
 
-import com.electronwill.nightconfig.core.Config;
 import net.senmori.admintools.util.Directory;
 
 /**
@@ -10,7 +9,8 @@ import net.senmori.admintools.util.Directory;
  * It is up to the implementation to determine the resources that need to
  * be loaded, how to load them, and how the system should be interacted with.
  */
-public interface Project {
+public interface Project
+{
 
     /**
      * The name of the project
@@ -37,6 +37,4 @@ public interface Project {
      * @return true if the configs were loaded successfully
      */
     boolean loadSettings();
-
-    Config getConfig();
 }

@@ -26,17 +26,14 @@ import java.nio.file.Path;
 public class AdminTools implements Project
 {
     private static AdminTools INSTANCE;
-    public static Logger LOGGER = LogManager.getLogger();
+    private static Logger LOGGER = LogManager.getLogger();
 
     public static final String MODID = "admintools";
 
     public static IProxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
-    private final Color DEBUG_COLOR = new Color(0, 210, 0, 40);
     private Directory WORKING_DIRECTORY;
     private Directory CONFIG_DIRECTORY;
-
-    private CommentedConfig config;
 
     private final ForgeEventHandlers eventHandlers;
 
@@ -56,20 +53,9 @@ public class AdminTools implements Project
         return new ResourceLocation(MODID, path);
     }
 
-    public Color getDebugColor()
-    {
-        return DEBUG_COLOR;
-    }
-
     public Logger getLogger()
     {
         return LOGGER;
-    }
-
-    @SubscribeEvent
-    public void setup(final FMLCommonSetupEvent event)
-    {
-        loadSettings();
     }
 
     @Override
@@ -110,11 +96,5 @@ public class AdminTools implements Project
     {
         PROXY.init();
         return true;
-    }
-
-    @Override
-    public Config getConfig()
-    {
-        return config;
     }
 }
