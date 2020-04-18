@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.ObjectArrays;
 import net.senmori.admintools.config.api.DefaultConfigDefinitions;
 import net.senmori.admintools.config.value.BooleanValue;
+import net.senmori.admintools.config.value.ColorValue;
 import net.senmori.admintools.config.value.ConfigValue;
 import net.senmori.admintools.config.value.DoubleValue;
 import net.senmori.admintools.config.value.EnumValue;
@@ -15,12 +16,16 @@ import net.senmori.admintools.config.value.ListValue;
 import net.senmori.admintools.config.value.LongValue;
 import net.senmori.admintools.lib.util.ValueRange;
 import net.senmori.admintools.util.ConfigUtil;
+import org.apache.commons.lang3.math.NumberUtils;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -174,5 +179,19 @@ public abstract class DefaultConfigSpec extends ConfigSpec implements DefaultCon
         ValueSpec spec = new ValueSpec(supplier, validator, context);
         _define(path, spec, supplier);
         return new DoubleValue(getConfig(), path, supplier);
+    }
+
+    @Override
+    public ColorValue defineColor(List<String> path, Supplier<Color> defaultSupplier)
+    {
+        List<Integer> values = new LinkedList<>();
+        int rgb = defaultSupplier.get().getRGB();
+        int alpha = defaultSupplier.get().getAlpha();
+        values.add(rgb);
+        values.add(alpha);
+        Predicate<Object> configValidator = x -> x instanceof List && (( List<?> ) x).stream().map(Objects::toString).allMatch(NumberUtils::isParsable);
+        Function<Object, Integer> converter = obj -> NumberUtils.createInteger(Objects.toString(obj));
+        ListValue<Integer> configList = defineList(path, () -> values, configValidator, converter);
+        return new ColorValue(getConfig(), configList.getPath(), configList, defaultSupplier);
     }
 }

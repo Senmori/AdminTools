@@ -2,6 +2,7 @@ package net.senmori.admintools.config.value;
 
 import com.electronwill.nightconfig.core.Config;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -21,6 +22,6 @@ public class ListValue<T> extends ConfigValue<List<T>>
     protected List<T> getRaw(Config config, List<String> path, Supplier<List<T>> defaultSupplier)
     {
         List<?> result = config.getOrElse(path, defaultSupplier);
-        return result.stream().map(converter).collect(Collectors.toList());
+        return result.stream().map(converter).collect(Collectors.toCollection(LinkedList::new));
     }
 }
