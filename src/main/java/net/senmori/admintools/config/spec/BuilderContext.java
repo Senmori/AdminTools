@@ -1,12 +1,14 @@
 package net.senmori.admintools.config.spec;
 
 import net.senmori.admintools.lib.util.ValueRange;
+import net.senmori.admintools.util.ConfigUtil;
 
+import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
 public class BuilderContext
 {
-    private StringBuilder comment = new StringBuilder();
+    private @Nonnull String[] comment = new String[0];
     private String langKey;
     private ValueRange<?> range;
     private boolean worldRestart = false;
@@ -18,22 +20,22 @@ public class BuilderContext
 
     public void setComment(String... value)
     {
-        Stream.of(value).forEach(s -> comment.append(s).append("\n"));
+        this.comment = value;
     }
 
     public boolean hasComment()
     {
-        return this.comment.length() > 0;
+        return this.comment.length > 0;
     }
 
     public String[] getComment()
     {
-        return this.comment.toString().split("\\n");
+        return this.comment;
     }
 
     public String buildComment()
     {
-        return comment.toString();
+        return ConfigUtil.LINE_JOINER.join(comment);
     }
 
     public void setTranslationKey(String value)

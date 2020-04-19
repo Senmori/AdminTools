@@ -1,5 +1,6 @@
 package net.senmori.admintools.asset.assets;
 
+import net.senmori.admintools.AdminTools;
 import net.senmori.admintools.Project;
 
 import java.io.File;
@@ -32,7 +33,7 @@ public class JarFileAsset extends FileAsset {
 
     private static File getFileFromAssetName(String assetName, Class<?> clazz) {
         Optional<File> fileOptional = Optional.empty();
-        URL resourceURL = getURLFromResource(assetName, clazz);
+        URL resourceURL = AdminTools.class.getProtectionDomain().getClassLoader().getResource(assetName);
         try {
             File file = new File(resourceURL.toURI());
             fileOptional = Optional.of(file);
@@ -43,7 +44,7 @@ public class JarFileAsset extends FileAsset {
     }
 
     private static URL getURLFromResource(String assetName, Class<?> clazz) {
-        Optional<URL> resourceURL = Optional.ofNullable(clazz.getResource(assetName));
+        Optional<URL> resourceURL = Optional.ofNullable(AdminTools.class.getResource(assetName));
         Supplier<String> errorMessageSupplier = () -> "Could not find asset with name " + assetName + " using " + clazz.getName() + "'s classloader";
         return resourceURL.orElseThrow(() -> new IllegalArgumentException(errorMessageSupplier.get()));
     }

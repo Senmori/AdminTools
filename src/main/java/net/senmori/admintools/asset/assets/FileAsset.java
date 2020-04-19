@@ -21,4 +21,10 @@ public abstract class FileAsset implements Asset {
     public File getFile() {
         return new File( getAssetLocation() );
     }
+
+    @Override
+    public String toString()
+    {
+        return assetLocation.toString();
+    }
 }

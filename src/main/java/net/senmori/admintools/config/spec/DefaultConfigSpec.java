@@ -1,5 +1,6 @@
 package net.senmori.admintools.config.spec;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.ConfigSpec;
 import com.electronwill.nightconfig.core.EnumGetMethod;
@@ -36,14 +37,14 @@ public abstract class DefaultConfigSpec extends ConfigSpec implements DefaultCon
     protected BuilderContext context = new BuilderContext();
     protected Map<List<String>, String> levelComments = new HashMap<>();
     protected List<String> currentPath = new ArrayList<>();
-    protected Config config;
+    protected CommentedConfig config;
 
-    protected DefaultConfigSpec(Config config)
+    protected DefaultConfigSpec(CommentedConfig config)
     {
         this.config = config;
     }
 
-    public Config getConfig()
+    public CommentedConfig getConfig()
     {
         return config;
     }
@@ -59,7 +60,7 @@ public abstract class DefaultConfigSpec extends ConfigSpec implements DefaultCon
             tmp.addAll(path);
             path = tmp;
         }
-        getConfig().set(path, value);
+        getConfig().set(path, value.getDefault());
         context = new BuilderContext();
         return new ConfigValue<>(getConfig(), path, defaultSupplier);
     }
@@ -184,11 +185,11 @@ public abstract class DefaultConfigSpec extends ConfigSpec implements DefaultCon
     @Override
     public ColorValue defineColor(List<String> path, Supplier<Color> defaultSupplier)
     {
-        List<Integer> values = new LinkedList<>();
-        int rgb = defaultSupplier.get().getRGB();
+        int red = defaultSupplier.get().getRed();
+        int green = defaultSupplier.get().getGreen();
+        int blue = defaultSupplier.get().getBlue();
         int alpha = defaultSupplier.get().getAlpha();
-        values.add(rgb);
-        values.add(alpha);
+        List<Integer> values = new LinkedList<>(Lists.newArrayList(red, green, blue, alpha));
         Predicate<Object> configValidator = x -> x instanceof List && (( List<?> ) x).stream().map(Objects::toString).allMatch(NumberUtils::isParsable);
         Function<Object, Integer> converter = obj -> NumberUtils.createInteger(Objects.toString(obj));
         ListValue<Integer> configList = defineList(path, () -> values, configValidator, converter);

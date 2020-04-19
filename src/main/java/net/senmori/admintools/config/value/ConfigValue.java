@@ -1,5 +1,6 @@
 package net.senmori.admintools.config.value;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.Config;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public class ConfigValue<T>
 {
     private final List<String> path;
     private final Supplier<T> defaultSupplier;
-    private final Config config;
+    private final CommentedConfig config;
 
-    public ConfigValue(Config config, List<String> path, Supplier<T> defaultSupplier)
+    public ConfigValue(CommentedConfig config, List<String> path, Supplier<T> defaultSupplier)
     {
         this.config = config;
         this.path = path;
@@ -32,14 +33,22 @@ public class ConfigValue<T>
         return getRaw(config, path, defaultSupplier);
     }
 
-    protected T getRaw(Config config, List<String> path, Supplier<T> defaultSupplier)
+    protected T getRaw(CommentedConfig config, List<String> path, Supplier<T> defaultSupplier)
     {
         Objects.requireNonNull( config, "Cannot get value from null config" );
-        return config.getOrElse( getPath(), defaultSupplier );
+        return config.getOrElse( path, defaultSupplier );
     }
 
     public void set(T value)
     {
-        config.set( getPath(), value );
+        config.set( path, value );
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ConfigValue{" +
+                "value=" + get().toString() +
+                '}';
     }
 }

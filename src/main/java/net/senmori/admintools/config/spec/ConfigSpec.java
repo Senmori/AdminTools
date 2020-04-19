@@ -1,5 +1,6 @@
 package net.senmori.admintools.config.spec;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.Config;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import static net.senmori.admintools.util.ConfigUtil.split;
 
 public class ConfigSpec extends DefaultConfigSpec
 {
-    public ConfigSpec(Config config)
+    public ConfigSpec(CommentedConfig config)
     {
         super(config);
     }

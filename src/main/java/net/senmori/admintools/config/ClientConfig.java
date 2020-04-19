@@ -11,7 +11,6 @@ import net.senmori.admintools.config.value.BooleanValue;
 import net.senmori.admintools.config.value.ColorValue;
 import net.senmori.admintools.config.value.IntValue;
 
-import javax.annotation.Nonnull;
 import java.awt.Color;
 import java.util.Objects;
 
@@ -32,8 +31,8 @@ public class ClientConfig
     {
         this.config = ( CommentedConfig ) spec.getConfig();
         this.spec = spec;
-        spec.comment("UI Settings")
-                .push("UX");
+        spec.comment("UI Settings - mostly for widget height/width restrictions")
+            .push("Settings");
         MAX_BUTTON_LENGTH = spec
                 .comment("The maximum length (in pixels) a button may be. This effects the rendering of the button texture.")
                 .define("max_button_length", 200);
@@ -43,12 +42,10 @@ public class ClientConfig
         DEFAULT_WIDGET_HEIGHT = spec
                 .comment("The default height of widgets.")
                 .define("default_widget_height", 20);
-
-
         spec.pop();
 
-        spec.comment("Advanced settings. These should only be modified by experienced users.")
-                .push("Debug");
+        spec.comment("Debug Settings - definitely don't change these.")
+            .push("Debug");
         DEBUG_MODE = spec.comment("Enable debug mode. Don't enable this.")
                 .defineObject("debug", false);
         DEBUG_COLOR = spec.comment("Debug color")
@@ -77,11 +74,8 @@ public class ClientConfig
     public static void init()
     {
         if ( Objects.isNull(INSTANCE) ) {
-            LocalFileAsset clientConfigFile = LocalFileAsset.of(AdminTools.get(), "admintools-client");
-            JarFileAsset sourceConfigFile = JarFileAsset.of(AdminTools.get(), "admintools-client");
-            CommentedConfig config = ConfigBuilder.newBuilder(clientConfigFile).source(sourceConfigFile).build();
+            CommentedConfig config = ConfigBuilder.newConfig("admintools-client.toml");
             ConfigSpec spec = new ConfigSpec(config);
-            spec.correct(config);
             INSTANCE = new ClientConfig(spec);
         }
     }

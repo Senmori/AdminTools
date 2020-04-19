@@ -1,7 +1,9 @@
 package net.senmori.admintools.config.value;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.collect.Lists;
+import net.senmori.admintools.AdminTools;
 
 import java.awt.Color;
 import java.util.List;
@@ -11,7 +13,7 @@ public class ColorValue extends ConfigValue<Color>
 {
     private final ListValue<Integer> configList;
 
-    public ColorValue(Config config, List<String> path, ListValue<Integer> configList, Supplier<Color> defaultSupplier)
+    public ColorValue(CommentedConfig config, List<String> path, ListValue<Integer> configList, Supplier<Color> defaultSupplier)
     {
         super(config, path, defaultSupplier);
         this.configList = configList;
@@ -24,7 +26,7 @@ public class ColorValue extends ConfigValue<Color>
     }
 
     @Override
-    protected Color getRaw(Config config, List<String> path, Supplier<Color> defaultSupplier)
+    protected Color getRaw(CommentedConfig config, List<String> path, Supplier<Color> defaultSupplier)
     {
         List<Integer> list = configList.get();
         int red = getColorValue(list, 0, defaultSupplier.get().getRed());

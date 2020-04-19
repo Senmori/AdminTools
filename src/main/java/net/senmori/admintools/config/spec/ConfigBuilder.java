@@ -3,35 +3,34 @@ package net.senmori.admintools.config.spec;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfigBuilder;
+import com.electronwill.nightconfig.core.file.FileNotFoundAction;
 import com.electronwill.nightconfig.core.io.ParsingMode;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.electronwill.nightconfig.toml.TomlFormat;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.senmori.admintools.AdminTools;
 import net.senmori.admintools.asset.assets.JarFileAsset;
 import net.senmori.admintools.asset.assets.LocalFileAsset;
+import net.senmori.admintools.util.Directory;
 
 import java.io.File;
 
 public class ConfigBuilder
 {
     private LocalFileAsset localFileAsset;
-    private JarFileAsset sourceFileAsset;
 
-    CommentedFileConfig config;
     CommentedFileConfigBuilder builder;
 
     private ConfigBuilder(LocalFileAsset asset)
     {
         this.localFileAsset = asset;
-        this.config = CommentedFileConfig.of(asset.getFile());
-        this.builder = CommentedFileConfig.builder(config.getFile(), TomlFormat.instance());
+        this.builder = CommentedFileConfig.builder(asset.getFile(), TomlFormat.instance());
     }
 
     public static CommentedConfig newConfig(String configName)
     {
-        LocalFileAsset configAsset = LocalFileAsset.of(AdminTools.get().getConfigDirectory(), new File(configName));
-        JarFileAsset sourceAsset = JarFileAsset.of(AdminTools.get(), configName);
-        return ConfigBuilder.newBuilder(configAsset).source(sourceAsset).build();
+        LocalFileAsset configAsset = LocalFileAsset.of(new File(FMLPaths.CONFIGDIR.get().toFile(), configName));
+        return ConfigBuilder.newBuilder(configAsset).build();
     }
 
     public static ConfigBuilder newBuilder(LocalFileAsset asset)
@@ -39,27 +38,13 @@ public class ConfigBuilder
         return new ConfigBuilder(asset);
     }
 
-    public ConfigBuilder source(JarFileAsset asset)
-    {
-        this.sourceFileAsset = asset;
-        this.builder.defaultData(asset.getFile());
-        return this;
-    }
-
-    public CommentedFileConfigBuilder getFileConfigBuilder()
-    {
-        return builder;
-    }
-
     public CommentedConfig build()
     {
         this.builder.autoreload()
                 .autosave()
                 .preserveInsertionOrder()
-                .concurrent()
-                .writingMode(WritingMode.APPEND)
-                .parsingMode(ParsingMode.MERGE);
-        this.config = builder.build();
-        return this.config;
+                .onFileNotFound(FileNotFoundAction.CREATE_EMPTY)
+                .concurrent();
+        return builder.build();
     }
 }
